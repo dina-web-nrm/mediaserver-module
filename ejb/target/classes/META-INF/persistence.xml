@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+    <persistence-unit name="MysqlPU" transaction-type="JTA">
+    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+    <jta-data-source>java:/MediaDS</jta-data-source>
+    <class>se.nrm.bio.mediaserver.domain.Media</class>
+    <class>se.nrm.bio.mediaserver.domain.Image</class>
+    <class>se.nrm.bio.mediaserver.domain.Video</class>
+    <class>se.nrm.bio.mediaserver.domain.Sound</class>
+    <class>se.nrm.bio.mediaserver.domain.Attachment</class>
+    
+    <class>se.nrm.bio.mediaserver.domain.MediaLicence</class>
+    <class>se.nrm.bio.mediaserver.domain.MediaText</class>
+    
+    <class>se.nrm.bio.mediaserver.domain.MetaData</class>
+    <class>se.nrm.bio.mediaserver.domain.Tag</class>
+    <class>se.nrm.bio.mediaserver.domain.Determination</class>
+    <class>se.nrm.bio.mediaserver.domain.Link</class>
+    <class>se.nrm.bio.mediaserver.domain.AdminConfig</class>
+    <class>se.nrm.bio.mediaserver.domain.Lic</class>
+    
+    <class>se.nrm.bio.mediaserver.domain.AdminMedia</class>
+  </persistence-unit>
+</persistence>

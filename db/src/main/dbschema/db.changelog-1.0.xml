@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+    <changeSet id="default-licenses to LIC-table" author="ingimar">
+        <sqlFile path="src/main/dbschema/default-insert-lic.sql"/>
+    </changeSet>
+    <changeSet id="default-values-for-admin" author="ingimar">
+        <sqlFile path="src/main/dbschema/default-insert-for-admin_config.sql"/>
+    </changeSet>
+    <changeSet id="default-values" author="ingimar">
+        <sqlFile path="src/main/dbschema/default-insert-for-demo.sql"/>
+    </changeSet>
+</databaseChangeLog>
