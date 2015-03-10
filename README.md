@@ -5,7 +5,7 @@ Mediaserver core module
 
 #Background & Purpose
 The Mediaserver (aka. 'attachment server')  handles mediafiles and their metadata.<p>
-Guiding principle is 'ease of installation' and 'ease of management'.
+The functionality is implemented using the RESTful-architecture style <p>
 
 1. The Mediaserver can be used as a standalone server (no coupling to an external system).
 2. The Mediaserver can be used as an integrated part of your system, coupled.
@@ -81,6 +81,9 @@ Generics tags are supported and saved as a text-string in the database. <p>
 <b>is saved as -> 'country:sweden&value=dorsal'</b> <p>
 
 #User Guide
+Guiding principle is 'ease of installation' and 'ease of management'.
+1. Database agnostic
+2. Application Server agnostic 
 
 ##How to install
 see the 'turn-key vagrant'-project at [dw-media](https://github.com/DINA-Web/dw-media) 
@@ -96,6 +99,13 @@ set up a datasource/datapool/JNDI-handle
 
 ##How to connect to an external system
 A link-table in the database that maps the ID from the external-system to one or many media-files.
+
+## RESTful-API
+See the RESTful-API documenation ... found here .....
+
+### post mediafile
+### get mediafile
+### get derivate of an imagefile
 
 ##How to add supported licenses
 Licences will be stored in a licence-table. <p>
