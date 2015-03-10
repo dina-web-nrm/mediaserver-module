@@ -18,3 +18,4 @@ README.html
 /db/target/
 /docs/*.html
 /docs/*.html~
+/docs/*.txt~

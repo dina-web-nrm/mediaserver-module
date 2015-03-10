@@ -2,9 +2,9 @@
  Don't forget to copy the images ( path+uuid-name ) to the correct path
 */;
 INSERT INTO MEDIA VALUES 
-('863ec044-17cf-4c87-81cc-783ab13230ae','Image',NULL,'image/jpeg','ingimar','public','view:sitting&country:sweden&photo:diginatour&source:wiki','http://localhost:8080/MediaServerResteasy/media/stream/863ec044-17cf-4c87-81cc-783ab13230ae',NULL,NULL),
-('e4a3cf7d-add4-4949-a6ce-0f5594e61970','Image',NULL,'image/jpeg','ingimar','public','view:sitting&country:sweden&photo:xxberraschungsbilder&source:wiki','http://localhost:8080/MediaServerResteasy/media/stream/e4a3cf7d-add4-4949-a6ce-0f5594e61970',NULL,NULL), 
-('c41bd445-8796-4421-9b77-fd1e65b14974','Image',NULL,'image/jpeg','ingimar','private','view:flying&country:sweden','http://localhost:8080/MediaServerResteasy/media/stream/c41bd445-8796-4421-9b77-fd1e65b14974',NULL,NULL);
+('863ec044-17cf-4c87-81cc-783ab13230ae','Image',NULL,'image/jpeg','ingimar','public','view:sitting&country:sweden&photo:diginatour&source:wiki','http://localhost:8080/MediaServerResteasy/media/863ec044-17cf-4c87-81cc-783ab13230ae?format=image/jpeg',NULL,NULL),
+('e4a3cf7d-add4-4949-a6ce-0f5594e61970','Image',NULL,'image/jpeg','ingimar','public','view:sitting&country:sweden&photo:xxberraschungsbilder&source:wiki','http://localhost:8080/MediaServerResteasy/media/e4a3cf7d-add4-4949-a6ce-0f5594e61970?format=image/jpeg',NULL,NULL), 
+('c41bd445-8796-4421-9b77-fd1e65b14974','Image',NULL,'image/jpeg','ingimar','private','view:flying&country:sweden','http://localhost:8080/MediaServerResteasy/media/c41bd445-8796-4421-9b77-fd1e65b14974?format=image/jpeg',NULL,NULL);
 
 /*'0' för postgres , 0 för mysql*/
 INSERT INTO IMAGE VALUES 

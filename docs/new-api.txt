@@ -1,0 +1,36 @@
+Demo-Standalone :
+3 images :
+1) sitting 'pica pica' 863ec044-17cf-4c87-81cc-783ab13230ae
+
+METADATA
+OLD
+Get metadata for 'sitting pica-pic' :
+http://localhost:8080/MediaServerResteasy/media/meta/<uuid>
+http://localhost:8080/MediaServerResteasy/media/meta/863ec044-17cf-4c87-81cc-783ab13230ae
+
+NEW:
+http://localhost:8080/MediaServerResteasy/media/863ec044-17cf-4c87-81cc-783ab13230ae?content=metadata
+or
+http://localhost:8080/MediaServerResteasy/media/863ec044-17cf-4c87-81cc-783ab13230ae where 'content=metadata' is the default
+
+IMAGE
+<mediaUrl>
+http://localhost:8080/MediaServerResteasy/media/863ec044-17cf-4c87-81cc-783ab13230ae?format=image/jpeg
+</mediaUrl>
+
+Derivat: Only Height ( keeping ratio)
+http://localhost:8080/MediaServerResteasy/media/image/863ec044-17cf-4c87-81cc-783ab13230ae?format=raw&height=150
+http://localhost:8080/MediaServerResteasy/media/image/863ec044-17cf-4c87-81cc-783ab13230ae?format=raw&height=100
+
+
+
+@Todo
+-with lang:
+<tags>
+  <tag lang=”sv_SE””>
+    <name>view</name>
+    <value>sitting</value>
+  </tag>
+<tag lang=”sv_SE””>
+    <name>country</name>
+    <value>Sweden</value>
