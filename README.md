@@ -83,7 +83,7 @@ Generics tags are supported and saved as a text-string in the database. <p>
 #User Guide
 
 ##How to install
-see the 'turn-key'-project at [link](https://github.com/DINA-Web/dw-media) dw-media
+see the 'turn-key'-project at [dw-media](https://github.com/DINA-Web/dw-media) 
 
 1. download and build the source code, maven
 2. install and populate the chosen database-engine
