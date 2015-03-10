@@ -4,8 +4,7 @@ Mediaserver core module
 ![alt mediaserver in fokus](docs/Mediaserver-module(1-2).png)
 
 #Background & Purpose
-The Mediaserver (aka. 'attachment server')  handles mediafiles and their metadata and  tags.<p>
-The Mediaserver is a DINA module.<p>
+The Mediaserver (aka. 'attachment server')  handles mediafiles and their metadata.<p>
 Guiding principle is 'ease of installation' and 'ease of management'.
 
 1. The Mediaserver can be used as a standalone server (no coupling to an external system).
