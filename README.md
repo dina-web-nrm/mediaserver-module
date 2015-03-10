@@ -2,11 +2,6 @@
 Mediaserver core module
 
 ![alt mediaserver in fokus](docs/Mediaserver-module(1-2).png)
-#About DINA
-“ The DINA system is comprised of several parts, the most important one being the Specify database and its client software. Various different types of media (including documents) are proposed to be handled by the DINA system and there is a need for a simple, yet flexible storage system which can be accessed by the various parts of the DINA system “ 
-- from the draft document 'DINA attachment-server: A simple Approach'
-
-Every DINA-module is self-contained and is therefore deployable in an application server.
 
 #Background & Purpose
 The Mediaserver (aka. 'attachment server')  handles mediafiles and their metadata and  tags.<p>
