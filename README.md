@@ -90,12 +90,13 @@ see the 'turn-key vagrant'-project at [dw-media](https://github.com/DINA-Web/dw-
 
 If not using the vagrant-project, the basics steps are the following.
 
-1. download and build the source code, maven
-2. install and populate the chosen database-engine
-3. set up the Application server ( ex. Wildfly 8.x )
-set up a datasource/datapool/JNDI-handle
-4. deploy the service
-5. set up the filesystem-path for the mediafiles
+1. git clone
+2. install and populate the chosen database-engine, liquibase-script
+3. install the Application server ( ex. Wildfly 8.x )
+set up a datasource/datapool/JNDI-handle ( JNDI: java:/MediaDS)
+4. set up the filesystem-path for the mediafiles
+5. cd '/mediaserver-module' ( root pom ) :<p>
+6. prompt><b> mvn clean package wildfly:deploy</b>
 
 ##How to connect to an external system
 A link-table in the database that maps the ID from the external-system to one or many media-files.
@@ -104,15 +105,10 @@ A link-table in the database that maps the ID from the external-system to one or
 See the RESTful-API documenation ... found here .....
 
 1. @post mediafile
-~
 2. @get mediafile
-~
-3. @get derivate of an imagefile
-~
+3. @get derivate of an image-file
 4. @update
-~
 5. @delete
-~
 
 ##How to add supported licenses
 Licences will be stored in a licence-table. <p>
