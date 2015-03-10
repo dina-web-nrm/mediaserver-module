@@ -1,24 +1,28 @@
 package se.nrm.bio.mediaserver.rs;
 
-import java.io.FileInputStream;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.core.Response;
-
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.ejb.EJB;
-
 import javax.imageio.ImageIO;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 import net.coobird.thumbnailator.Thumbnails;
 import org.apache.log4j.Logger;
 import org.apache.tika.Tika;
+import org.jboss.resteasy.specimpl.ResponseBuilderImpl;
+import se.nrm.bio.mediaserver.business.MediaserviceBean;
 import se.nrm.bio.mediaserver.business.StartupBean;
+import se.nrm.bio.mediaserver.domain.Media;
 import se.nrm.mediaserver.resteasy.util.PathHelper;
 
 /**
@@ -26,10 +30,13 @@ import se.nrm.mediaserver.resteasy.util.PathHelper;
  * @author ingimar
  */
 @Path("/")
-@Produces({"image/jpeg", "image/png"})
-public class MediaResourceFetchBinary {
 
-    private final static Logger logger = Logger.getLogger(MediaResourceFetchBinary.class);
+public class NewMediaResource {
+
+    private final static Logger logger = Logger.getLogger(MediaResource.class);
+
+    @EJB
+    private MediaserviceBean service;
 
     @EJB
     private StartupBean envBean;
@@ -37,8 +44,23 @@ public class MediaResourceFetchBinary {
     private ConcurrentHashMap envMap = null;
 
     @GET
-    @Path("/stream/{uuid}")
-    public Response getMedia(@PathParam("uuid") String uuid) {
+    @Path("/{uuid}")
+//    @Produces({MediaType.APPLICATION_JSON,"image/*"})
+    public Response getMetadata(@PathParam("uuid") String mediaUUID, @QueryParam("content") String content, @QueryParam("format") String format) {
+        if (content != null && content.equals("metadata")) {
+
+            Media media = (Media) service.get(mediaUUID);
+            return Response.status(200).entity(media).build();
+        }
+        // treated same as for now
+        if (format != null && (format.equals("image/jpeg") || format.equals("image/png")) ) {
+
+            return getMedia(mediaUUID, format);
+        }
+        return Response.status(Response.Status.NOT_FOUND).entity("Entity not found for UUID: " + mediaUUID).build();
+    }
+
+    public Response getMedia(@PathParam("uuid") String uuid, @QueryParam("format") String format) {
         String filename = getDynamicPath(uuid, getBasePath());
 
         File file = new File(filename);
@@ -47,9 +69,9 @@ public class MediaResourceFetchBinary {
     }
 
     @GET
-    @Path("/stream/image/{uuid}/{height}")
+    @Path("/image/{uuid}")
     @Produces({"image/jpeg", "image/png"})
-    public byte[] getImageByDimension(@PathParam("uuid") String uuid, @PathParam("height") String height) {
+    public byte[] getImageByDimension(@PathParam("uuid") String uuid, @QueryParam("format") String format, @QueryParam("height") int height) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream(2048);
 
         try {
@@ -78,31 +100,18 @@ public class MediaResourceFetchBinary {
         }
     }
 
-    /**
-     *
-     * @param info
-     * @param uuid
-     * @return
-     * @throws IOException
-     */
-    private BufferedImage getTransformed(String uuid, String inHeight) throws IOException {
-        int height = 150;
-        if (inHeight != null) {
-            height = Integer.parseInt(inHeight);
-            if (height < 100) {
-                height = 150;
-            }
-        }
+    private BufferedImage getTransformed(String uuid, int inHeight) throws IOException {
 
         String filename = getDynamicPath(uuid, getBasePath());
 
         File fileHandle = new File(filename);
         BufferedImage originalImage = ImageIO.read(fileHandle);
-         int maxHeight = originalImage.getHeight();
-        if (height > maxHeight || height <= 0) {
-            height = maxHeight;
+        int maxHeight = originalImage.getHeight();
+        if (inHeight > maxHeight || inHeight <= 0) {
+            inHeight = maxHeight;
         }
-        BufferedImage image = Thumbnails.of(originalImage).height(height).asBufferedImage();
+        
+        BufferedImage image = Thumbnails.of(originalImage).height(inHeight).asBufferedImage();
 
         return image;
 
