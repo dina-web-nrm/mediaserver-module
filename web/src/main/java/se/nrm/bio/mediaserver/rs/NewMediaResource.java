@@ -30,7 +30,6 @@ import se.nrm.mediaserver.resteasy.util.PathHelper;
  * @author ingimar
  */
 @Path("/")
-
 public class NewMediaResource {
 
     private final static Logger logger = Logger.getLogger(MediaResource.class);

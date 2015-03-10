@@ -102,6 +102,8 @@ public class MediaResourceForm {
             logger.info(msg);
             return Response.status(STATUS_INTERNAL_SERVER_ERROR).entity(msg).build();
         }
+        logger.info("writing to file "+uploadedFileLocation);
+        System.out.println("writing to file "+uploadedFileLocation);
         writeToFile(form, uploadedFileLocation);
 
         Tika tika = new Tika();
