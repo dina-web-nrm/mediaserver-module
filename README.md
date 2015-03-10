@@ -103,9 +103,16 @@ A link-table in the database that maps the ID from the external-system to one or
 ## RESTful-API
 See the RESTful-API documenation ... found here .....
 
-### post mediafile
-### get mediafile
-### get derivate of an imagefile
+1. @post mediafile
+~
+2. @get mediafile
+~
+3. @get derivate of an imagefile
+~
+4. @update
+~
+5. @delete
+~
 
 ##How to add supported licenses
 Licences will be stored in a licence-table. <p>
