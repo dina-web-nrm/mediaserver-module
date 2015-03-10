@@ -10,7 +10,8 @@ Guiding principle is 'ease of installation' and 'ease of management'.
 1. The Mediaserver can be used as a standalone server (no coupling to an external system).
 2. The Mediaserver can be used as an integrated part of your system, coupled.
 
-The Mediaservers has the basic CRUD responsibilities: <p>
+The Mediaservers has the basic CRUD responsibilities:
+
 1. Storing :
 Storing binaries to the filesystem and Storing the metadata to a database.
 2. Retrieving:
