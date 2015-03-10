@@ -128,3 +128,9 @@ For instance the below ( key/value ) is set in the database.
 2. path_to_files = '/opt/data/mediaserver/newmedia'
 
 ![alt Admin-table](docs/admin-table.png)
+
+#Demo
+
+## Mediaserver Standalone 
+
+## Mediaserver coupled to external system 
