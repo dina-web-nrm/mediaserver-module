@@ -85,7 +85,8 @@ Generics tags are supported and saved as a text-string in the database. <p>
 ##How to install
 see the 'turn-key vagrant'-project at [dw-media](https://github.com/DINA-Web/dw-media) 
 
-If not using the vagrant-project, the basics steps are the following
+If not using the vagrant-project, the basics steps are the following.
+
 1. download and build the source code, maven
 2. install and populate the chosen database-engine
 3. set up the Application server ( ex. Wildfly 8.x )
@@ -104,8 +105,8 @@ This gives the administrator full control of what licenses are permitted in the 
 
 The database table ADMIN_CONFIG
 A table ( key/value) in the schema is used for managing settables :
-For instance the below ( key/value ) is set in the database.
 
+For instance the below ( key/value ) is set in the database.
 1. is_exif = [true||false]
 2. path_to_files = '/opt/data/mediaserver/newmedia'
 
