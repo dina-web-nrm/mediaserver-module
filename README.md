@@ -55,7 +55,7 @@ Terminology, there is distinguish between metadata and tags.<p>
 1. 'metadata' is regarded as immuatable, metadata about the file.
 2. 'tag(s)' is regarded as mutable, metadata about the content.
 
-#### metadata.
+#### 'metadata':
 
 1. original filename
 2. mime type
@@ -69,7 +69,7 @@ To store Exif-metadata for Mediafiles of type images.<p>
 - Exif-metadata is stored in a table of its own.<p>
 - configurable parameter, set flag to 'true' or 'false' in database.<p>
 
-#### tag(s)
+#### 'tag(s)':
 The Mediaserver sets no constraint on the keys that are used.  <p>
 This gives an external module using the Mediaserver freedom to define its own keys and constrain others keys.
 
@@ -83,8 +83,9 @@ Generics tags are supported and saved as a text-string in the database. <p>
 #User Guide
 
 ##How to install
-see the 'turn-key'-project at [dw-media](https://github.com/DINA-Web/dw-media) 
+see the 'turn-key vagrant'-project at [dw-media](https://github.com/DINA-Web/dw-media) 
 
+If not using the vagrant-project, the basics steps are the following
 1. download and build the source code, maven
 2. install and populate the chosen database-engine
 3. set up the Application server ( ex. Wildfly 8.x )
