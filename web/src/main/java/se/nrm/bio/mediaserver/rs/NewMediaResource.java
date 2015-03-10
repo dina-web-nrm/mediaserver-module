@@ -45,16 +45,18 @@ public class NewMediaResource {
 
     @GET
     @Path("/{uuid}")
-//    @Produces({MediaType.APPLICATION_JSON,"image/*"})
+    @Produces({MediaType.APPLICATION_JSON, "image/jpeg", "image/png"})
     public Response getMetadata(@PathParam("uuid") String mediaUUID, @QueryParam("content") String content, @QueryParam("format") String format) {
+        logger.info("uuid " + mediaUUID);
         if (content != null && content.equals("metadata")) {
-
+            logger.info("fetching metadata ");
             Media media = (Media) service.get(mediaUUID);
             return Response.status(200).entity(media).build();
         }
-        // treated same as for now
-        if (format != null && (format.equals("image/jpeg") || format.equals("image/png")) ) {
 
+        // treated same as for now
+        if (format != null && (format.equals("image/jpeg") || format.equals("image/png"))) {
+            logger.info("fetching mediafile with format " + format);
             return getMedia(mediaUUID, format);
         }
         return Response.status(Response.Status.NOT_FOUND).entity("Entity not found for UUID: " + mediaUUID).build();
@@ -62,8 +64,12 @@ public class NewMediaResource {
 
     public Response getMedia(@PathParam("uuid") String uuid, @QueryParam("format") String format) {
         String filename = getDynamicPath(uuid, getBasePath());
-
+        logger.info("with filename  " + filename);
         File file = new File(filename);
+        boolean exists = file.exists();
+        boolean canRead = file.canRead();
+        logger.info("full filename exist [true || false ] == " + exists);
+        logger.info("filename readable or not [true || false ] ==  " + exists);
         Response response = returnFile(file);
         return response;
     }
@@ -110,7 +116,7 @@ public class NewMediaResource {
         if (inHeight > maxHeight || inHeight <= 0) {
             inHeight = maxHeight;
         }
-        
+
         BufferedImage image = Thumbnails.of(originalImage).height(inHeight).asBufferedImage();
 
         return image;

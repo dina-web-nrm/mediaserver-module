@@ -30,7 +30,7 @@ public class FileSystemWriter implements Writeable {
                 fos.flush();
             }
         } catch (IOException ex) {
-            logger.info(ex);
+            logger.info("exception while writing to fs " +ex);
         }
     }
 
