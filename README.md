@@ -1,7 +1,10 @@
 # dw-media
-Integration project for media module
-
+Integration project for the mediaserver module
 Here we use `Vagrant` ( version 1.7.2 ) to install and setup the mediaserver module in a way compatile with the DINA-Web system
+
+the file 'setup-mediaserver.sh' holds database-name + filepath to mediafiles.
+the default filepath is set in the db.
+the default filepath is '/home/dina/artifact/media-files'
 
 
 ## Usage instructions
@@ -18,8 +21,9 @@ cd ~/repos/dina-web
 git clone https://github.com/DINA-Web/dw-media.git
 
 # remember to not use the default password
+
 # change it to using the approach below
-cd server-vm
+cd 'project'
 echo "passw0rd12" > .bitnami-pass
 
 # build the server and connect to it
@@ -31,9 +35,4 @@ vagrant ssh
 
 This file outlines all configuration steps starting with a base linux OS. It calls a bootstrap script which installs all required OS dependencies along with all other required software and makes settings.
 
-## Building the server from scratch
-
-We make use of open source software server software stacks from bitnami to get required software such as web server (apache), application server (django), databases (mysql, psql) in place.
-
-Then we configure the system so it is becomes turn-key ready. And load data.
 
