@@ -9,18 +9,20 @@ http://localhost:8080/MediaServerResteasy/media/meta/<uuid>
 http://localhost:8080/MediaServerResteasy/media/meta/863ec044-17cf-4c87-81cc-783ab13230ae
 
 NEW:
+http://localhost:8080/MediaServerResteasy/media/<uuid>?content=metadata
 http://localhost:8080/MediaServerResteasy/media/863ec044-17cf-4c87-81cc-783ab13230ae?content=metadata
-or
-http://localhost:8080/MediaServerResteasy/media/863ec044-17cf-4c87-81cc-783ab13230ae where 'content=metadata' is the default
 
 IMAGE
+<mediaUrl>
+http://localhost:8080/MediaServerResteasy/media/<uuid>?format=image/jpeg
+</mediaUrl>
 <mediaUrl>
 http://localhost:8080/MediaServerResteasy/media/863ec044-17cf-4c87-81cc-783ab13230ae?format=image/jpeg
 </mediaUrl>
 
 Derivat: Only Height ( keeping ratio)
+http://localhost:8080/MediaServerResteasy/media/image/<uuid>?format=raw&height=150
 http://localhost:8080/MediaServerResteasy/media/image/863ec044-17cf-4c87-81cc-783ab13230ae?format=raw&height=150
-http://localhost:8080/MediaServerResteasy/media/image/863ec044-17cf-4c87-81cc-783ab13230ae?format=raw&height=100
 
 
 
