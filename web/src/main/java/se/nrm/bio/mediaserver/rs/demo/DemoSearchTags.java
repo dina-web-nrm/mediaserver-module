@@ -22,10 +22,11 @@ import se.nrm.bio.mediaserver.business.StartupBean;
 @WebServlet(urlPatterns = {"/DemoSearchTags"})
 public class DemoSearchTags extends HttpServlet {
 
-     @EJB
+    @EJB
     private StartupBean envBean;
 
     ConcurrentHashMap envMap = null;
+
     /**
      * @Path("/search/{tags}")
      *
@@ -42,8 +43,8 @@ public class DemoSearchTags extends HttpServlet {
 
         envMap = envBean.getEnvironment();
         String basePath = (String) envMap.get("base_url");
-        
-        String url = basePath.concat("rest/search/").concat(tags);
+
+        String url = basePath.concat("media/search/").concat(tags);
         response.sendRedirect(url);
 
     }

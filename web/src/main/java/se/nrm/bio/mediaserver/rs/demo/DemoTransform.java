@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package se.nrm.bio.mediaserver.rs.demo;
 
 import java.io.IOException;
@@ -42,11 +37,12 @@ public class DemoTransform extends HttpServlet {
 
         String uuid = (String) request.getParameter("uuid");
         String height = (String) request.getParameter("height");
+        
         envMap = envBean.getEnvironment();
         String basePath = (String) envMap.get("base_url");
         String rel_stream = (String) envMap.get("relative_stream_url");
 
-        String url = basePath.concat(rel_stream).concat("image/").concat(uuid).concat("/").concat(height);
+        String url = basePath.concat(rel_stream).concat("/image/").concat(uuid).concat("/").concat(height);
         response.sendRedirect(url);
 
     }
