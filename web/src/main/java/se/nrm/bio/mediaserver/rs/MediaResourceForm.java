@@ -207,6 +207,14 @@ public class MediaResourceForm {
         return build;
     }
 
+    /**
+     * constraints : not able to extract from gif ?
+     * @param location
+     * @param exifJSON
+     * @return
+     * @throws ImageProcessingException
+     * @throws IOException 
+     */
     private String extractExif(String location, String exifJSON) throws ImageProcessingException, IOException {
         Metadata metadata = ImageMetadataReader.readMetadata(new File(location));
         JSONObject jsonObject = packageEXIF_IN_JSON(metadata, true);
