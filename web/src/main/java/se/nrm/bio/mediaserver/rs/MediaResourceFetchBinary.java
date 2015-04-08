@@ -98,7 +98,7 @@ public class MediaResourceFetchBinary {
 
         File fileHandle = new File(filename);
         BufferedImage originalImage = ImageIO.read(fileHandle);
-         int maxHeight = originalImage.getHeight();
+        int maxHeight = originalImage.getHeight();
         if (height > maxHeight || height <= 0) {
             height = maxHeight;
         }

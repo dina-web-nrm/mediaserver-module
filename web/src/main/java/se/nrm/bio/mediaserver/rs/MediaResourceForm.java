@@ -102,8 +102,7 @@ public class MediaResourceForm {
             logger.info(msg);
             return Response.status(STATUS_INTERNAL_SERVER_ERROR).entity(msg).build();
         }
-        logger.info("writing to file "+uploadedFileLocation);
-        System.out.println("writing to file "+uploadedFileLocation);
+        logger.info("writing to file " + uploadedFileLocation);
         writeToFile(form, uploadedFileLocation);
 
         Tika tika = new Tika();
@@ -209,11 +208,12 @@ public class MediaResourceForm {
 
     /**
      * constraints : not able to extract from gif ?
+     *
      * @param location
      * @param exifJSON
      * @return
      * @throws ImageProcessingException
-     * @throws IOException 
+     * @throws IOException
      */
     private String extractExif(String location, String exifJSON) throws ImageProcessingException, IOException {
         Metadata metadata = ImageMetadataReader.readMetadata(new File(location));
@@ -494,13 +494,13 @@ public class MediaResourceForm {
      */
     @POST
     @Path("/upload-file/base64")
-    @Consumes("application/json")
+    @Consumes(MediaType.APPLICATION_JSON)
 //    @Interceptors(ContentTypeSetterPreProcessorInterceptor.class)
-    public Response createNewMediaFile_JSON(FileUploadJSON form) throws IOException {
-
+    public Response createNewMediaFile_JSON(FileUploadJSON form) {
         String mimeType = "unknown", hashChecksum = "unknown";
 
-        final byte[] fileData = DatatypeConverter.parseBase64Binary(form.getFileDataBase64());
+        String fileDataBase64 = form.getFileDataBase64();
+        final byte[] fileData = DatatypeConverter.parseBase64Binary(fileDataBase64);
         if (null == fileData || fileData.length == 0) {
             String msg = "attribute 'fileData' is null or empty \n";
             logger.info(msg);
@@ -521,13 +521,16 @@ public class MediaResourceForm {
             case "image/png":
             case "image/jpeg":
             case "image/gif": {
-                boolean exportImage = form.getExport();
+//                boolean exportImage = form.getExport();
+                boolean exportImage = false;
                 String exifJSON = "N/A";
                 String isExif = (String) envMap.get("is_exif");
                 if (Boolean.parseBoolean(isExif)) {
                     try {
                         exifJSON = extractExif(uploadedFileLocation, exifJSON);
                     } catch (ImageProcessingException ex) {
+                        logger.info(ex);
+                    } catch (IOException ex) {
                         logger.info(ex);
                     }
                 }
@@ -572,7 +575,7 @@ public class MediaResourceForm {
         media.setMimetype(mimeType);
         media.setVisibility(form.getAccess());
         media.setHash(hashChecksum);
-        media.setMediaURL(pathToMedia.concat(fileUUID));
+        media.setMediaURL(pathToMedia.concat("/").concat(fileUUID));
 
         if (form.getTags() != null) {
             String tags = form.getTags();

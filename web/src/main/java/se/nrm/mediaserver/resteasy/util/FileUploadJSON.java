@@ -1,11 +1,16 @@
 package se.nrm.mediaserver.resteasy.util;
 
+import java.io.Serializable;
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
- * For the media-migration from naturforskaren.se to the mediaserver
- * 
+ *
  * @author ingimar
  */
-public class FileUploadJSON {
+@XmlRootElement
+public class FileUploadJSON implements Serializable {
+
+    private static final long serialVersionUID = 5008278244961718845L;
 
     private String mediaUUID;
 
@@ -27,8 +32,6 @@ public class FileUploadJSON {
 
     private String alt;
 
-    private Boolean export;
-
     private String startTime;
 
     private String endTime;
@@ -36,6 +39,12 @@ public class FileUploadJSON {
     private String comment;
 
     private String displayOrder;
+
+    private Boolean export = false;
+
+    public FileUploadJSON() {
+    }
+    
 
     public String getMediaUUID() {
         return mediaUUID;
@@ -125,14 +134,6 @@ public class FileUploadJSON {
         this.alt = alt;
     }
 
-    public Boolean getExport() {
-        return export;
-    }
-
-    public void setExport(Boolean export) {
-        this.export = export;
-    }
-
     public String getStartTime() {
         return startTime;
     }
@@ -165,4 +166,16 @@ public class FileUploadJSON {
         this.displayOrder = displayOrder;
     }
 
+    public Boolean getExport() {
+        return export;
+    }
+
+    public void setExport(Boolean export) {
+        this.export = export;
+    }
+
+    @Override
+    public String toString() {
+        return this.mediaUUID;
+    }
 }

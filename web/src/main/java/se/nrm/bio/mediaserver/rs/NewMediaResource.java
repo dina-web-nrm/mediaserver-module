@@ -5,16 +5,23 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.ejb.EJB;
 import javax.imageio.ImageIO;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 import net.coobird.thumbnailator.Thumbnails;
 import org.apache.log4j.Logger;
 import org.apache.tika.Tika;
@@ -27,7 +34,7 @@ import se.nrm.mediaserver.resteasy.util.PathHelper;
  *
  * @author ingimar
  */
-@Path("/")
+@Path("")
 public class NewMediaResource {
 
     private final static Logger logger = Logger.getLogger(MediaResource.class);
@@ -40,6 +47,16 @@ public class NewMediaResource {
 
     private ConcurrentHashMap envMap = null;
 
+    /**
+     * curl http://localhost:8080/MediaServerResteasy/media/863ec044-17cf-4c87-81cc-783ab13230ae?content=metadata
+     * http://localhost:8080/MediaServerResteasy/media/863ec044-17cf-4c87-81cc-783ab13230ae?format=image/jpeg
+     * 
+     * @param mediaUUID
+     * @param content
+     * @param format
+     * 
+     * @return binary or metadata.
+     */
     @GET
     @Path("/{uuid}")
     @Produces({MediaType.APPLICATION_JSON, "image/jpeg", "image/png"})
@@ -59,18 +76,26 @@ public class NewMediaResource {
         return Response.status(Response.Status.NOT_FOUND).entity("Entity not found for UUID: " + mediaUUID).build();
     }
 
-    public Response getMedia(@PathParam("uuid") String uuid, @QueryParam("format") String format) {
+    private Response getMedia(@PathParam("uuid") String uuid, @QueryParam("format") String format) {
         String filename = getDynamicPath(uuid, getBasePath());
         logger.info("with filename  " + filename);
         File file = new File(filename);
         boolean exists = file.exists();
         boolean canRead = file.canRead();
         logger.info("full filename exist [true || false ] == " + exists);
-        logger.info("filename readable or not [true || false ] ==  " + exists);
+        logger.info("filename readable or not [true || false ] ==  " + canRead);
         Response response = returnFile(file);
         return response;
     }
 
+   /**
+    * http://localhost:8080/MediaServerResteasy/media/image/863ec044-17cf-4c87-81cc-783ab13230ae?format=image/jpeg&height=150
+    * 
+    * @param uuid
+    * @param format, format=image/jpeg
+    * @param height
+    * @return 
+    */
     @GET
     @Path("/image/{uuid}")
     @Produces({"image/jpeg", "image/png"})
@@ -85,6 +110,100 @@ public class NewMediaResource {
         }
 
         return outputStream.toByteArray();
+    }
+
+    
+//    @GET
+//    @Path("/v1/search/{tags}")
+//    @Produces({MediaType.APPLICATION_JSON})
+//    public List<Media> getMediaMetadataByLangAndTags(@PathParam("tags") String tags) {
+//        String replaceAll = tags.replaceAll("=", ":");
+//        List<Media> mediaList = service.getMetadataByTags_MEDIA(replaceAll);
+//        
+//        return mediaList;
+//    }
+    
+    /**
+     * http://localhost:8080/MediaServerResteasy/media/v1/search?view=flying&date=20140724
+     * http://localhost:8080/MediaServerResteasy/media/f4bbe574-68eb-4423-b9e4-4384c6a3353c
+
+     * 
+     * @param uriInfo
+     * @return
+     */
+    @GET
+    @Path("/v1/search")
+    @Produces({MediaType.APPLICATION_JSON})
+    public  List<Media> showParameters(@Context UriInfo uriInfo) {
+
+        MultivaluedMap<String, String> param = uriInfo.getQueryParameters();
+
+        StringBuffer sb = buildKeyValueString(param);
+         List<Media> mediaList = service.getMetadataByTags_MEDIA(sb.toString());
+         
+        return mediaList;
+    }
+
+    private StringBuffer buildKeyValueString(MultivaluedMap<String, String> param) {
+        StringBuffer sb = new StringBuffer();
+        String delimiter =":";
+        String splitter ="&";
+        if (param != null) {
+            Iterator it = param.keySet().iterator();
+            while (it.hasNext()) {
+                String key = (String) it.next();
+                String value = param.getFirst(key);
+                sb.append(key).append(delimiter).append(value).append(splitter);
+            }
+            sb.deleteCharAt(sb.length()-1);
+        }
+        return sb;
+    }
+
+    /**
+     * curl -i -H "Accept: application/json" -X DELETE   http://localhost:8080/MediaServerResteasy/media/f4bbe574-68eb-4423-b9e4-4384c6a3353c
+     * @param uuid
+     * @return 
+     */
+    @DELETE
+    @Path("/image/{uuid}")
+    @Consumes(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteAll(@PathParam("uuid") String uuid) {
+        boolean successfulDeletion = false;
+        try {
+            successfulDeletion = this.deleteMediaMetadata(uuid);
+        } catch (Exception ex) {
+            logger.info("unsuccessful deletion of [".concat(uuid).concat("]"));
+            logger.debug(ex);
+        }
+
+        if (successfulDeletion) {
+            successfulDeletion = this.deleteFileFromFS(uuid);
+        }
+
+        if (successfulDeletion) {
+            return Response.status(204).entity("successful delete: " + uuid).build();
+        }
+        return Response.status(404).entity("unsuccessful delete: " + uuid).build();
+
+    }
+
+    private boolean deleteFileFromFS(@PathParam("mediaUUID") String mediaUUID) {
+        boolean isFileDeleted = false;
+        String fileName = this.getAbsolutePathToFile(mediaUUID);
+        File file = new File(fileName);
+        boolean exists = file.exists();
+        if (exists) {
+            isFileDeleted = file.delete();
+        }
+        return isFileDeleted;
+    }
+
+    private boolean deleteMediaMetadata(@PathParam("mediaUUID") String mediaUUID) {
+        boolean deleted;
+        deleted = service.deleteMediaMetadata(mediaUUID);
+        return deleted;
     }
 
     private static Response returnFile(File file) {
@@ -134,5 +253,11 @@ public class NewMediaResource {
         envMap = envBean.getEnvironment();
         String basePath = (String) envMap.get("path_to_files");
         return basePath;
+    }
+
+    private String getAbsolutePathToFile(String uuid) {
+        envMap = envBean.getEnvironment();
+        String basePath = (String) envMap.get("path_to_files");
+        return PathHelper.getEmptyOrAbsolutePathToFile(uuid, basePath);
     }
 }
