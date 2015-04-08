@@ -39,16 +39,16 @@ public class MediaText implements Serializable {
     private Integer uuid;
 
     @Column(name = "LEGEND")
-    private String legend;
+    private String legend="";
 
     @Column(name = "LANG")
-    private String lang;
+    private String lang="";
 
     /**
      * Naturforskaren-specific
      */
     @Column(name = "COMMENT")
-    private String comment;
+    private String comment="";
 
     @JoinColumn(name = "MEDIA_UUID", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)

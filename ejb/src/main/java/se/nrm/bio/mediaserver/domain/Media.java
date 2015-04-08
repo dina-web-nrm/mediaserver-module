@@ -289,24 +289,23 @@ public abstract class Media implements Serializable {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder();
-        sb.append('{');
-//        sb.append("Media:");
-        sb.append("\"uuid\":\"").append(uuid).append("\"");
-        sb.append(",\"owner\":\"").append(owner).append("\"");
-        sb.append(",\"visibility\":\"").append(visibility).append("\"");
-        sb.append(",\"filename\":\"").append(filename).append("\"");
-        sb.append(",\"mimetype\":\"").append(mimetype).append("\"");
-        sb.append(",\"taggar\":\"").append(taggar).append("\"");
-        // for the sake of testing
-        if (tags != null) {
-            sb.append(",\"tag size\":\"").append(tags.size()).append("\"");
-        }
-        sb.append('}');
-        return sb.toString();
+        return this.uuid;
     }
-
-//    public String getTest() {
-//        return "testing";
+//    @Override
+//    public String toString() {
+//        final StringBuilder sb = new StringBuilder();
+//        sb.append('{');
+//        sb.append("\"uuid\":\"").append(uuid).append("\"");
+//        sb.append(",\"owner\":\"").append(owner).append("\"");
+//        sb.append(",\"visibility\":\"").append(visibility).append("\"");
+//        sb.append(",\"filename\":\"").append(filename).append("\"");
+//        sb.append(",\"mimetype\":\"").append(mimetype).append("\"");
+//        sb.append(",\"taggar\":\"").append(taggar).append("\"");
+//        // for the sake of testing
+//        if (tags != null) {
+//            sb.append(",\"tag size\":\"").append(tags.size()).append("\"");
+//        }
+//        sb.append('}');
+//        return sb.toString();
 //    }
 }
