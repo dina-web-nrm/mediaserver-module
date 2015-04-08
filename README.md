@@ -4,44 +4,42 @@ Mediaserver core module
 ![alt mediaserver in fokus](docs/Mediaserver-module(1-2).png)
 
 #Background & Purpose
-The Mediaserver (aka. 'attachment server')  handles mediafiles and their metadata.<p>
+The Mediaserver (aka. 'attachment server')  handles media files and their metadata.<p>
 The functionality is implemented using the RESTful-architecture style <p>
 
 1. The Mediaserver can be used as a standalone server (no coupling to an external system).
-2. The Mediaserver can be used as an integrated part of your system, coupled.
+2. The Mediaserver can be used as an integrated part of the collections management system (coupled).
 
 The Mediaservers has the basic CRUD responsibilities:
 
-1. Storing :
-Storing binaries to the filesystem and Storing the metadata to a database.
-2. Retrieving:
-Retrieving the binaries and retrieving the metadata for the binaries.
-3. update.
-4. delete.
+1. Storing : Storing binaries to the filesystem and Storing the metadata to a database.
+2. Retrieving: Retrieving the binaries and retrieving the metadata for the binaries.
+3. Update: Updating the binaries and updating the metadata for the binaries.
+4. Delete: Deleting the binaries and updating the metadata for the binaries.
 
 ##Constraints
-1. Stores the binary-files to the local filessystem, the filesystem where the Mediaserver is installed.
+1. The Mediaserver stores the binary-files to the local file system, to the file system where the Mediaserver is installed.
 
 #Functional Requirements
 
 The Mediaserver should provide services for other systems.
 
-1. To store mediafiles (Create)
-2. To edit mediafiles (Update)
-3. To search on metadata, fetch mediafile(s) (Retrieve) 
-4. To delete mediafiles (Delete)
+1. To store media files (Create)
+2. To edit media files (Update)
+3. To search on metadata, fetch mediafiles (Retrieve) 
+4. To delete media files (Delete)
 
-##Storing the mediafiles 
-The mediafiles are stored in the filesystem with the depth of 3 layers.
+##Storing the media files 
+The mediafiles are stored in the filesystem, which has a depth of 3 levels.
 Only one mediafile is stored, no derivates for images are created at the same time. <p>
 All medifiles are stored using UUID as names. <p>
 UUID, " Universally unique identifier, 128-bit number." ( http://tools.ietf.org/html/rfc4122) <p>
 
 ### directory-structure
-The structure is that there are directories ranging from '0' to 'F' (hexadecimal) with the depth of 3 layers, this gives 4096 directories ( 16^3 ).
-Ex. Say that we have 10 000 000 ( ten millions ) mediafiles, with an even spread this would give 2441 mediafiles per directory. 
+The directories range from '0' to 'F' (hexadecimal) with a depth of 3 layers, which results in 4096 directories ( 16^3 ). 
+To illustrate, 10 000 000 (ten million) mediafiles would be, with an even spread, would be divided into 2441 mediafiles per directory. 
 
-All mediafiles are processed in the same way - they are streamed to the filesystem and streamed back to their client.<p>
+All media files are processed in the same way - they are streamed to the filesystem and streamed back to their client.<p>
 The mediafile will hold their own 'media-type'/'mime-type' ( stored in the database )
 
 - The principle is the following : 
@@ -50,24 +48,23 @@ The mediafile will hold their own 'media-type'/'mime-type' ( stored in the datab
 - - directory = **/opt/data/mediaserver/newmedia/a/b/3**
 - - directory and file = /opt/data/mediaserver/newmedia/a/b/3/**ab30899c-58a0-4305-85a6-bbfa14f89b92**
 
-### Metadata
-Terminology, there is distinguish between metadata and tags.<p>
-1. 'metadata' is regarded as immuatable, metadata about the file.
-2. 'tag(s)' is regarded as mutable, metadata about the content.
+### Metadata Terminology
+The terms “metadata" and “tags” are distinguished in the following way: <p>
+1. 'metadata' are immuatable, data about the file.
+2. 'tags’ are mutable, data about the file content.
 
 #### 'metadata':
 
 1. original filename
 2. mime type
 3. owner
-4. visibility
-- i.e  'private' or 'public'
+4. visibility (i.e 'private' or ‘public')
 5. md5hash
-- Saving the md5hash for every mediafile (facilitates finding duplicates)
-6. Exif
-To store Exif-metadata for Mediafiles of type images.<p>
+- Saving the md5hash for every media file facilitates finding duplicates.
+6. Exif-metadata
+Exif-metadata for media files where type is an image are stored in a separate table.<p>
 - Exif-metadata is stored in a table of its own.<p>
-- configurable parameter, set flag to 'true' or 'false' in database.<p>
+- there is a configurable Boolean parameter in the database, this parameter is a flag set to 'true' or 'false'.<p>
 
 #### 'tag(s)':
 The Mediaserver sets no constraint on the keys that are used.  <p>
@@ -81,28 +78,27 @@ Generics tags are supported and saved as a text-string in the database. <p>
 <b>is saved as -> 'country:sweden&value=dorsal'</b> <p>
 
 #User Guide
-Guiding principle is 'ease of installation' and 'ease of management'.
-1. Database agnostic
-2. Application Server agnostic 
+The Mediaserver is database and application server agnostic. <p>
+The guiding principle is 'ease of installation and management'.
 
 ##How to install
 see the 'turn-key vagrant'-project at [dw-media](https://github.com/DINA-Web/dw-media) 
 
-If not using the vagrant-project, the basics steps are the following.
+If not using the vagrant-project, then the basic steps are as follows:
 
 1. git clone
-2. install and populate the chosen database-engine, liquibase-script
-3. install the Application server ( ex. Wildfly 8.x )
+2. install and populate the chosen database-engine, use the  liquibase-script
+3. install the Application server, [Wildfly 8.x](http://wildfly.org/downloads/)
 set up a datasource/datapool/JNDI-handle ( JNDI: java:/MediaDS)
-4. set up the filesystem-path for the mediafiles
+4. set up the filesystem-path for the media files
 5. cd '/mediaserver-module' ( root pom ) :<p>
 6. prompt><b> mvn clean package wildfly:deploy</b>
 
 ##How to connect to an external system
-A link-table in the database that maps the ID from the external-system to one or many media-files.
+A link-table in the database maps the ID from the external system to one or many media files.
 
 ## RESTful-API
-See the RESTful-API documenation ... found here .....
+See the RESTful-API documenation ... found here (@TODO)
 
 1. @post mediafile
 2. @get mediafile
@@ -111,7 +107,7 @@ See the RESTful-API documenation ... found here .....
 5. @delete
 
 ##How to add supported licenses
-Licences will be stored in a licence-table. <p>
+Licenses are stored in a separate license-table<p>
 This gives the administrator full control of what licenses are permitted in the system.<p>
 
 ##Maintenability , How to configure
