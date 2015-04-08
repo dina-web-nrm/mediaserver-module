@@ -66,7 +66,7 @@ Exif-metadata for media files where type is an image are stored in a separate ta
 - Exif-metadata is stored in a table of its own.<p>
 - there is a configurable Boolean parameter in the database, this parameter is a flag set to 'true' or 'false'.<p>
 
-#### 'tag(s)':
+#### 'tags':
 The Mediaserver sets no constraint on the keys that are used.  <p>
 This gives an external module using the Mediaserver freedom to define its own keys and constrain others keys.
 
