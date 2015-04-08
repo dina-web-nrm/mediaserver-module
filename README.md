@@ -78,7 +78,7 @@ Generics tags are supported and saved as a text-string in the database. <p>
 <b>is saved as -> 'country:sweden&value=dorsal'</b> <p>
 
 #User Guide
-The Mediaserver is database and application server agnostic. <p>
+The Mediaserver is database- and application server agnostic. <p>
 The guiding principle is 'ease of installation and management'.
 
 ##How to install
