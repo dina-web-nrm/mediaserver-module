@@ -84,11 +84,14 @@ public class NewMediaResourceForm {
         }
 
         String fileUUID = generateRandomUUID();
+        logger.info("fileUUID "+fileUUID);
         String uploadedFileLocation = getAbsolutePathToFile(fileUUID);
+        logger.info("uploadedFileLocation "+uploadedFileLocation);
         writeBase64ToFile(fileData, uploadedFileLocation);
 
         Tika tika = new Tika();
         mimeType = tika.detect(fileData);
+        logger.info("mimeType "+mimeType);
 
         Media media = null;
         switch (mimeType) {
