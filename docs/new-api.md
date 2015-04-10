@@ -18,7 +18,7 @@ http://localhost:8080/MediaServerResteasy/media/v1/search?view=sitting
 
 ## @Post base64-encoding 
 http://127.0.0.1:8080/MediaServerResteasy/media<p>
-key:value => "fileDataBase64":"/9j/4AAQSkZJ /9k=" ('/9j/4AAQSkZJ /9k=' , not a valid example)
+key:value => "fileDataBase64":"/9j/4AAQSkZJ /9k=" (where '/9j/4AAQSkZJ /9k=' is not a valid example of a file)<p>
 (1) 
 curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d  '{"owner":"ingimar","access":"public","licenseType":"CC BY","legend":"this is bob marley","fileName":"bob-marley20150407.jpg","fileDataBase64":"/9j/4AAQSkZJ /9k="}' http://127.0.0.1:8080/MediaServerResteasy/media <p>
 
@@ -27,10 +27,10 @@ curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POS
 
 ## @Put base64-encoding 
 http://127.0.0.1:8080/MediaServerResteasy/media<p>
-1. **must**: key:value => mediaUUI:<UUID>  . ex.  "mediaUUID":"cf170678-7fc1-42e5-b7c2-cadac44250e2"
-2. key:value => "fileDataBase64":"/9j/4AAQSkZJ /9k="  ('/9j/4AAQSkZJ /9k=' , not a valid example)
-
-curl -v -H "Accept: application/json" -H "Content-type: application/json" -X PUT -d '{"mediaUUID":"cf170678-7fc1-42e5-b7c2-cadac44250e2","owner":"abc","access":"abc","licenseType":"CC BY","legend":"Bobby","fileName":"bob-marley.jpg","fileDataBase64":"/9j/4AAQSkZJ /9k="}' http://127.0.0.1:8080/MediaServerResteasy/media
+1. **must**: key:value => mediaUUID:<UUID>  . ex.  "mediaUUID":"cf170678-7fc1-42e5-b7c2-cadac44250e2"
+2. key:value => "fileDataBase64":"/9j/4AAQSkZJ /9k="  (where '/9j/4AAQSkZJ /9k=' is not a valid example of a file)<p>
+This example: changing 'access' from 'public' to 'private'<p>
+curl -v -H "Accept: application/json" -H "Content-type: application/json" -X PUT -d '{"mediaUUID":"cf170678-7fc1-42e5-b7c2-cadac44250e2","access":"private"}' http://127.0.0.1:8080/MediaServerResteasy/media
 
 ## @Delete
 curl -i -H "Accept: application/json" -X DELETE   http://localhost:8080/MediaServerResteasy/media/image/f4bbe574-68eb-4423-b9e4-4384c6a3353c
