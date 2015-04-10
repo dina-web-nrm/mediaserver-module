@@ -29,8 +29,8 @@ curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POS
 http://127.0.0.1:8080/MediaServerResteasy/media<p>
 1. **must**: key:value => mediaUUID:<UUID>  . ex.  "mediaUUID":"cf170678-7fc1-42e5-b7c2-cadac44250e2"
 2. key:value => "fileDataBase64":"/9j/4AAQSkZJ /9k="  (where '/9j/4AAQSkZJ /9k=' is not a valid example of a file)<p>
-This example: changing 'access' from 'public' to 'private'<p>
-curl -v -H "Accept: application/json" -H "Content-type: application/json" -X PUT -d '{"mediaUUID":"cf170678-7fc1-42e5-b7c2-cadac44250e2","access":"private"}' http://127.0.0.1:8080/MediaServerResteasy/media
+*This example: changing 'access' from 'public' to 'private'*<p>
+curl -v -H "Accept: application/json" -H "Content-type: application/json" -X PUT -d  '{"mediaUUID":"863ec044-17cf-4c87-81cc-783ab13230ae","access":"public"}' http://127.0.0.1:8080/MediaServerResteasy/media
 
 ## @Delete
 **obs:** check the URI, not up to standard right now <p>

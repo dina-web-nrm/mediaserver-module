@@ -63,8 +63,10 @@ public class NewMediaResourceForm {
     }
 
     /**
-     * curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d @meta_and_image.json http://127.0.0.1:8080/MediaServerResteasy/media
-     * 
+     * curl -v -H "Accept: application/json" -H "Content-type: application/json"
+     * -X POST -d @meta_and_image.json
+     * http://127.0.0.1:8080/MediaServerResteasy/media
+     *
      * @param form with base64-encoding.
      * @return
      */
@@ -84,14 +86,14 @@ public class NewMediaResourceForm {
         }
 
         String fileUUID = generateRandomUUID();
-        logger.info("fileUUID "+fileUUID);
+        logger.info("fileUUID " + fileUUID);
         String uploadedFileLocation = getAbsolutePathToFile(fileUUID);
-        logger.info("uploadedFileLocation "+uploadedFileLocation);
+        logger.info("uploadedFileLocation " + uploadedFileLocation);
         writeBase64ToFile(fileData, uploadedFileLocation);
 
         Tika tika = new Tika();
         mimeType = tika.detect(fileData);
-        logger.info("mimeType "+mimeType);
+        logger.info("mimeType " + mimeType);
 
         Media media = null;
         switch (mimeType) {
@@ -140,15 +142,13 @@ public class NewMediaResourceForm {
 
         hashChecksum = CheckSumFactory.createMD5ChecksumFromBytestream(fileData);
 
-        
-
         media.setUuid(fileUUID);
         media.setOwner(form.getOwner());
         media.setFilename(form.getFileName());
         media.setMimetype(mimeType);
         media.setVisibility(form.getAccess());
         media.setHash(hashChecksum);
-        final String mediaURL = createMediaURL(fileUUID,mimeType);
+        final String mediaURL = createMediaURL(fileUUID, mimeType);
         media.setMediaURL(mediaURL);
 
         if (form.getTags() != null) {
@@ -201,29 +201,34 @@ public class NewMediaResourceForm {
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateMedia(FileUploadJSON form) {
         final int HTTP_STATUS_NOT_FOUND = 404;
-        
-        String mediaUUID = form.getMediaUUID(); 
+
+        String mediaUUID = form.getMediaUUID();
         if (null == mediaUUID) {
             return Response.status(HTTP_STATUS_NOT_FOUND).build();
         }
-        
+
         Media media = (Media) bean.get(mediaUUID);
         if (null == media) {
             return Response.status(HTTP_STATUS_NOT_FOUND).build();
         }
 
         String base64EncodedFile = form.getFileDataBase64();
-        final byte[] fileData = DatatypeConverter.parseBase64Binary(base64EncodedFile);
-        String uploadedFileLocation = getAbsolutePathToFile(mediaUUID);
-        writeBase64ToFile(fileData, uploadedFileLocation);
+        if (base64EncodedFile != null) {
+            final byte[] fileData = DatatypeConverter.parseBase64Binary(base64EncodedFile);
+            String uploadedFileLocation = getAbsolutePathToFile(mediaUUID);
+            writeBase64ToFile(fileData, uploadedFileLocation);
 
-        Tika tika = new Tika();
-        String mimeType = tika.detect(fileData);
-        media.setMimetype(mimeType);
-        
+            Tika tika = new Tika();
+            String mimeType = tika.detect(fileData);
+            media.setMimetype(mimeType);
+            final String mediaURL = createMediaURL(mediaUUID, mimeType);
+            media.setMediaURL(mediaURL);
+        }
+
         // fetch from form.
         String alt = form.getAlt(), access = form.getAccess(), fileName = form.getFileName();
         String legend = form.getLegend(), owner = form.getOwner(), tags = form.getTags();
+
         String comment = form.getComment();
         String licenceType = form.getLicenseType();
 
