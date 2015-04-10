@@ -13,7 +13,7 @@ http://localhost:8080/MediaServerResteasy/media/863ec044-17cf-4c87-81cc-783ab132
 ## @Get image : returns an image with height 150
 http://localhost:8080/MediaServerResteasy/media/image/863ec044-17cf-4c87-81cc-783ab13230ae?format=image/jpeg&height=150
 
-## @Get a media file filtered on  view=sitting
+## @Get a media file or a list of media files -filtered on  view=sitting
 http://localhost:8080/MediaServerResteasy/media/v1/search?view=sitting
 
 ## @Post base64-encoding 
