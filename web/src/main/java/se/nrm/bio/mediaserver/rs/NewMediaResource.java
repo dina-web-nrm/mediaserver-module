@@ -68,8 +68,8 @@ public class NewMediaResource {
             return Response.status(200).entity(media).build();
         }
 
-        // treated same as for now
-        if (format != null && (format.equals("image/jpeg") || format.equals("image/png"))) {
+     //   if (format != null && (format.equals("image/jpeg") || format.equals("image/png"))) {
+        if (format != null){
             logger.info("fetching mediafile with format " + format);
             return getMedia(mediaUUID, format);
         }
