@@ -52,8 +52,8 @@ public class NewMediaResource {
      * http://localhost:8080/MediaServerResteasy/media/863ec044-17cf-4c87-81cc-783ab13230ae?format=image/jpeg
      * 
      * @param mediaUUID
-     * @param content
-     * @param format
+     * @param content 
+    * @param format
      * 
      * @return binary or metadata.
      */

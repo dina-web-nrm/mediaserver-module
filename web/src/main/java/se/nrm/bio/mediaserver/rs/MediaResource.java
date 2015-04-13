@@ -18,7 +18,7 @@ import org.apache.log4j.Logger;
  *
  * @author ingimar
  */
-@Path("/")
+@Path("")
 public class MediaResource {
 
     private final static Logger logger = Logger.getLogger(MediaResource.class);
