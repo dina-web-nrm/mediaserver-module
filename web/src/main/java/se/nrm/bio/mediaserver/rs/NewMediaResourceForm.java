@@ -86,22 +86,17 @@ public class NewMediaResourceForm {
         }
 
         String fileUUID = generateRandomUUID();
-        logger.info("fileUUID " + fileUUID);
         String uploadedFileLocation = getAbsolutePathToFile(fileUUID);
-        logger.info("uploadedFileLocation " + uploadedFileLocation);
         writeBase64ToFile(fileData, uploadedFileLocation);
 
         Tika tika = new Tika();
         mimeType = tika.detect(fileData);
-        logger.info("mimeType " + mimeType);
 
         Media media = null;
-        switch (mimeType) {
-            case "image/tiff":
-                logger.info("mediatype - image/tiff");
-            case "image/png":
-            case "image/jpeg":
-            case "image/gif": {
+        String mediaType = mimeType.substring(0, mimeType.indexOf("/"));
+
+        switch (mediaType) {
+            case "image": {
                 boolean exportImage = form.getExport();
                 String exifJSON = "N/A";
                 String isExif = (String) envMap.get("is_exif");
@@ -115,20 +110,17 @@ public class NewMediaResourceForm {
                 media = MediaFactory.createImage2(exportImage, exifJSON);
                 break;
             }
-            case "video/quicktime":
-            case "video/mp4": {
+            case "video": {
                 String startTime = form.getStartTime(), endTime = form.getEndTime();
                 media = MediaFactory.createVideo(checkStartEndTime(startTime), checkStartEndTime(endTime));
                 break;
             }
-            case "audio/mpeg":
-            case "audio/vorbis":
-            case "audio/ogg": {
+            case "audio": {
                 String startTime = form.getStartTime(), endTime = form.getEndTime();
                 media = MediaFactory.createSound(checkStartEndTime(startTime), checkStartEndTime(endTime));
                 break;
             }
-            case "application/pdf": {
+            case "application": {
                 media = MediaFactory.createAttachement();
                 break;
             }

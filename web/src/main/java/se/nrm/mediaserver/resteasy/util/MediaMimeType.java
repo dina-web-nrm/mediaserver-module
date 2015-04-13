@@ -11,6 +11,7 @@ import java.util.Map;
  *
  * @author ingimar
  */
+@Deprecated
 public enum MediaMimeType {
 
     IMAGE("image/jpeg", "image/gif"),

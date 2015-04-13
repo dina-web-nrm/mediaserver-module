@@ -14,24 +14,25 @@ import se.nrm.bio.mediaserver.domain.Video;
  */
 public class MediaFactory {
 
-    public static Media createMedia(MediaMimeType type) {
-        try {
-            switch (type) {
-                case IMAGE:
-                    return new Image();
-                case VIDEO:
-                    return new Video();
-                case SOUND:
-                    return new Sound();
-                case ATTACHMENT:
-                    return new Attachment();
-                default:
-                    throw new IllegalArgumentException();
-            }
-        } catch (Exception e) {
-            return null;
-        }
-    }
+    
+//    public static Media createMedia(MediaMimeType type) {
+//        try {
+//            switch (type) {
+//                case IMAGE:
+//                    return new Image();
+//                case VIDEO:
+//                    return new Video();
+//                case SOUND:
+//                    return new Sound();
+//                case ATTACHMENT:
+//                    return new Attachment();
+//                default:
+//                    throw new IllegalArgumentException();
+//            }
+//        } catch (Exception e) {
+//            return null;
+//        }
+//    }
 
     public static Media createImage(boolean isExported) {
         Image image = new Image();
@@ -61,7 +62,7 @@ public class MediaFactory {
     }
 
     public static Media createAttachement() {
-        Media createdMedia = (Attachment) createMedia(MediaMimeType.ATTACHMENT);
-        return createdMedia;
+        Attachment attach = new Attachment();
+        return attach;
     }
 }
