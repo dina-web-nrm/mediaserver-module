@@ -18,16 +18,17 @@ http://localhost:8080/MediaServerResteasy/media/v1/search**?view=sitting**
 
 ## @Post base64-encoding 
 http://127.0.0.1:8080/MediaServerResteasy/media<p>
-key:value => "fileDataBase64":"/9j/4AAQSkZJ /9k=" (where '/9j/4AAQSkZJ /9k=' is not a valid example of a file)<p>
+* key:value => "fileDataBase64":"/9j/4AAQSkZJ /9k=" (where '/9j/4AAQSkZJ /9k=' is not a valid example of a file)<p>
+* **observe on how to add the tags** : "taggar": ["view:facial", "music:reggea"] <p>
 (1) in one-line <p>
-curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d  '{"owner":"ingimar","access":"public","licenseType":"CC BY","legend":"this is bob marley","fileName":"bob-marley20150407.jpg","fileDataBase64":"/9j/4AAQSkZJ /9k="}' http://127.0.0.1:8080/MediaServerResteasy/media <p>
+curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d  '{"owner":"ingimar","access":"public","taggar": ["view:facial", "music:reggea"],"licenseType":"CC BY","legend":"this is Marley","fileName":"bob.jpg","fileDataBase64":"/9j/4AAQSkZJ /9k="}' http://127.0.0.1:8080/MediaServerResteasy/media <p>
 
 (2) when the content (metadata + base64-encoded media file ) is packaged in the file 'meta_and_image.json' <p>
 curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d @meta_and_image.json http://127.0.0.1:8080/MediaServerResteasy/media
 
 ## @Put base64-encoding 
 http://127.0.0.1:8080/MediaServerResteasy/media<p>
-* **must**: key:value => mediaUUID:<UUID>  . ex.  "mediaUUID":"cf170678-7fc1-42e5-b7c2-cadac44250e2"
+* **must have**: key:value => mediaUUID:<UUID>  . ex.  "mediaUUID":"cf170678-7fc1-42e5-b7c2-cadac44250e2"
 * key:value => "fileDataBase64":"/9j/4AAQSkZJ /9k="  (where '/9j/4AAQSkZJ /9k=' is not a valid example of a file)<p>
 *This example: changing 'access' from 'public' to 'private'*<p>
 curl -v -H "Accept: application/json" -H "Content-type: application/json" -X PUT -d  '{"mediaUUID":"863ec044-17cf-4c87-81cc-783ab13230ae","access":"public"}' http://127.0.0.1:8080/MediaServerResteasy/media
