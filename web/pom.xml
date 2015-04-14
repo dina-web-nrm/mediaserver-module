@@ -78,7 +78,7 @@
         <!-- /home/ingimar/JBoss-Servers/wildfly-8.1.0.Final/modules/system/layers/base/org/jboss/resteasy/resteasy-multipart-provider/main 
         3.0.8.Final.jar
         -->
-          <dependency>
+        <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-multipart-provider</artifactId>
             <version>3.0.8.Final</version>
@@ -149,11 +149,17 @@
         
         <!-- change, 2014-04-09, removed version-tag -->
         <dependency>
-		<groupId>org.jboss.resteasy</groupId>
-		<artifactId>resteasy-jaxrs</artifactId>
-		<!--<version>3.0.10.Final</version>-->
-                <scope>provided</scope>
-	</dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jaxrs</artifactId>
+            <!--<version>3.0.10.Final</version>-->
+            <scope>provided</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.4</version>
+        </dependency>
 
     </dependencies>
 

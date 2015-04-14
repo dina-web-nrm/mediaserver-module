@@ -20,6 +20,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.bind.DatatypeConverter;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.tika.Tika;
 import org.json.simple.JSONObject;
@@ -57,8 +58,6 @@ public class NewMediaResourceForm {
 
     private ConcurrentHashMap envMap = null;
 
-    private int dynamic_HTTP_STATUS = 404;
-
     public NewMediaResourceForm() {
     }
 
@@ -77,8 +76,12 @@ public class NewMediaResourceForm {
     public Response createMedia(FileUploadJSON form) {
         String mimeType = "unknown", hashChecksum = "unknown";
 
+        // kolla igenom , undvika tråkig excepton om fil glöms bort
         String fileDataBase64 = form.getFileDataBase64();
-        final byte[] fileData = DatatypeConverter.parseBase64Binary(fileDataBase64);
+        byte[] fileData = null;
+        if (fileDataBase64 != null || !fileDataBase64.isEmpty()) {
+            fileData = DatatypeConverter.parseBase64Binary(fileDataBase64);
+        }
         if (null == fileData || fileData.length == 0) {
             String msg = "attribute 'fileData' is null or empty \n";
             logger.info(msg);
@@ -143,24 +146,25 @@ public class NewMediaResourceForm {
         final String mediaURL = createMediaURL(fileUUID, mimeType);
         media.setMediaURL(mediaURL);
 
-        if (form.getTags() != null) {
-            String tags = form.getTags();
-            if (!tags.equals("")) {
-                addingTags(media, tags);
-            }
+        if(form.getTaggar() !=null ){
+            String[] taggar = form.getTaggar();
+            String splitter = TagHelper.getSplitter();
+            String joinTags = StringUtils.join(taggar, splitter);
+            addingTags(media, joinTags);
         }
 
-        if (form.getLegend() == null || form.getLegend().equals("")) {
+        final String legend = form.getLegend();
+        if (legend == null || legend.isEmpty()) {
             form.setLegend("N/A");
         }
 
-        if (form.getLegend() != null && !form.getLegend().equals("")) {
+        if (legend != null && !legend.isEmpty()) {
             MediaText mediaText;
             String comment = form.getComment();
             if (comment != null) {
-                mediaText = new MediaText(form.getLegend(), form.getLanguage(), media, comment);
+                mediaText = new MediaText(legend, form.getLanguage(), media, comment);
             } else {
-                mediaText = new MediaText(form.getLegend(), form.getLanguage(), media);
+                mediaText = new MediaText(legend, form.getLanguage(), media);
             }
             media.addMediaText(mediaText);
         }
@@ -173,7 +177,6 @@ public class NewMediaResourceForm {
 
         writeToDatabase(media);
 //        String responseOutput = fileUUID;
-
         Response response = Response.status(201).entity(media).build();
 
         return response;
@@ -219,8 +222,10 @@ public class NewMediaResourceForm {
 
         // fetch from form.
         String alt = form.getAlt(), access = form.getAccess(), fileName = form.getFileName();
-        String legend = form.getLegend(), owner = form.getOwner(), tags = form.getTags();
+        String legend = form.getLegend(), owner = form.getOwner(); //  tags = form.getTags();
 
+        String [] tags = form.getTaggar();
+        
         String comment = form.getComment();
         String licenceType = form.getLicenseType();
 
@@ -251,10 +256,11 @@ public class NewMediaResourceForm {
             media.setOwner(owner);
         }
 
-        if (tags != null && !tags.isEmpty()) {
-            media.setTaggar(tags);
-        }
+//        if (tags != null && !tags.isEmpty()) {
+//            media.setTaggar(tags);
+//        }
 
+       
         if (media instanceof Image) {
             Boolean export = form.getExport();
             if (export != null) {
@@ -317,10 +323,10 @@ public class NewMediaResourceForm {
         return media;
     }
 
-    private List<String> addingTags(Media media, String inTags) {
+    private void addingTags(Media media, String inTags) {
         TagHelper helper = new TagHelper();
-        List<String> tags = helper.addingTags(media, inTags);
-        return tags;
+        helper.addingTags(media, inTags);
+//        return tags;
     }
 
     /**

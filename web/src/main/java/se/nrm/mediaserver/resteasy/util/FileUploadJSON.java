@@ -1,6 +1,8 @@
 package se.nrm.mediaserver.resteasy.util;
 
 import java.io.Serializable;
+import java.util.List;
+import javax.ws.rs.FormParam;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -18,9 +20,28 @@ public class FileUploadJSON implements Serializable {
 
     private String owner;
 
+     /**
+     * i.e: private or public
+     */
     private String access;
 
+    /**
+     * '&' is delimiter between key:value
+     *
+     * i.e : country:sweden&test:true
+     */
     private String tags;
+    
+    @FormParam("taggar")
+    public String[] taggar;
+
+    public String[] getTaggar() {
+        return taggar;
+    }
+
+    public void setTaggar(String[] taggar) {
+        this.taggar = taggar;
+    }
 
     private String legend;
 
@@ -44,7 +65,6 @@ public class FileUploadJSON implements Serializable {
 
     public FileUploadJSON() {
     }
-    
 
     public String getMediaUUID() {
         return mediaUUID;
@@ -74,9 +94,7 @@ public class FileUploadJSON implements Serializable {
         return access;
     }
 
-    /**
-     * i.e: private or public
-     */
+   
     public void setAccess(String access) {
         this.access = access;
     }
@@ -84,16 +102,10 @@ public class FileUploadJSON implements Serializable {
     public String getTags() {
         return tags;
     }
-
-    /**
-     * '&' is delimiter between key:value
-     *
-     * i.e : country:sweden&test:true
-     */
     public void setTags(String tags) {
         this.tags = tags;
     }
-
+    
     public String getLegend() {
         return legend;
     }
