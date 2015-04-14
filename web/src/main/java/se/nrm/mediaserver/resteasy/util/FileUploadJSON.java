@@ -20,7 +20,7 @@ public class FileUploadJSON implements Serializable {
 
     private String owner;
 
-     /**
+    /**
      * i.e: private or public
      */
     private String access;
@@ -30,8 +30,9 @@ public class FileUploadJSON implements Serializable {
      *
      * i.e : country:sweden&test:true
      */
+    @FormParam("tags")
     private String tags;
-    
+
     @FormParam("taggar")
     public String[] taggar;
 
@@ -94,7 +95,6 @@ public class FileUploadJSON implements Serializable {
         return access;
     }
 
-   
     public void setAccess(String access) {
         this.access = access;
     }
@@ -102,10 +102,11 @@ public class FileUploadJSON implements Serializable {
     public String getTags() {
         return tags;
     }
+
     public void setTags(String tags) {
         this.tags = tags;
     }
-    
+
     public String getLegend() {
         return legend;
     }
