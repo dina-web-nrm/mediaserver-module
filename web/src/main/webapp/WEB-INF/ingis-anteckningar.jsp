@@ -9,6 +9,8 @@
         https://titanpad.com/ylPQeByKim
         mvn clean package wildfly:deploy 
         
+        Apiary : https://app.apiary.io/media8/editor ( log in as 'inkimar@gmail.com' )
+        
         Gjort:
         1. använder web.xml
         2. använder wildfly 8.2 ( ej testat 8.1)
