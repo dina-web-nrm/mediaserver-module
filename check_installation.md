@@ -7,8 +7,8 @@ redirection in the bootstrap.sh-file
 tcp --dport  80 -j REDIRECT --to-ports 8080
 tcp --dport 443 -j REDIRECT --to-ports 8443
 
-login to the machine:
-'host'>ssh 
+login to the newly created machine:
+'host'>vagrant ssh 
 
 dina@dina-web-vm:~$ sudo su dina
 dina@dina-web-vm:~$ cd ../dina/
@@ -25,6 +25,7 @@ dina@dina-web-vm:~$ bin/jboss-cli.sh
 -check that all is deployed
 [standalone@localhost:9990 /] ls deployment
 mediaserver-ear.ear                  mysql-connector-java-5.1.34.jar      
-mysql-connector-java-5.1.12-bin.jar  postgresql-9.1-903.jdbc4.jar         
-[standalone@localhost:9990 /]
+mysql-connector-java-5.1.12-bin.jar  postgresql-9.1-903.jdbc4.jar
+-leave the managment tool         
+[standalone@localhost:9990 /] quit
 
