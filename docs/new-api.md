@@ -23,8 +23,10 @@ http://127.0.0.1:8080/MediaServerResteasy/media<p>
 (1) in one-line <p>
 curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d  '{"owner":"ingimar","access":"public","taggar": ["view:facial", "music:reggea"],"licenseType":"CC BY","legend":"this is Marley","fileName":"bob.jpg","fileDataBase64":"/9j/4AAQSkZJ /9k="}' http://127.0.0.1:8080/MediaServerResteasy/media <p>
 
-(2) when the content (metadata + base64-encoded media file ) is packaged in the file 'meta_and_image.json' <p>
-curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d @meta_and_image.json http://127.0.0.1:8080/MediaServerResteasy/media
+(2) when the content (metadata + base64-encoded media file ) is packaged in the file '@meta_and_image_corvux-corax.json' <p>
+curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d @meta_and_image_corvux-corax.json http://127.0.0.1:8080/MediaServerResteasy/media <p>
+the file '/docs/example-files/'<p>
+
 
 ## @Put base64-encoding 
 http://127.0.0.1:8080/MediaServerResteasy/media<p>
