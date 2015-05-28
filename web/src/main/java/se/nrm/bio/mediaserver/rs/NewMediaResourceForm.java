@@ -356,7 +356,7 @@ public class NewMediaResourceForm {
 
     private void writeBase64ToFile(byte[] parseBase64Binary, String location) {
         Writeable writer = new FileSystemWriter();
-        writer.writeBytesTo(parseBase64Binary, location);
+        writer.writeBytesTo(parseBase64Binary ,location);
     }
 
     private <T> void writeToDatabase(T media) {

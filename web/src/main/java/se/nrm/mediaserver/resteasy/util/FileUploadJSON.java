@@ -36,13 +36,8 @@ public class FileUploadJSON implements Serializable {
     @FormParam("taggar")
     public String[] taggar;
 
-    public String[] getTaggar() {
-        return taggar;
-    }
-
-    public void setTaggar(String[] taggar) {
-        this.taggar = taggar;
-    }
+    @FormParam("legends")
+    public LegendLang[] legends;
 
     private String legend;
 
@@ -105,6 +100,22 @@ public class FileUploadJSON implements Serializable {
 
     public void setTags(String tags) {
         this.tags = tags;
+    }
+
+    public String[] getTaggar() {
+        return taggar;
+    }
+
+    public void setTaggar(String[] taggar) {
+        this.taggar = taggar;
+    }
+
+    public LegendLang[] getLegends() {
+        return legends;
+    }
+
+    public void setLegends(LegendLang[] legends) {
+        this.legends = legends;
     }
 
     public String getLegend() {
