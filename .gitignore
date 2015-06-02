@@ -20,3 +20,5 @@ README.html
 /docs/*.html
 /docs/*.html~
 /docs/*.txt~
+docs/.Rhistory
+
