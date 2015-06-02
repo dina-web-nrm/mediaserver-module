@@ -218,5 +218,17 @@
             <column name="EXIF" type="text"/>
         </addColumn>
     </changeSet>
+    <changeSet id="licence-table with version" author="ingimar">
+        <createTable tableName="LIC_VERSIONS">
+            <column name="ID" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="ABBREV" type="varchar(255)"/>
+            <column name="VERSION" type="varchar(255)"/>
+            <column name="ISSUER" type="varchar(255)"/>
+            <column name="URI" type="varchar(255)"/>
+            <column name="NAME" type="varchar(255)"/>
+        </createTable>
+    </changeSet>
 </databaseChangeLog>
 

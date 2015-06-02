@@ -12,6 +12,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import se.nrm.bio.mediaserver.domain.AdminConfig;
 import se.nrm.bio.mediaserver.domain.Lic;
+import se.nrm.bio.mediaserver.domain.LicVersions;
 
 /**
  *
@@ -29,16 +30,31 @@ public class AdminBean {
         List<AdminConfig> configs = query.getResultList();
         return configs;
     }
-    
-    public List<Lic> getLicenses(){
+
+    public List<Lic> getLicenses() {
         Query query = em.createNamedQuery(Lic.FIND_ALL);
         List<Lic> resultList = query.getResultList();
         return resultList;
     }
-    public Lic getLicense(String abbrev){
+
+    public Lic getLicense(String abbrev) {
         Query query = em.createNamedQuery(Lic.FIND_BY_ABBREV);
         query.setParameter("abbrev", abbrev);
         Lic license = (Lic) query.getSingleResult();
+        return license;
+    }
+
+    public List<LicVersions> getLicensesWithVersion() {
+        Query query = em.createNamedQuery(LicVersions.FIND_ALL);
+        List<LicVersions> resultList = query.getResultList();
+        return resultList;
+    }
+    
+    public LicVersions getLicensesWithAbbrevAndVersion(String abbrev,String version) {
+        Query query = em.createNamedQuery(LicVersions.FIND_BY_ABBREV_AND_VERSION);
+        query.setParameter("abbrev", abbrev);
+        query.setParameter("version", version);
+        LicVersions license = (LicVersions) query.getSingleResult();
         return license;
     }
 }

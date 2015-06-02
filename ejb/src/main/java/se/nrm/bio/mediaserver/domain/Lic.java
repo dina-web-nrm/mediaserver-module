@@ -1,23 +1,18 @@
 package se.nrm.bio.mediaserver.domain;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -63,13 +58,9 @@ public class Lic implements Serializable {
 //    @ManyToMany(mappedBy = "lics", fetch = FetchType.LAZY)
 //    @XmlTransient
 //    private Set<Image> media = new HashSet<>();
-
     public Lic() {
     }
 
-//    public Lic(Integer id) {
-//        this.id = id;
-//    }
     public Lic(String abbrev) {
         this.abbrev = abbrev;
     }
@@ -113,14 +104,6 @@ public class Lic implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
-//
-//    public Set<Image> getMedia() {
-//        return media;
-//    }
-//
-//    public void setMedia(Set<Image> media) {
-//        this.media = media;
-//    }
 
     @Override
     public int hashCode() {

@@ -16,6 +16,7 @@ README.html
 /ejb/target/
 /web/target/
 /db/target/
+/db/liquibase.properties
 /docs/*.html
 /docs/*.html~
 /docs/*.txt~

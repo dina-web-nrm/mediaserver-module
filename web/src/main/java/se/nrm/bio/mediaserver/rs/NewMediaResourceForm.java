@@ -75,15 +75,20 @@ public class NewMediaResourceForm {
     @Produces(MediaType.APPLICATION_JSON)
     public Response createMedia(FileUploadJSON form) {
         String mimeType = "unknown", hashChecksum = "unknown";
-
+        String msg = "attribute 'fileData' is null or empty \n";
         // kolla igenom , undvika tråkig excepton om fil glöms bort
-        String fileDataBase64 = form.getFileDataBase64();
-        byte[] fileData = null;
-        if (fileDataBase64 != null || !fileDataBase64.isEmpty()) {
-            fileData = DatatypeConverter.parseBase64Binary(fileDataBase64);
+        if (form == null) {
+            logger.info(msg);
+            return Response.status(500).entity(msg).build();
         }
+        String fileDataBase64 = form.getFileDataBase64();
+        if (null == fileDataBase64 || fileDataBase64.isEmpty()) {
+            logger.info(msg);
+            return Response.status(500).entity(msg).build();
+        }
+        byte[] fileData = DatatypeConverter.parseBase64Binary(fileDataBase64);
+
         if (null == fileData || fileData.length == 0) {
-            String msg = "attribute 'fileData' is null or empty \n";
             logger.info(msg);
             return Response.status(500).entity(msg).build();
         }
@@ -130,7 +135,6 @@ public class NewMediaResourceForm {
         }
 
         if (null == media) {
-            String msg = String.format("Mimetype [ %s ] is not supported \n", mimeType);
             logger.info("media is null:  ");
             return Response.status(500).entity(msg).build();
         }
@@ -146,7 +150,7 @@ public class NewMediaResourceForm {
         final String mediaURL = createMediaURL(fileUUID, mimeType);
         media.setMediaURL(mediaURL);
 
-        if(form.getTaggar() !=null ){
+        if (form.getTaggar() != null) {
             String[] taggar = form.getTaggar();
             String splitter = TagHelper.getSplitter();
             String joinTags = StringUtils.join(taggar, splitter);
@@ -224,8 +228,8 @@ public class NewMediaResourceForm {
         String alt = form.getAlt(), access = form.getAccess(), fileName = form.getFileName();
         String legend = form.getLegend(), owner = form.getOwner(); //  tags = form.getTags();
 
-        String [] tags = form.getTaggar();
-        
+        String[] tags = form.getTaggar();
+
         String comment = form.getComment();
         String licenceType = form.getLicenseType();
 
@@ -259,8 +263,6 @@ public class NewMediaResourceForm {
 //        if (tags != null && !tags.isEmpty()) {
 //            media.setTaggar(tags);
 //        }
-
-       
         if (media instanceof Image) {
             Boolean export = form.getExport();
             if (export != null) {
@@ -356,7 +358,7 @@ public class NewMediaResourceForm {
 
     private void writeBase64ToFile(byte[] parseBase64Binary, String location) {
         Writeable writer = new FileSystemWriter();
-        writer.writeBytesTo(parseBase64Binary ,location);
+        writer.writeBytesTo(parseBase64Binary, location);
     }
 
     private <T> void writeToDatabase(T media) {

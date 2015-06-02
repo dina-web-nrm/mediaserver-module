@@ -4,3 +4,19 @@ INSERT INTO LIC VALUES (3,'CC BY-NC-SA','Creative Commons','http://creativecommo
 INSERT INTO LIC VALUES (4,'CC BY-NC','Creative Commons','http://creativecommons.org/licenses/by-nc/3.0','Attribution-NonCommercial');
 INSERT INTO LIC VALUES (5,'CC BY-ND','Creative Commons','http://creativecommons.org/licenses/by-nd/3.0','Attribution-NoDerivs');
 INSERT INTO LIC VALUES (6,'CC BY-NC-ND','Creative Commons','http://creativecommons.org/licenses/by-nc-nd/3.0','Attribution-NonCommercial-NoDerivs');
+
+#version 3
+INSERT INTO LIC_VERSIONS VALUES (null,'CC BY','3.0','Creative Commons','http://creativecommons.org/licenses/by/','Attribution');
+INSERT INTO LIC_VERSIONS VALUES (null,'CC BY-SA','3.0','Creative Commons','http://creativecommons.org/licenses/by-sa/','Attribution-ShareAlike');
+INSERT INTO LIC_VERSIONS VALUES (null,'CC BY-NC-SA','3.0','Creative Commons','http://creativecommons.org/licenses/by-nc-sa/','Attribution-NonCommercial-ShareAlike');
+INSERT INTO LIC_VERSIONS VALUES (null,'CC BY-NC','3.0','Creative Commons','http://creativecommons.org/licenses/by-nc/','Attribution-NonCommercial');
+INSERT INTO LIC_VERSIONS VALUES (null,'CC BY-ND','3.0','Creative Commons','http://creativecommons.org/licenses/by-nd/','Attribution-NoDerivs');
+INSERT INTO LIC_VERSIONS VALUES (null,'CC BY-NC-ND','3.0','Creative Commons','http://creativecommons.org/licenses/by-nc-nd/','Attribution-NonCommercial-NoDerivs');
+
+#version 4
+INSERT INTO LIC_VERSIONS VALUES (null,'CC BY','4.0','Creative Commons','http://creativecommons.org/licenses/by/','Attribution');
+INSERT INTO LIC_VERSIONS VALUES (null,'CC BY-SA','4.0','Creative Commons','http://creativecommons.org/licenses/by-sa/','Attribution-ShareAlike');
+INSERT INTO LIC_VERSIONS VALUES (null,'CC BY-NC-SA','4.0','Creative Commons','http://creativecommons.org/licenses/by-nc-sa/','Attribution-NonCommercial-ShareAlike');
+INSERT INTO LIC_VERSIONS VALUES (null,'CC BY-NC','4.0','Creative Commons','http://creativecommons.org/licenses/by-nc/','Attribution-NonCommercial');
+INSERT INTO LIC_VERSIONS VALUES (null,'CC BY-ND','4.0','Creative Commons','http://creativecommons.org/licenses/by-nd/','Attribution-NoDerivs');
+INSERT INTO LIC_VERSIONS VALUES (null,'CC BY-NC-ND','4.0','Creative Commons','http://creativecommons.org/licenses/by-nc-nd/','Attribution-NonCommercial-NoDerivs');
