@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -20,10 +21,13 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @Entity
 @Table(name = "LIC")
+//@Table(name = "LIC_VERSIONS")
 @NamedQueries({
     @NamedQuery(name = Lic.FIND_ALL, query = "SELECT l FROM Lic l"),
     @NamedQuery(name = "Lic.findById", query = "SELECT l FROM Lic l WHERE l.id = :id"),
     @NamedQuery(name = Lic.FIND_BY_ABBREV, query = "SELECT l FROM Lic l WHERE l.abbrev = :abbrev"),
+    @NamedQuery(name = LicVersions.FIND_BY_ABBREV_AND_VERSION,
+            query = "SELECT l FROM LicVersions l WHERE l.abbrev = :abbrev and l.version=:version"),
     @NamedQuery(name = "Lic.findByIssuer", query = "SELECT l FROM Lic l WHERE l.issuer = :issuer"),
     @NamedQuery(name = "Lic.findByUri", query = "SELECT l FROM Lic l WHERE l.uri = :uri"),
     @NamedQuery(name = "Lic.findByName", query = "SELECT l FROM Lic l WHERE l.name = :name")})
@@ -33,9 +37,11 @@ public class Lic implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    public static final String FIND_ALL = "Licence.findAll";
+
     public static final String FIND_BY_ABBREV = "Lic.findByAbbrev";
 
-    public static final String FIND_ALL = "Licence.findAll";
+    public static final String FIND_BY_ABBREV_AND_VERSION = "LicVersions.findByAbbrevAndVersion";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,6 +51,17 @@ public class Lic implements Serializable {
 
     @Column(name = "ABBREV")
     private String abbrev;
+
+//    @Column(name = "VERSION")
+//    private String version;
+//
+//    public String getVersion() {
+//        return version;
+//    }
+//
+//    public void setVersion(String version) {
+//        this.version = version;
+//    }
 
     @Column(name = "ISSUER")
     private String issuer;
@@ -61,10 +78,9 @@ public class Lic implements Serializable {
     public Lic() {
     }
 
-    public Lic(String abbrev) {
-        this.abbrev = abbrev;
-    }
-
+//    public Lic(String abbrev) {
+//        this.abbrev = abbrev;
+//    }
     public Integer getId() {
         return id;
     }

@@ -21,20 +21,21 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name = "LIC_VERSIONS")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = LicVersions.FIND_ALL,        query = "SELECT l FROM LicVersions l"),
-    @NamedQuery(name = "LicVersions.findById",      query = "SELECT l FROM LicVersions l WHERE l.id = :id"),
-    @NamedQuery(name = "LicVersions.findByAbbrev",  query = "SELECT l FROM LicVersions l WHERE l.abbrev = :abbrev"),
+    @NamedQuery(name = LicVersions.FIND_ALL, query = "SELECT l FROM LicVersions l"),
+    @NamedQuery(name = "LicVersions.findById", query = "SELECT l FROM LicVersions l WHERE l.id = :id"),
+    @NamedQuery(name = "LicVersions.findByAbbrev", query = "SELECT l FROM LicVersions l WHERE l.abbrev = :abbrev"),
     @NamedQuery(name = LicVersions.FIND_BY_ABBREV_AND_VERSION,
             query = "SELECT l FROM LicVersions l WHERE l.abbrev = :abbrev and l.version=:version"),
     @NamedQuery(name = "LicVersions.findByVersion", query = "SELECT l FROM LicVersions l WHERE l.version = :version"),
-    @NamedQuery(name = "LicVersions.findByUri",     query = "SELECT l FROM LicVersions l WHERE l.uri = :uri"),
-    @NamedQuery(name = "LicVersions.findByIssuer",  query = "SELECT l FROM LicVersions l WHERE l.issuer = :issuer"),
-    @NamedQuery(name = "LicVersions.findByName",    query = "SELECT l FROM LicVersions l WHERE l.name = :name")})
+    @NamedQuery(name = "LicVersions.findByUri", query = "SELECT l FROM LicVersions l WHERE l.uri = :uri"),
+    @NamedQuery(name = "LicVersions.findByIssuer", query = "SELECT l FROM LicVersions l WHERE l.issuer = :issuer"),
+    @NamedQuery(name = "LicVersions.findByName", query = "SELECT l FROM LicVersions l WHERE l.name = :name")})
 public class LicVersions implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     public static final String FIND_ALL = "LicVersions.findAll";
+
     public static final String FIND_BY_ABBREV_AND_VERSION = "LicVersions.findByAbbrevAndVersion";
 
     @Id
