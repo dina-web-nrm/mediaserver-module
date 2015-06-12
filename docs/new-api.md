@@ -37,7 +37,7 @@ curl -v -H "Accept: application/json" -H "Content-type: application/json" -X PUT
 
 ## @Delete
 **obs:** check the URI, not up to standard right now <p>
-curl -i -H "Accept: application/json" -X DELETE   http://localhost:8080/MediaServerResteasy/media/<uuid>
+curl -i -H "Accept: application/json" -X DELETE   http://localhost:8080/MediaServerResteasy/media/863ec044-17cf-4c87-81cc-783ab13230ae
 
 ## Admin-stuff :
 @GET licenses<p>
