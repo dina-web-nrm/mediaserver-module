@@ -1,14 +1,10 @@
 package se.nrm.mediaserver.resteasy.util;
 
-/**
- *
- * @author ingimar
- */
 import java.io.Serializable;
 import javax.ws.rs.FormParam;
 import org.jboss.resteasy.annotations.providers.multipart.PartType;
 
-public class FileUploadForm implements UploadForm, Serializable {
+public class NfFileUploadForm implements UploadForm,Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -63,13 +59,24 @@ public class FileUploadForm implements UploadForm, Serializable {
     @FormParam("comment")
     private String comment;
 
-    @FormParam("displayOrder")
-    private String displayOrder;
-
     @FormParam("taglist")
     private String[] taglist;
 
-    public FileUploadForm() {
+    @FormParam("displayOrder")
+    private String displayOrder;
+
+    @FormParam("taxonUUID")
+    private String taxonUUID;
+
+    public String getTaxonUUID() {
+        return taxonUUID;
+    }
+
+    public void setTaxonUUID(String taxonUUID) {
+        this.taxonUUID = taxonUUID;
+    }
+
+    public NfFileUploadForm() {
         export = false;
 
 //        String[] mock = {"tag1:value1", "tag2:value2", "tag3:value3"};

@@ -6,13 +6,15 @@
 package se.nrm.bio.mediaserver.business;
 
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import org.apache.log4j.Logger;
 import se.nrm.bio.mediaserver.domain.AdminConfig;
 import se.nrm.bio.mediaserver.domain.Lic;
-import se.nrm.bio.mediaserver.domain.LicVersions;
 
 /**
  *
@@ -20,6 +22,11 @@ import se.nrm.bio.mediaserver.domain.LicVersions;
  */
 @Stateless
 public class AdminBean {
+    
+    private final static Logger logger = Logger.getLogger(AdminBean.class);
+
+    @EJB
+    private StartupBean envBean;
 
     @PersistenceContext(unitName = "MysqlPU")
     private EntityManager em;
@@ -44,17 +51,37 @@ public class AdminBean {
         return license;
     }
 
-    public List<LicVersions> getLicensesWithVersion() {
-        Query query = em.createNamedQuery(LicVersions.FIND_ALL);
-        List<LicVersions> resultList = query.getResultList();
-        return resultList;
-    }
-    
-    public LicVersions getLicensesWithAbbrevAndVersion(String abbrev,String version) {
-        Query query = em.createNamedQuery(LicVersions.FIND_BY_ABBREV_AND_VERSION);
-        query.setParameter("abbrev", abbrev);
-        query.setParameter("version", version);
-        LicVersions license = (LicVersions) query.getSingleResult();
-        return license;
+    public Lic fetchNewLicenseFromDB(String abbrevAndLicense) {
+        ConcurrentHashMap envMap = envBean.getEnvironment();
+
+        Query namedQuery = em.createNamedQuery(Lic.FIND_BY_ABBREV_AND_VERSION);
+
+        String trimmedAbbrevation = abbrevAndLicense.trim();
+        String version = "";
+        String licenseType = "";
+
+        int indexOfVersion = trimmedAbbrevation.indexOf('v');
+        if (indexOfVersion == -1) {
+            version = (String) envMap.get("default_CC_license");
+            version = version.substring(1);
+            licenseType=abbrevAndLicense;
+        } else {
+            version = abbrevAndLicense.substring(indexOfVersion + 1);
+            licenseType = abbrevAndLicense.substring(0, indexOfVersion);
+        }
+
+        namedQuery.setParameter("abbrev", licenseType);
+        namedQuery.setParameter("version", version);
+
+        Lic licence = null;
+        try {
+            licence = (Lic) namedQuery.getSingleResult();
+        } catch (Exception ex) {
+            logger.info("no license linked to '" + abbrevAndLicense + "' : \n" + ex);
+            return null;
+        }
+
+        return licence;
+
     }
 }

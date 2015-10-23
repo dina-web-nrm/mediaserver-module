@@ -842,3 +842,20 @@ AAABAAAAAAAAAAAAMjc3XzJfVFJBX0FuYWx5c2lzLmNzdlBLAQIUABQAAAAIANdwqEYf9RTSVK0A
 AED0AQASAAAAAAAAAAEAAAAAAEkDAAAyNzdfMl9UUkFfRGF0YS5jc3ZQSwECFAAUAAAACADXcKhG
 qkKDOaoDAADcBwAAFQAAAAAAAAABAAAAAADNsAAAMjc3XzJfVFJBX1Jlc3VsdHMuY3N2UEsFBgAA
 AAADAAMAxwAAAKq0AAAAAA=="}' http://127.0.0.1:8080/MediaServerResteasy/media
+
+
+Admin, looking at the configuration:
+curl http://localhost:8080/MediaServerResteasy/media/admin/config/development
+
+Admin, see all licenses that are in the system:
+curl http://localhost:8080/MediaServerResteasy/media/admin/licenses
+
+ADMIN, see if specific license is in the system ( defaults to version 3.0 ):
+http://localhost:8080/MediaServerResteasy/media/admin/licenses/CC% BY-SA
+
+ADMIN, see if specific license is in the system:
+http://localhost:8080/MediaServerResteasy/media/admin/licenses/CC BY-SAv4.0
+
+
+
+

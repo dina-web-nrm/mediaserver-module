@@ -35,11 +35,21 @@ public class MediaResourceFetchBinary {
     private StartupBean envBean;
 
     private ConcurrentHashMap envMap = null;
-
+    
+    /**
+     *  temp :  an add on for the naturalist 
+     * @param uuid
+     * @return 
+     */
     @GET
     @Path("/stream/{uuid}")
     public Response getMedia(@PathParam("uuid") String uuid) {
-        String filename = getDynamicPath(uuid, getBasePath());
+        String naturforskaren = uuid;
+        if (uuid.contains(".")) {
+            int indexOf = uuid.indexOf('.');
+            naturforskaren = uuid.substring(0, indexOf);
+        }
+        String filename = getDynamicPath(naturforskaren, getBasePath());
 
         File file = new File(filename);
         Response response = returnFile(file);

@@ -133,12 +133,14 @@
             <type>jar</type>
         </dependency>
         
-        <!--        <dependency>
+        <!--        
+        <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-multipart-provider</artifactId>
             <version>3.0.10.Final</version>
             <type>jar</type>
-        </dependency>-->
+        </dependency>
+        -->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
@@ -168,7 +170,7 @@
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
             <version>1.10</version> 
-       </dependency>
+        </dependency>
     </dependencies>
 
     <build>

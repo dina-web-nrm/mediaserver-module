@@ -14,6 +14,7 @@
         <module>web</module>
         <module>ear</module>
         <!--<module>db</module>-->
+        <module>MediaServerClient</module>
     </modules>
 
     <properties>

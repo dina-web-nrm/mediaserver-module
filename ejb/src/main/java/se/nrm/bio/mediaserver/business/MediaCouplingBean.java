@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package se.nrm.bio.mediaserver.business;
 
 import java.io.Serializable;
@@ -42,7 +37,6 @@ public class MediaCouplingBean<T> implements Serializable {
     }
 
     public List<Media> getMetaDataForMedia(String externalUUID, String tags) {
-
         String sql;
         if (!tags.isEmpty()) {
             TagHelper h = new TagHelper();
@@ -57,6 +51,24 @@ public class MediaCouplingBean<T> implements Serializable {
         Query query = em.createQuery(sql);
         List<Media> mediaList = query.getResultList();
         return mediaList;
+    }
+    
+    public List<Determination> getListByDetermination(String externalUUID){
+         Query namedQuery = em.createNamedQuery(Determination.FIND_BY_EXTERNAL_TAG);
+        namedQuery.setParameter("tagValue", externalUUID);
+        List<Determination>  res = (List<Determination> )namedQuery.getSingleResult();
+        return res;
+    }
+
+    public Media getMetaMedia(String externalUUID, String mediaUUID) {
+        String sql = "SELECT d FROM Determination d WHERE WHERE d.tagValue = :tagValue and d.media_uuid = :media_uuid ";
+
+        Query namedQuery = em.createNamedQuery(sql);
+        namedQuery.setParameter("tagValue", externalUUID);
+        namedQuery.setParameter("media_uuid", mediaUUID);
+
+        Media singleResult = (Media) namedQuery.getSingleResult();
+        return singleResult;
     }
 
     // 2015-02-23 beror på Mediatext, avvakta
@@ -116,8 +128,15 @@ public class MediaCouplingBean<T> implements Serializable {
 
         return list;
     }
+    public Determination getDeterminationsByTagValueAndMediaUUID(String externalUUID,String mediaUUID) {
+        Query query = em.createNamedQuery(Determination.FIND_BY_TAXONUUID_AND_MEDIAUUID);
+        query.setParameter("tagValue", externalUUID);
+        query.setParameter("mediaUUID", mediaUUID);
+        Determination res = (Determination)query.getSingleResult();
 
-    
+        return res;
+    }
+
     public List<String> getMediaUUID(String externalUUID) {
         final String tags = "";
         return this.getMediaUUID(externalUUID, tags);

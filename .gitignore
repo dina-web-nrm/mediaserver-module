@@ -12,6 +12,7 @@ hs_err_pid*
 pom.xml~
 README.html
 
+
 /ear/target/
 /ejb/target/
 /web/target/
@@ -22,3 +23,4 @@ README.html
 /docs/*.txt~
 docs/.Rhistory
 
+/MediaServerClient/target/

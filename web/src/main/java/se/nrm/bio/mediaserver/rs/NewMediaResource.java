@@ -169,6 +169,7 @@ public class NewMediaResource {
         StringBuffer sb = new StringBuffer();
         final String DELIMITER = ":";
         final String SPLITTER = "&";
+        
         if (param != null) {
             Iterator it = param.keySet().iterator();
             while (it.hasNext()) {
@@ -198,7 +199,7 @@ public class NewMediaResource {
         try {
             successfulDeletion = this.deleteMediaMetadata(uuid);
         } catch (Exception ex) {
-            logger.info("unsuccessful deletion of [".concat(uuid).concat("]"));
+            //logger.info("unsuccessful deletion of [".concat(uuid).concat("]"));g
             logger.debug(ex);
         }
 
@@ -209,7 +210,7 @@ public class NewMediaResource {
         if (successfulDeletion) {
             return Response.status(204).entity("successful delete: " + uuid).build();
         }
-        
+
         return Response.status(404).entity("unsuccessful delete: " + uuid).build();
     }
 

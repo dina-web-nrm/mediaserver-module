@@ -12,6 +12,17 @@ import se.nrm.bio.mediaserver.domain.AdminConfig;
 
 /**
  * http://stackoverflow.com/questions/1149737/on-using-enum-based-singleton-to-cache-large-objects-java 
+ * obs. control the hostname of the machine ?
+ * boolean isProduction = true;
+        try {
+            String result = InetAddress.getLocalHost().getHostName();
+            if (StringUtils.isNotEmpty(result) && result.contains("as")) {
+                isProduction = true;
+            }
+        } catch (UnknownHostException e) {
+           
+        }
+        request.setAttribute("isProduktion", isProduction);
  * @author ingimar
  */
 @Singleton

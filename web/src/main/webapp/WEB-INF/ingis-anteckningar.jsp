@@ -7,6 +7,12 @@
         https://github.com/DINA-Web/mediaserver-module
     </head>
     <body>
+        2015-06-15 : Integration med Naturforskaren
+        - use nrm_media_test_1; 
+        - bilder ligger i tar-fil
+        
+        
+        Turn on debug on wildfly : /subsystem=logging/root-logger=ROOT:write-attribute(name=level,value=DEBUG)
         
         http://localhost:9990/ -> admin/admin
         http://localhost:8080/MediaServerResteasy/
