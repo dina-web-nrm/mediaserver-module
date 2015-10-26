@@ -105,25 +105,26 @@ public class MediaserviceBean<T> implements Serializable {
         }
         return licence;
     }
+
     /**
-     * @Todo , duplicate in AdminBean
-     * Adjusted to fit a table with version, defaults to version 3.0
+     * @Todo , duplicate in AdminBean Adjusted to fit a table with version,
+     * defaults to version 3.0
      * @param abbrevAndLicense
-     * @return 
+     * @return
      */
     public T getNewLicenseByAbbr(String abbrevAndLicense) {
         Query namedQuery = em.createNamedQuery(Lic.FIND_BY_ABBREV_AND_VERSION);
         int indexOfVersion = abbrevAndLicense.indexOf('v');
-        if ( indexOfVersion == -1 ){
-            String defaultLicense ="v3.0";
+        if (indexOfVersion == -1) {
+            String defaultLicense = "v3.0";
             String concat = abbrevAndLicense.concat(" ").concat(defaultLicense);
             return getNewLicenseByAbbr(concat);
         }
-        String version = abbrevAndLicense.substring(indexOfVersion+1);
+        String version = abbrevAndLicense.substring(indexOfVersion + 1);
         String licenseType = abbrevAndLicense.substring(0, indexOfVersion);
         namedQuery.setParameter("abbrev", licenseType);
         namedQuery.setParameter("version", version);
-        
+
         T licence = null;
         try {
             licence = (T) namedQuery.getSingleResult();
@@ -131,7 +132,7 @@ public class MediaserviceBean<T> implements Serializable {
             logger.info("no license linked to '" + abbrevAndLicense + "' : \n" + ex);
             return null;
         }
-        
+
         return licence;
     }
 
@@ -154,31 +155,5 @@ public class MediaserviceBean<T> implements Serializable {
         Query query = em.createNamedQuery(in);
         List<Media> images = query.setMaxResults(limit).getResultList();
         return images;
-    }
-
-    public T getVechicle(String uuid) {
-        Query namedQuery = em.createNamedQuery("Vehicle.findByUuid");
-        namedQuery.setParameter("uuid", uuid);
-
-        T media = null;
-        try {
-            media = (T) namedQuery.getSingleResult();
-        } catch (Exception ex) {
-
-        }
-        return media;
-    }
-
-    public T getTitle(String title) {
-        Query namedQuery = em.createNamedQuery("Dummy.FindByTitle");
-        namedQuery.setParameter("title", title);
-
-        T y = null;
-        try {
-            y = (T) namedQuery.getSingleResult();
-        } catch (Exception ex) {
-
-        }
-        return y;
     }
 }
