@@ -1,11 +1,14 @@
 package se.nrm.bio.mediaserver.business;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaQuery;
 import se.nrm.bio.mediaserver.domain.Lic;
 import se.nrm.bio.mediaserver.domain.Media;
 import org.apache.log4j.Logger;
@@ -155,5 +158,17 @@ public class MediaserviceBean<T> implements Serializable {
         Query query = em.createNamedQuery(in);
         List<Media> images = query.setMaxResults(limit).getResultList();
         return images;
+    }
+    
+    public List<T> findRange(Class<T> entityClass, int[] range) {
+        List list = Collections.EMPTY_LIST;
+        CriteriaQuery<Object> criteriaQ = em.getCriteriaBuilder().createQuery();
+        criteriaQ.select(criteriaQ.from(entityClass));
+        TypedQuery<Object> typedQ = em.createQuery(criteriaQ);
+        typedQ.setMaxResults(range[1] - range[0] + 1);
+        typedQ.setFirstResult(range[0]);
+        list = typedQ.getResultList();
+        
+        return list;
     }
 }

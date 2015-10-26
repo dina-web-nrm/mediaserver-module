@@ -20,7 +20,6 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @Entity
 @Table(name = "LIC")
-//@Table(name = "LIC_VERSIONS")
 @NamedQueries({
     @NamedQuery(name = Lic.FIND_ALL, query = "SELECT l FROM Lic l"),
     @NamedQuery(name = "Lic.findById", query = "SELECT l FROM Lic l WHERE l.id = :id"),

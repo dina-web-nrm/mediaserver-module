@@ -8,11 +8,14 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import se.nrm.bio.mediaserver.business.MediaserviceBean;
 import se.nrm.bio.mediaserver.domain.Media;
 
 import org.apache.log4j.Logger;
+import se.nrm.bio.mediaserver.domain.Image;
 
 /**
  *
@@ -57,6 +60,7 @@ public class MediaResource {
         return this.getMediaTypeWithLimit(mediaType, limit);
     }
 
+    // 2015-10-26
     @GET
     @Path("/all/{mediaType}/limit/{limit}")
     @Produces({MediaType.APPLICATION_JSON})
@@ -73,5 +77,23 @@ public class MediaResource {
             return Collections.EMPTY_LIST;
         }
         return mediaList;
+    }
+    /**
+     * Returning list in a 'Response' : http://www.adam-bien.com/roller/abien/entry/jax_rs_returning_a_list
+     * @param from
+     * @param to
+     * @return 
+     */
+    @GET
+    @Path("/images/{from}/{to}")
+    @Produces({"application/xml", "application/json"})
+    public Response getRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
+        if (from > to) {
+           return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        List<Media> range = service.findRange(Image.class, new int[]{from, to});
+        GenericEntity<List<Media>> list = new GenericEntity<List<Media>>(range) {};
+        Response build = Response.ok(list).build();
+        return build;
     }
 }
