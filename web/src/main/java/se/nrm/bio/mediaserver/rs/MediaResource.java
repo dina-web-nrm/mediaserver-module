@@ -1,13 +1,12 @@
 package se.nrm.bio.mediaserver.rs;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -52,49 +51,42 @@ public class MediaResource {
         return medLiaList;
     }
 
-    @GET
-    @Path("/all/{mediaType}")
-    @Produces({MediaType.APPLICATION_JSON})
-    public List<Media> getMediaType(@PathParam("mediaType") String mediaType) {
-        int limit = 10;
-        return this.getMediaTypeWithLimit(mediaType, limit);
-    }
-
-    // 2015-10-26
-    @GET
-    @Path("/all/{mediaType}/limit/{limit}")
-    @Produces({MediaType.APPLICATION_JSON})
-    public List<Media> getMediaTypeWithLimit(@PathParam("mediaType") String mediaType, @PathParam("limit") int limit) {
-        List<Media> mediaList = new ArrayList<>();
-        if (limit < 0 || limit > 100) {
-            limit = 10;
-        }
-        String jpql = mediaType.concat(".findAll");
-        try {
-            mediaList = service.getXImages(jpql, limit);
-        } catch (Exception ex) {
-            logger.info(ex);
-            return Collections.EMPTY_LIST;
-        }
-        return mediaList;
-    }
     /**
-     * Returning list in a 'Response' : 
-     *  http://www.adam-bien.com/roller/abien/entry/jax_rs_returning_a_list
-     * @param from
-     * @param to
-     * @return 
+     * Returning list in a 'Response' :
+     * http://www.adam-bien.com/roller/abien/entry/jax_rs_returning_a_list
+     *
+     * @param minid
+     * @param maxid
+     * @return
      */
     @GET
-    @Path("/images/{from}/{to}")
+    @Path("/images")
     @Produces({"application/xml", "application/json"})
-    public Response getRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
-        if (from > to || (to-from) > 1000) {
-           return Response.status(Response.Status.NOT_FOUND).build();
+    public Response getRangeOfImages(@QueryParam("minid") Integer minid, @QueryParam("maxid") Integer maxid) {
+        final int defaultLimitSize = 20;
+
+        if (minid == null || maxid == null) {
+            minid = 0;
+            maxid = defaultLimitSize;
         }
-        List<Media> range = service.findRange(Image.class, new int[]{from, to});
-        GenericEntity<List<Media>> list = new GenericEntity<List<Media>>(range) {};
+
+        if (minid > maxid || (maxid - minid) > 1000) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+        List<Media> range = service.findRange(Image.class, new int[]{minid, maxid});
+        GenericEntity<List<Media>> list = new GenericEntity<List<Media>>(range) {
+        };
+
         Response build = Response.ok(list).build();
         return build;
+    }
+    
+    @GET
+    @Path("/images/count")
+    @Produces("text/plain")
+    public Response countImages() {
+        int count = service.count(Image.class);
+        return Response.ok(count).build();
     }
 }

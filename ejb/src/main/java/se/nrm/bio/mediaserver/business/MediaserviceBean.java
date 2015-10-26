@@ -9,6 +9,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import se.nrm.bio.mediaserver.domain.Lic;
 import se.nrm.bio.mediaserver.domain.Media;
 import org.apache.log4j.Logger;
@@ -159,7 +160,7 @@ public class MediaserviceBean<T> implements Serializable {
         List<Media> images = query.setMaxResults(limit).getResultList();
         return images;
     }
-    
+
     public List<T> findRange(Class<T> entityClass, int[] range) {
         List list = Collections.EMPTY_LIST;
         CriteriaQuery<Object> criteriaQ = em.getCriteriaBuilder().createQuery();
@@ -168,7 +169,17 @@ public class MediaserviceBean<T> implements Serializable {
         typedQ.setMaxResults(range[1] - range[0] + 1);
         typedQ.setFirstResult(range[0]);
         list = typedQ.getResultList();
-        
+
         return list;
     }
+
+    public int count(Class<T> entityClass) {
+        CriteriaQuery criteriaQ = em.getCriteriaBuilder().createQuery();
+        Root<T> rt = criteriaQ.from(entityClass);
+        criteriaQ.select(em.getCriteriaBuilder().count(rt));
+        Query query = em.createQuery(criteriaQ);
+        int value = ((Long) query.getSingleResult()).intValue();
+        return value;
+    }
+
 }
