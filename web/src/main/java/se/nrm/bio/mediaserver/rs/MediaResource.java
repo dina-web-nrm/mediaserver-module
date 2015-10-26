@@ -79,7 +79,8 @@ public class MediaResource {
         return mediaList;
     }
     /**
-     * Returning list in a 'Response' : http://www.adam-bien.com/roller/abien/entry/jax_rs_returning_a_list
+     * Returning list in a 'Response' : 
+     *  http://www.adam-bien.com/roller/abien/entry/jax_rs_returning_a_list
      * @param from
      * @param to
      * @return 
@@ -88,7 +89,7 @@ public class MediaResource {
     @Path("/images/{from}/{to}")
     @Produces({"application/xml", "application/json"})
     public Response getRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
-        if (from > to) {
+        if (from > to || (to-from) > 1000) {
            return Response.status(Response.Status.NOT_FOUND).build();
         }
         List<Media> range = service.findRange(Image.class, new int[]{from, to});
