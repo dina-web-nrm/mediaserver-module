@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.ejb.EJB;
 import javax.imageio.ImageIO;
+import javax.imageio.ImageTypeSpecifier;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -74,7 +75,6 @@ public class NewMediaResource {
             return Response.status(200).entity(media).build();
         }
 
-        //   if (format != null && (format.equals("image/jpeg") || format.equals("image/png"))) {
         if (format != null) {
             logger.info("fetching mediafile with format " + format);
             return getMedia(mediaUUID, format);
@@ -126,8 +126,8 @@ public class NewMediaResource {
     @GET
     @Path("/image/{uuid}")
     @Produces({"image/jpeg", "image/png"})
-    public byte[] getImageByDimension(@PathParam("uuid") String uuid, @QueryParam("format") String format, @QueryParam("height") Integer height) {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream(2048);
+    public Response getImageByDimension(@PathParam("uuid") String uuid, @QueryParam("format") String format, @QueryParam("height") Integer height) {
+        ByteArrayOutputStream out = new ByteArrayOutputStream(2048);
         BufferedImage transformedImage = null;
 
         try {
@@ -136,15 +136,15 @@ public class NewMediaResource {
             } else if (format != null && (format.equals("image/jpeg" ) || format.equals("image/png")) ) {
                 transformedImage = this.getImage(uuid);
             } else {
-               
+                return Response.status(Response.Status.NOT_ACCEPTABLE).build();
             }
             String type = this.getExtension(format);
-            ImageIO.write(transformedImage, type, outputStream);
+            ImageIO.write(transformedImage, type, out);
         } catch (IOException ex) {
             logger.info(ex);
         }
 
-        return outputStream.toByteArray();
+        return Response.ok(out.toByteArray()).build();
     }
 
 //    @GET
