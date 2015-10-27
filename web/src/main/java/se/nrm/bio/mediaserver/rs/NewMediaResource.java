@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -18,6 +19,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
@@ -29,6 +31,7 @@ import org.apache.tika.Tika;
 import org.apache.tika.io.IOUtils;
 import se.nrm.bio.mediaserver.business.MediaserviceBean;
 import se.nrm.bio.mediaserver.business.StartupBean;
+import se.nrm.bio.mediaserver.domain.Image;
 import se.nrm.bio.mediaserver.domain.Media;
 import se.nrm.mediaserver.resteasy.util.PathHelper;
 
@@ -113,21 +116,30 @@ public class NewMediaResource {
 
     /**
      * http://localhost:8080/MediaServerResteasy/media/image/863ec044-17cf-4c87-81cc-783ab13230ae?format=image/jpeg&height=150
+     * - work-in-progress : 'image' , because we only transform 'images'
      *
      * @param uuid
-     * @param format, format=image/jpeg
+     * @param format, format=image/jpeg or format=image/png
      * @param height
      * @return
      */
     @GET
     @Path("/image/{uuid}")
     @Produces({"image/jpeg", "image/png"})
-    public byte[] getImageByDimension(@PathParam("uuid") String uuid, @QueryParam("format") String format, @QueryParam("height") int height) {
+    public byte[] getImageByDimension(@PathParam("uuid") String uuid, @QueryParam("format") String format, @QueryParam("height") Integer height) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream(2048);
+        BufferedImage transformedImage = null;
 
         try {
-            BufferedImage transformedImage = this.getTransformed(uuid, height);
-            ImageIO.write(transformedImage, "jpeg", outputStream);
+            if (height != null) {
+                transformedImage = this.getTransformed(uuid, height);
+            } else if (format != null && (format.equals("image/jpeg" ) || format.equals("image/png")) ) {
+                transformedImage = this.getImage(uuid);
+            } else {
+               
+            }
+            String type = this.getExtension(format);
+            ImageIO.write(transformedImage, type, outputStream);
         } catch (IOException ex) {
             logger.info(ex);
         }
@@ -169,7 +181,7 @@ public class NewMediaResource {
         StringBuffer sb = new StringBuffer();
         final String DELIMITER = ":";
         final String SPLITTER = "&";
-        
+
         if (param != null) {
             Iterator it = param.keySet().iterator();
             while (it.hasNext()) {
@@ -240,7 +252,7 @@ public class NewMediaResource {
 
         try {
             String mimeType = getMimeType(file);
-            FileInputStream fileInputStream = new FileInputStream(file);
+            InputStream fileInputStream = new FileInputStream(file);
             byte[] bytes = IOUtils.toByteArray(fileInputStream);
             byte[] encodeBase64 = Base64.encodeBase64(bytes);
 
@@ -259,8 +271,8 @@ public class NewMediaResource {
 
         try {
             String mimeType = getMimeType(file);
-            FileInputStream fileInputStream = new FileInputStream(file);
-            return Response.ok(fileInputStream, mimeType).build();
+            InputStream inputStream = new FileInputStream(file);
+            return Response.ok(inputStream, mimeType).build();
         } catch (IOException ioEx) {
             logger.info(ioEx);
             return Response.status(Response.Status.NOT_FOUND).build();
@@ -282,10 +294,27 @@ public class NewMediaResource {
         return image;
     }
 
+    private BufferedImage getImage(String uuid) throws IOException {
+
+        String filename = getDynamicPath(uuid, getBasePath());
+
+        File fileHandle = new File(filename);
+        BufferedImage originalImage = ImageIO.read(fileHandle);
+
+        return originalImage;
+    }
+
     private static String getMimeType(File file) throws IOException {
         Tika tika = new Tika();
         String mimeType = tika.detect(file);
         return mimeType;
+    }
+
+    private String getExtension(String mime) {
+        int indexOf = mime.indexOf("/");
+        String extension = mime.substring(indexOf + 1, mime.length());
+        return extension;
+
     }
 
     private String getDynamicPath(String uuid, String path) {
@@ -302,5 +331,44 @@ public class NewMediaResource {
         envMap = envBean.getEnvironment();
         String basePath = (String) envMap.get("path_to_files");
         return PathHelper.getEmptyOrAbsolutePathToFile(uuid, basePath);
+    }
+
+    /**
+     * Returning list in a 'Response' ( GenericEntity ) :
+     * http://www.adam-bien.com/roller/abien/entry/jax_rs_returning_a_list
+     *
+     * @param minid
+     * @param maxid
+     * @return
+     */
+    @GET
+    @Path("/images")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response getRangeOfImages(@QueryParam("minid") Integer minid, @QueryParam("maxid") Integer maxid) {
+        final int defaultLimitSize = 20;
+
+        if (minid == null || maxid == null) {
+            minid = 0;
+            maxid = defaultLimitSize;
+        }
+
+        if (minid > maxid || (maxid - minid) > 1000) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+        List<Media> range = service.findRange(Image.class, new int[]{minid, maxid});
+        GenericEntity<List<Media>> list = new GenericEntity<List<Media>>(range) {
+        };
+
+        Response build = Response.ok(list).build();
+        return build;
+    }
+
+    @GET
+    @Path("/images/count")
+    @Produces("text/plain")
+    public Response countImages() {
+        int count = service.count(Image.class);
+        return Response.ok(count).build();
     }
 }
