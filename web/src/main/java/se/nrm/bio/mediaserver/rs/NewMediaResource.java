@@ -345,11 +345,11 @@ public class NewMediaResource {
     @Path("/images")
     @Produces({MediaType.APPLICATION_JSON})
     public Response getRangeOfImages(@QueryParam("minid") Integer minid, @QueryParam("maxid") Integer maxid) {
-        final int defaultLimitSize = 20;
+        final int DEFAULT_LIMIT_SIZE = 20;
 
         if (minid == null || maxid == null) {
             minid = 0;
-            maxid = defaultLimitSize;
+            maxid = DEFAULT_LIMIT_SIZE;
         }
 
         if (minid > maxid || (maxid - minid) > 1000) {
