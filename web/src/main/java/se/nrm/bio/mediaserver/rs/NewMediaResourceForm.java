@@ -75,21 +75,21 @@ public class NewMediaResourceForm {
     public Response createMedia(FileUploadJSON form) {
         String mimeType = "unknown", hashChecksum = "unknown";
         String msg = "attribute 'fileData' is null or empty \n";
-        // kolla igenom , undvika tråkig excepton om fil glöms bort
+        // Check, howto avoid long-stacktrace if file is forgotten ?
         if (form == null) {
             logger.debug(msg);
-            return Response.status(500).entity(msg).build();
+            return Response.status(Response.Status.BAD_REQUEST).entity(msg).build();
         }
         String fileDataBase64 = form.getFileDataBase64();
         if (null == fileDataBase64 || fileDataBase64.isEmpty()) {
             logger.debug(msg);
-            return Response.status(500).entity(msg).build();
+            return Response.status(Response.Status.BAD_REQUEST).entity(msg).build();
         }
         byte[] fileData = DatatypeConverter.parseBase64Binary(fileDataBase64);
 
         if (null == fileData || fileData.length == 0) {
             logger.debug(msg);
-            return Response.status(500).entity(msg).build();
+            return Response.status(Response.Status.BAD_REQUEST).entity(msg).build();
         }
 
         String fileUUID = generateRandomUUID();
@@ -136,7 +136,7 @@ public class NewMediaResourceForm {
 
         if (null == media) {
             logger.info("media is null:  ");
-            return Response.status(500).entity(msg).build();
+            return Response.status(Response.Status.BAD_REQUEST).entity(msg).build();
         }
 
         hashChecksum = CheckSumFactory.createMD5ChecksumFromBytestream(fileData);
@@ -180,7 +180,7 @@ public class NewMediaResourceForm {
         }
 
         writeToDatabase(media);
-        Response response = Response.status(201).entity(media).build();
+        Response response = Response.status(Response.Status.CREATED).entity(media).build();
 
         return response;
     }
@@ -193,21 +193,24 @@ public class NewMediaResourceForm {
         return mediaURL;
     }
 
+    /**
+     * @param form with base64-encoding.
+     * @return 
+     */
     @PUT
     @Path("")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateMedia(FileUploadJSON form) {
-        final int HTTP_STATUS_NOT_FOUND = 404;
 
         String mediaUUID = form.getMediaUUID();
         if (null == mediaUUID) {
-            return Response.status(HTTP_STATUS_NOT_FOUND).build();
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
 
         Media media = (Media) bean.get(mediaUUID);
         if (null == media) {
-            return Response.status(HTTP_STATUS_NOT_FOUND).build();
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
 
         String base64EncodedFile = form.getFileDataBase64();
@@ -286,7 +289,7 @@ public class NewMediaResourceForm {
         }
 
         writeToDatabase(media);
-        Response response = Response.status(200).entity(media).build();
+        Response response = Response.status(Response.Status.OK).entity(media).build();
 
         return response;
     }
