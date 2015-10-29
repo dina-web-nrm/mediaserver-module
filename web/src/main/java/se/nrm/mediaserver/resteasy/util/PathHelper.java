@@ -1,6 +1,5 @@
 package se.nrm.mediaserver.resteasy.util;
 
-
 import java.io.File;
 
 /**
@@ -38,8 +37,11 @@ public class PathHelper {
     }
 
     private static String getPath(String uuid, String mediaPath) {
+        final int PATH_DEPTH = 6;
         StringBuilder tmpPath = new StringBuilder(mediaPath);
-        tmpPath.append(uuid.charAt(0)).append("/").append(uuid.charAt(1)).append("/").append(uuid.charAt(2)).append("/");
+        for (int i = 0; i < PATH_DEPTH; i++) {
+            tmpPath.append(uuid.charAt(i)).append("/");
+        }
         String pathen = tmpPath.toString();
         return pathen;
     }
