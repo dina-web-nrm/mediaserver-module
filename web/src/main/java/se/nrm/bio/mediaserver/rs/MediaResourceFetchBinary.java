@@ -27,6 +27,7 @@ import se.nrm.mediaserver.resteasy.util.PathHelper;
  */
 @Path("/")
 @Produces({"image/jpeg", "image/png"})
+@Deprecated
 public class MediaResourceFetchBinary {
 
     private final static Logger logger = Logger.getLogger(MediaResourceFetchBinary.class);
@@ -43,6 +44,7 @@ public class MediaResourceFetchBinary {
      */
     @GET
     @Path("/stream/{uuid}")
+    @Deprecated
     public Response getMedia(@PathParam("uuid") String uuid) {
         String naturforskaren = uuid;
         if (uuid.contains(".")) {
@@ -59,6 +61,7 @@ public class MediaResourceFetchBinary {
     @GET
     @Path("/stream/image/{uuid}/{height}")
     @Produces({"image/jpeg", "image/png"})
+    @Deprecated
     public byte[] getImageByDimension(@PathParam("uuid") String uuid, @PathParam("height") String height) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream(2048);
 

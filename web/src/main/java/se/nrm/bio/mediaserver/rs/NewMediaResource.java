@@ -67,14 +67,14 @@ public class NewMediaResource {
      * @return binary or metadata.
      */
     @GET
-    @Path("/{uuid}")
+    @Path("/v1/{uuid}")
     @Produces({MediaType.APPLICATION_JSON, "image/jpeg", "image/png"})
     public Response getMetadata(@PathParam("uuid") String mediaUUID, @QueryParam("content") String content, @QueryParam("format") String format) {
         logger.info("uuid " + mediaUUID);
         if (content != null && content.equals("metadata")) {
             logger.info("fetching metadata ");
             Media media = (Media) service.get(mediaUUID);
-            return Response.status(200).entity(media).build();
+            return Response.status(Response.Status.OK).entity(media).build();
         }
 
         if (format != null) {
@@ -335,6 +335,7 @@ public class NewMediaResource {
         return PathHelper.getEmptyOrAbsolutePathToFile(uuid, basePath);
     }
 
+    final int DEFAULT_LIMIT_SIZE_FOR_TYPES = 15;
     /**
      * Returning list in a 'Response' ( GenericEntity ) :
      * http://www.adam-bien.com/roller/abien/entry/jax_rs_returning_a_list
@@ -344,14 +345,13 @@ public class NewMediaResource {
      * @return
      */
     @GET
-    @Path("/images")
+    @Path("/v1/images")
     @Produces({MediaType.APPLICATION_JSON})
     public Response getRangeOfImages(@QueryParam("minid") Integer minid, @QueryParam("maxid") Integer maxid) {
-        final int DEFAULT_LIMIT_SIZE = 20;
 
         if (minid == null || maxid == null) {
             minid = 0;
-            maxid = DEFAULT_LIMIT_SIZE;
+            maxid = DEFAULT_LIMIT_SIZE_FOR_TYPES;
         }
 
         if (minid > maxid || (maxid - minid) > 1000) {
@@ -367,14 +367,13 @@ public class NewMediaResource {
     }
 
     @GET
-    @Path("/sounds")
+    @Path("/v1/sounds")
     @Produces({MediaType.APPLICATION_JSON})
     public Response getRangeOfSounds(@QueryParam("minid") Integer minid, @QueryParam("maxid") Integer maxid) {
-        final int DEFAULT_LIMIT_SIZE = 20;
 
         if (minid == null || maxid == null) {
             minid = 0;
-            maxid = DEFAULT_LIMIT_SIZE;
+            maxid = DEFAULT_LIMIT_SIZE_FOR_TYPES;
         }
 
         if (minid > maxid || (maxid - minid) > 1000) {
@@ -390,14 +389,13 @@ public class NewMediaResource {
     }
 
     @GET
-    @Path("/videos")
+    @Path("/v1/videos")
     @Produces({MediaType.APPLICATION_JSON})
     public Response getRangeOfVideos(@QueryParam("minid") Integer minid, @QueryParam("maxid") Integer maxid) {
-        final int DEFAULT_LIMIT_SIZE = 20;
 
         if (minid == null || maxid == null) {
             minid = 0;
-            maxid = DEFAULT_LIMIT_SIZE;
+            maxid = DEFAULT_LIMIT_SIZE_FOR_TYPES;
         }
 
         if (minid > maxid || (maxid - minid) > 1000) {
@@ -413,14 +411,14 @@ public class NewMediaResource {
     }
 
     @GET
-    @Path("/attachments")
+    @Path("/v1/attachments")
     @Produces({MediaType.APPLICATION_JSON})
     public Response getRangeOfAttachment(@QueryParam("minid") Integer minid, @QueryParam("maxid") Integer maxid) {
-        final int DEFAULT_LIMIT_SIZE = 20;
+        
 
         if (minid == null || maxid == null) {
             minid = 0;
-            maxid = DEFAULT_LIMIT_SIZE;
+            maxid = DEFAULT_LIMIT_SIZE_FOR_TYPES;
         }
 
         if (minid > maxid || (maxid - minid) > 1000) {
@@ -436,7 +434,7 @@ public class NewMediaResource {
     }
 
     @GET
-    @Path("/images/count")
+    @Path("/v1/images/count")
     @Produces("text/plain")
     public Response countImages() {
         int count = service.count(Image.class);
@@ -444,7 +442,7 @@ public class NewMediaResource {
     }
 
     @GET
-    @Path("/videos/count")
+    @Path("/v1/videos/count")
     @Produces("text/plain")
     public Response countVideos() {
         int count = service.count(Video.class);
@@ -452,7 +450,7 @@ public class NewMediaResource {
     }
 
     @GET
-    @Path("/sounds/count")
+    @Path("/v1/sounds/count")
     @Produces("text/plain")
     public Response countSounds() {
         int count = service.count(Sound.class);
@@ -460,7 +458,7 @@ public class NewMediaResource {
     }
 
     @GET
-    @Path("/attachments/count")
+    @Path("/v1/attachments/count")
     @Produces("text/plain")
     public Response countAttachments() {
         int count = service.count(Attachment.class);
