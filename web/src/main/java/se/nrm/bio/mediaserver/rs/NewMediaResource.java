@@ -31,8 +31,11 @@ import org.apache.tika.Tika;
 import org.apache.tika.io.IOUtils;
 import se.nrm.bio.mediaserver.business.MediaserviceBean;
 import se.nrm.bio.mediaserver.business.StartupBean;
+import se.nrm.bio.mediaserver.domain.Attachment;
 import se.nrm.bio.mediaserver.domain.Image;
 import se.nrm.bio.mediaserver.domain.Media;
+import se.nrm.bio.mediaserver.domain.Sound;
+import se.nrm.bio.mediaserver.domain.Video;
 import se.nrm.mediaserver.resteasy.util.PathHelper;
 
 /**
@@ -132,7 +135,7 @@ public class NewMediaResource {
         try {
             if (height != null) {
                 transformedImage = this.getTransformed(uuid, height);
-            } else if (format != null && (format.equals("image/jpeg" ) || format.equals("image/png")) ) {
+            } else if (format != null && (format.equals("image/jpeg") || format.equals("image/png"))) {
                 transformedImage = this.getImage(uuid);
             } else {
                 return Response.status(Response.Status.NOT_ACCEPTABLE).build();
@@ -364,10 +367,103 @@ public class NewMediaResource {
     }
 
     @GET
+    @Path("/sounds")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response getRangeOfSounds(@QueryParam("minid") Integer minid, @QueryParam("maxid") Integer maxid) {
+        final int DEFAULT_LIMIT_SIZE = 20;
+
+        if (minid == null || maxid == null) {
+            minid = 0;
+            maxid = DEFAULT_LIMIT_SIZE;
+        }
+
+        if (minid > maxid || (maxid - minid) > 1000) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+        List<Media> range = service.findRange(Sound.class, new int[]{minid, maxid});
+        GenericEntity<List<Media>> list = new GenericEntity<List<Media>>(range) {
+        };
+
+        Response build = Response.ok(list).build();
+        return build;
+    }
+
+    @GET
+    @Path("/videos")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response getRangeOfVideos(@QueryParam("minid") Integer minid, @QueryParam("maxid") Integer maxid) {
+        final int DEFAULT_LIMIT_SIZE = 20;
+
+        if (minid == null || maxid == null) {
+            minid = 0;
+            maxid = DEFAULT_LIMIT_SIZE;
+        }
+
+        if (minid > maxid || (maxid - minid) > 1000) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+        List<Media> range = service.findRange(Video.class, new int[]{minid, maxid});
+        GenericEntity<List<Media>> list = new GenericEntity<List<Media>>(range) {
+        };
+
+        Response build = Response.ok(list).build();
+        return build;
+    }
+
+    @GET
+    @Path("/attachments")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response getRangeOfAttachment(@QueryParam("minid") Integer minid, @QueryParam("maxid") Integer maxid) {
+        final int DEFAULT_LIMIT_SIZE = 20;
+
+        if (minid == null || maxid == null) {
+            minid = 0;
+            maxid = DEFAULT_LIMIT_SIZE;
+        }
+
+        if (minid > maxid || (maxid - minid) > 1000) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+        List<Media> range = service.findRange(Attachment.class, new int[]{minid, maxid});
+        GenericEntity<List<Media>> list = new GenericEntity<List<Media>>(range) {
+        };
+
+        Response build = Response.ok(list).build();
+        return build;
+    }
+
+    @GET
     @Path("/images/count")
     @Produces("text/plain")
     public Response countImages() {
         int count = service.count(Image.class);
+        return Response.ok(count).build();
+    }
+
+    @GET
+    @Path("/videos/count")
+    @Produces("text/plain")
+    public Response countVideos() {
+        int count = service.count(Video.class);
+        return Response.ok(count).build();
+    }
+
+    @GET
+    @Path("/sounds/count")
+    @Produces("text/plain")
+    public Response countSounds() {
+        int count = service.count(Sound.class);
+        return Response.ok(count).build();
+    }
+
+    @GET
+    @Path("/attachments/count")
+    @Produces("text/plain")
+    public Response countAttachments() {
+        int count = service.count(Attachment.class);
         return Response.ok(count).build();
     }
 }
