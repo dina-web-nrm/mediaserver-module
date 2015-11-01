@@ -37,7 +37,7 @@ public class PathHelper {
     }
 
     private static String getPath(String uuid, String mediaPath) {
-        final int PATH_DEPTH = 6;
+        final int PATH_DEPTH = 3;
         StringBuilder tmpPath = new StringBuilder(mediaPath);
         for (int i = 0; i < PATH_DEPTH; i++) {
             tmpPath.append(uuid.charAt(i)).append("/");

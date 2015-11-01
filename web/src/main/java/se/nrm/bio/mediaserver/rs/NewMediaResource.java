@@ -68,7 +68,7 @@ public class NewMediaResource {
      */
     @GET
     @Path("/v1/{uuid}")
-    @Produces({MediaType.APPLICATION_JSON, "image/jpeg", "image/png"})
+    @Produces({MediaType.APPLICATION_JSON, "image/jpeg", "image/png","audio/ogg","audio/wav","audio/wav","video/mp4","video/ogg"})
     public Response getMetadata(@PathParam("uuid") String mediaUUID, @QueryParam("content") String content, @QueryParam("format") String format) {
         logger.info("uuid " + mediaUUID);
         if (content != null && content.equals("metadata")) {
