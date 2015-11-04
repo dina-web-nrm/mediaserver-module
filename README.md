@@ -35,4 +35,20 @@ vagrant ssh
 
 This file outlines all configuration steps starting with a base linux OS. It calls a bootstrap script which installs all required OS dependencies along with all other required software and makes settings.
 
+# Handy info
+
+When you stop developing you have few options on how to close the virtual machine
+
+## Destroys all the traces of the virtual machine
+vagrant destroy
+
+## Shutdowns the virtual machine
+vagrant halt
+
+## Saves the current running state to hd
+vagrant suspend
+
+Use one of the above. When ever you return to developing you just use the command
+
+vagrant up
 
