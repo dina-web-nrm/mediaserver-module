@@ -1,8 +1,33 @@
 *.vagrant
 
-
 *.sh~
 .gitignore~
 README.md~
 pom.xml~
 notes-ie.txt
+*.class
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+# virtual machine crash logs
+hs_err_pid*
+
+.gitignore~
+pom.xml~
+README.html
+
+
+/ear/target/
+/ejb/target/
+/web/target/
+/db/target/
+/db/liquibase.properties
+/docs/*.html
+/docs/*.html~
+/docs/*.txt~
+docs/.Rhistory
+
+/MediaServerClient/target/
