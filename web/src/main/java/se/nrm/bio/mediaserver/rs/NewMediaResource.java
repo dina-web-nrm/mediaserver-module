@@ -174,7 +174,6 @@ public class NewMediaResource {
     public List<Media> showParameters(@Context UriInfo uriInfo) {
 
         MultivaluedMap<String, String> param = uriInfo.getQueryParameters();
-
         StringBuffer sb = buildKeyValueString(param);
         List<Media> mediaList = service.getMetadataByTags_MEDIA(sb.toString());
         
