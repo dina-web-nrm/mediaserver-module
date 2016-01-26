@@ -177,7 +177,6 @@ public class NewMediaResource {
         StringBuffer sb = buildKeyValueString(param);
         List<Media> mediaList = service.getMetadataByTags_MEDIA(sb.toString());
         
-        
         return mediaList;
     }
 
