@@ -8,7 +8,8 @@ sudo: false
 
 install: true
 script: mvn clean install
-before_deploy: "Starting deploy"
+before_deploy: "echo Starting deploy"
+
 deploy:
   provider: releases
    api_key:
