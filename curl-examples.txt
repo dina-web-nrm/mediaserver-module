@@ -1,4 +1,4 @@
-GET Metadata   (JSON)
+GET Metadata   (JSON) - ( should it be '?content=metadata' on both ? )
 >curl http://localhost:8080/MediaServerResteasy/media/5f14c6c9-6fc6-4e56-8037-01a61560eb38?content=metadata
 >curl http://localhost:8080/MediaServerResteasy/media/v1/search?view=flying&date=20140724
 

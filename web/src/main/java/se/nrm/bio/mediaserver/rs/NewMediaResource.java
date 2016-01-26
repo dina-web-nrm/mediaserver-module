@@ -68,8 +68,10 @@ public class NewMediaResource {
      */
     @GET
     @Path("/v1/{uuid}")
-    @Produces({MediaType.APPLICATION_JSON, "image/jpeg", "image/png","audio/ogg","audio/wav","audio/wav","video/mp4","video/ogg"})
-    public Response getMetadata(@PathParam("uuid") String mediaUUID, @QueryParam("content") String content, @QueryParam("format") String format) {
+    @Produces({MediaType.APPLICATION_JSON, "image/jpeg", "image/png", "audio/ogg", "audio/wav", "audio/wav", "video/mp4", "video/ogg"})
+    public Response getMetadata(@PathParam("uuid") String mediaUUID,
+            @QueryParam("content") String content,
+            @QueryParam("format") String format) {
         logger.info("uuid " + mediaUUID);
         if (content != null && content.equals("metadata")) {
             logger.info("fetching metadata ");
@@ -336,6 +338,7 @@ public class NewMediaResource {
     }
 
     final int DEFAULT_LIMIT_SIZE_FOR_TYPES = 15;
+
     /**
      * Returning list in a 'Response' ( GenericEntity ) :
      * http://www.adam-bien.com/roller/abien/entry/jax_rs_returning_a_list
@@ -414,7 +417,6 @@ public class NewMediaResource {
     @Path("/v1/attachments")
     @Produces({MediaType.APPLICATION_JSON})
     public Response getRangeOfAttachment(@QueryParam("minid") Integer minid, @QueryParam("maxid") Integer maxid) {
-        
 
         if (minid == null || maxid == null) {
             minid = 0;
