@@ -8,6 +8,7 @@ sudo: false
 
 install: true
 script: mvn clean install
+before_deploy: "Starting deploy"
 deploy:
   provider: releases
    api_key:
@@ -16,4 +17,3 @@ deploy:
   on:
     repo: DINA-Web/mediaserver-module
     all_branches: true
-    tags: true
