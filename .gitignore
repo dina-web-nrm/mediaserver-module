@@ -1,3 +1,10 @@
+*.vagrant
+
+*.sh~
+.gitignore~
+README.md~
+pom.xml~
+notes-ie.txt
 *.class
 
 # Package Files #
