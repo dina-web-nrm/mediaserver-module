@@ -190,7 +190,7 @@
     </changeSet>
     -->
     
-     <changeSet id="licence-table with version" author="ingimar">
+    <changeSet id="licence-table with version" author="ingimar">
         <createTable tableName="LIC">
             <column name="ID" type="int" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
@@ -234,8 +234,32 @@
         </addColumn>
     </changeSet>
     
-     <changeSet id="issue3" author="ingimar">
-         <modifyDataType tableName="MEDIA" 
+    <changeSet id="issue3" author="ingimar">
+        <modifyDataType tableName="MEDIA" 
+                         columnName="UUID" 
+                         newDataType="char(36)" />
+    </changeSet>
+    
+    <changeSet id="issue3_attachments" author="ingimar">
+        <modifyDataType tableName="ATTACHMENTS" 
+                         columnName="UUID" 
+                         newDataType="char(36)" />
+    </changeSet>
+    
+    <changeSet id="issue3_image" author="ingimar">
+        <modifyDataType tableName="IMAGE" 
+                         columnName="UUID" 
+                         newDataType="char(36)" />
+    </changeSet>
+    
+    <changeSet id="issue3_sound" author="ingimar">
+        <modifyDataType tableName="SOUND" 
+                         columnName="UUID" 
+                         newDataType="char(36)" />
+    </changeSet>
+    
+    <changeSet id="issue3_video" author="ingimar">
+        <modifyDataType tableName="VIDEO" 
                          columnName="UUID" 
                          newDataType="char(36)" />
     </changeSet>
