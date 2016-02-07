@@ -13,6 +13,7 @@ import javax.ejb.EJB;
 import javax.imageio.ImageIO;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -123,32 +124,38 @@ public class NewMediaResource {
      * - work-in-progress : 'image' , because we only transform 'images'
      *
      * @param uuid
-     * @param format, format=image/jpeg or format=image/png
+     * @param formatMime , format=image/jpeg or format=image/png
      * @param height
      * @return
      */
     @GET
     @Path("/image/v1/{uuid}")
     @Produces({"image/jpeg", "image/png"})
-    public Response getImageByDimension(@PathParam("uuid") String uuid, @QueryParam("format") String format, @QueryParam("height") Integer height) {
-        ByteArrayOutputStream out = new ByteArrayOutputStream(2048);
+    public Response getImageByDimension(
+            @PathParam("uuid") String uuid,
+            @DefaultValue("image/png") @QueryParam("format") String formatMime,
+            @QueryParam("height") Integer height) {
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream(2048);
         BufferedImage transformedImage = null;
 
+        String format = formatMime.substring(6);
+
         try {
-            if (height != null) {
-                transformedImage = this.getTransformed(uuid, height);
-            } else if (format != null && (format.equals("image/jpeg") || format.equals("image/png"))) {
-                transformedImage = this.getImage(uuid);
-            } else {
+            if (uuid == null) {
                 return Response.status(Response.Status.NOT_ACCEPTABLE).build();
             }
-            String type = this.getExtension(format);
-            ImageIO.write(transformedImage, type, out);
+            if (height != null) {
+                transformedImage = this.getTransformed(uuid, height);
+            } else {
+                transformedImage = this.getImage(uuid);
+            }
+            ImageIO.write(transformedImage, format, outputStream);
         } catch (IOException ex) {
             logger.info(ex);
         }
 
-        return Response.ok(out.toByteArray()).build();
+        return Response.ok(outputStream.toByteArray()).build();
     }
 
 //    @GET
