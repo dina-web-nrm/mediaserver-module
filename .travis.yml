@@ -8,6 +8,8 @@ deploy:
   api_key:
     secure: DHPOcfm0ILZZGP5GqRT4/h2HIzMpNadzLcZzefu6aO+Wsj8VrAG1CKsDmc74IRDh+7LHfyx1GmNJeOcR76IomxaKeowkGF+03UNCc3ZDkrOBaNl7/ecLXoRji2dZsLlORBeXGPogiU5gbrMXtBrNOo2FfDoCo/57As4yv7VBYHhNcfx7HVOSJQzpvfiZ8W9pB+d3iYLVOJWBhNcEX3O6IyLzFjtiLPbjV25Q1U7tOfpA+c2fZtIM0MHhGh0s76nUOTP8zExSMz8qQUg0+IuSbH5sJaRQ8AZ1M+iK26dJqLEOf+eJPOHw5kCFl4snqxpJnWIPR4JL1GLjnPTpd6JKNzU92gcO/Rs8dUogkET+1vEnpsNRj6FZWetiBG0YX2vyq0+f1iiYAUYS/mhmOq5tDI72xEbb8lqqdz35bO5SP9yeLD9PyULft/BFX3KLsnrgpHzB/Wnmqy15iaAX7nDtu2pQQGRgzeUOULl/hieJvt+uyq5cdEr7m+UZ7NOzCdO+fDWezT+MOm6T1S91JBMD3rwFsn8PWaLJZRPdm5B0xi46JeiQ5GUf1ELy+l0F8K61mQ7plRGdKahGp+znk3ydPgVd5h1Dgaeh8vJfQYfAi/hAB3XvS234P/sxEmg2wPewBfzsBJ98r2SX+us/gzbbfMjEYQunaJc3sVatSFp1srs=
   file: ear/target/mediaserver-ear.ear
+  skip_cleanup: true
   on:
+    tags: true
     repo: DINA-Web/mediaserver-module
     all_branches: true
