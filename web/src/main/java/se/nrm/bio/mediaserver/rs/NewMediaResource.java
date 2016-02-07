@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -18,6 +19,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
@@ -29,7 +31,11 @@ import org.apache.tika.Tika;
 import org.apache.tika.io.IOUtils;
 import se.nrm.bio.mediaserver.business.MediaserviceBean;
 import se.nrm.bio.mediaserver.business.StartupBean;
+import se.nrm.bio.mediaserver.domain.Attachment;
+import se.nrm.bio.mediaserver.domain.Image;
 import se.nrm.bio.mediaserver.domain.Media;
+import se.nrm.bio.mediaserver.domain.Sound;
+import se.nrm.bio.mediaserver.domain.Video;
 import se.nrm.mediaserver.resteasy.util.PathHelper;
 
 /**
@@ -61,17 +67,18 @@ public class NewMediaResource {
      * @return binary or metadata.
      */
     @GET
-    @Path("/{uuid}")
-    @Produces({MediaType.APPLICATION_JSON, "image/jpeg", "image/png"})
-    public Response getMetadata(@PathParam("uuid") String mediaUUID, @QueryParam("content") String content, @QueryParam("format") String format) {
+    @Path("/v1/{uuid}")
+    @Produces({MediaType.APPLICATION_JSON, "image/jpeg", "image/png", "audio/ogg", "audio/wav", "audio/wav", "video/mp4", "video/ogg"})
+    public Response getMetadata(@PathParam("uuid") String mediaUUID,
+            @QueryParam("content") String content,
+            @QueryParam("format") String format) {
         logger.info("uuid " + mediaUUID);
         if (content != null && content.equals("metadata")) {
             logger.info("fetching metadata ");
             Media media = (Media) service.get(mediaUUID);
-            return Response.status(200).entity(media).build();
+            return Response.status(Response.Status.OK).entity(media).build();
         }
 
-        //   if (format != null && (format.equals("image/jpeg") || format.equals("image/png"))) {
         if (format != null) {
             logger.info("fetching mediafile with format " + format);
             return getMedia(mediaUUID, format);
@@ -113,26 +120,35 @@ public class NewMediaResource {
 
     /**
      * http://localhost:8080/MediaServerResteasy/media/image/863ec044-17cf-4c87-81cc-783ab13230ae?format=image/jpeg&height=150
+     * - work-in-progress : 'image' , because we only transform 'images'
      *
      * @param uuid
-     * @param format, format=image/jpeg
+     * @param format, format=image/jpeg or format=image/png
      * @param height
      * @return
      */
     @GET
     @Path("/image/{uuid}")
     @Produces({"image/jpeg", "image/png"})
-    public byte[] getImageByDimension(@PathParam("uuid") String uuid, @QueryParam("format") String format, @QueryParam("height") int height) {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream(2048);
+    public Response getImageByDimension(@PathParam("uuid") String uuid, @QueryParam("format") String format, @QueryParam("height") Integer height) {
+        ByteArrayOutputStream out = new ByteArrayOutputStream(2048);
+        BufferedImage transformedImage = null;
 
         try {
-            BufferedImage transformedImage = this.getTransformed(uuid, height);
-            ImageIO.write(transformedImage, "jpeg", outputStream);
+            if (height != null) {
+                transformedImage = this.getTransformed(uuid, height);
+            } else if (format != null && (format.equals("image/jpeg") || format.equals("image/png"))) {
+                transformedImage = this.getImage(uuid);
+            } else {
+                return Response.status(Response.Status.NOT_ACCEPTABLE).build();
+            }
+            String type = this.getExtension(format);
+            ImageIO.write(transformedImage, type, out);
         } catch (IOException ex) {
             logger.info(ex);
         }
 
-        return outputStream.toByteArray();
+        return Response.ok(out.toByteArray()).build();
     }
 
 //    @GET
@@ -158,10 +174,9 @@ public class NewMediaResource {
     public List<Media> showParameters(@Context UriInfo uriInfo) {
 
         MultivaluedMap<String, String> param = uriInfo.getQueryParameters();
-
         StringBuffer sb = buildKeyValueString(param);
         List<Media> mediaList = service.getMetadataByTags_MEDIA(sb.toString());
-
+        
         return mediaList;
     }
 
@@ -169,6 +184,7 @@ public class NewMediaResource {
         StringBuffer sb = new StringBuffer();
         final String DELIMITER = ":";
         final String SPLITTER = "&";
+
         if (param != null) {
             Iterator it = param.keySet().iterator();
             while (it.hasNext()) {
@@ -198,7 +214,7 @@ public class NewMediaResource {
         try {
             successfulDeletion = this.deleteMediaMetadata(uuid);
         } catch (Exception ex) {
-            logger.info("unsuccessful deletion of [".concat(uuid).concat("]"));
+            //logger.info("unsuccessful deletion of [".concat(uuid).concat("]"));g
             logger.debug(ex);
         }
 
@@ -209,7 +225,7 @@ public class NewMediaResource {
         if (successfulDeletion) {
             return Response.status(204).entity("successful delete: " + uuid).build();
         }
-        
+
         return Response.status(404).entity("unsuccessful delete: " + uuid).build();
     }
 
@@ -239,7 +255,7 @@ public class NewMediaResource {
 
         try {
             String mimeType = getMimeType(file);
-            FileInputStream fileInputStream = new FileInputStream(file);
+            InputStream fileInputStream = new FileInputStream(file);
             byte[] bytes = IOUtils.toByteArray(fileInputStream);
             byte[] encodeBase64 = Base64.encodeBase64(bytes);
 
@@ -258,8 +274,8 @@ public class NewMediaResource {
 
         try {
             String mimeType = getMimeType(file);
-            FileInputStream fileInputStream = new FileInputStream(file);
-            return Response.ok(fileInputStream, mimeType).build();
+            InputStream inputStream = new FileInputStream(file);
+            return Response.ok(inputStream, mimeType).build();
         } catch (IOException ioEx) {
             logger.info(ioEx);
             return Response.status(Response.Status.NOT_FOUND).build();
@@ -281,10 +297,27 @@ public class NewMediaResource {
         return image;
     }
 
+    private BufferedImage getImage(String uuid) throws IOException {
+
+        String filename = getDynamicPath(uuid, getBasePath());
+
+        File fileHandle = new File(filename);
+        BufferedImage originalImage = ImageIO.read(fileHandle);
+
+        return originalImage;
+    }
+
     private static String getMimeType(File file) throws IOException {
         Tika tika = new Tika();
         String mimeType = tika.detect(file);
         return mimeType;
+    }
+
+    private String getExtension(String mime) {
+        int indexOf = mime.indexOf("/");
+        String extension = mime.substring(indexOf + 1, mime.length());
+        return extension;
+
     }
 
     private String getDynamicPath(String uuid, String path) {
@@ -301,5 +334,135 @@ public class NewMediaResource {
         envMap = envBean.getEnvironment();
         String basePath = (String) envMap.get("path_to_files");
         return PathHelper.getEmptyOrAbsolutePathToFile(uuid, basePath);
+    }
+
+    final int DEFAULT_LIMIT_SIZE_FOR_TYPES = 15;
+
+    /**
+     * Returning list in a 'Response' ( GenericEntity ) :
+     * http://www.adam-bien.com/roller/abien/entry/jax_rs_returning_a_list
+     *
+     * @param minid
+     * @param maxid
+     * @return
+     */
+    @GET
+    @Path("/v1/images")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response getRangeOfImages(@QueryParam("minid") Integer minid, @QueryParam("maxid") Integer maxid) {
+
+        if (minid == null || maxid == null) {
+            minid = 0;
+            maxid = DEFAULT_LIMIT_SIZE_FOR_TYPES;
+        }
+
+        if (minid > maxid || (maxid - minid) > 1000) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+        List<Media> range = service.findRange(Image.class, new int[]{minid, maxid});
+        GenericEntity<List<Media>> list = new GenericEntity<List<Media>>(range) {
+        };
+
+        Response build = Response.ok(list).build();
+        return build;
+    }
+
+    @GET
+    @Path("/v1/sounds")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response getRangeOfSounds(@QueryParam("minid") Integer minid, @QueryParam("maxid") Integer maxid) {
+
+        if (minid == null || maxid == null) {
+            minid = 0;
+            maxid = DEFAULT_LIMIT_SIZE_FOR_TYPES;
+        }
+
+        if (minid > maxid || (maxid - minid) > 1000) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+        List<Media> range = service.findRange(Sound.class, new int[]{minid, maxid});
+        GenericEntity<List<Media>> list = new GenericEntity<List<Media>>(range) {
+        };
+
+        Response build = Response.ok(list).build();
+        return build;
+    }
+
+    @GET
+    @Path("/v1/videos")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response getRangeOfVideos(@QueryParam("minid") Integer minid, @QueryParam("maxid") Integer maxid) {
+
+        if (minid == null || maxid == null) {
+            minid = 0;
+            maxid = DEFAULT_LIMIT_SIZE_FOR_TYPES;
+        }
+
+        if (minid > maxid || (maxid - minid) > 1000) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+        List<Media> range = service.findRange(Video.class, new int[]{minid, maxid});
+        GenericEntity<List<Media>> list = new GenericEntity<List<Media>>(range) {
+        };
+
+        Response build = Response.ok(list).build();
+        return build;
+    }
+
+    @GET
+    @Path("/v1/attachments")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response getRangeOfAttachment(@QueryParam("minid") Integer minid, @QueryParam("maxid") Integer maxid) {
+
+        if (minid == null || maxid == null) {
+            minid = 0;
+            maxid = DEFAULT_LIMIT_SIZE_FOR_TYPES;
+        }
+
+        if (minid > maxid || (maxid - minid) > 1000) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+        List<Media> range = service.findRange(Attachment.class, new int[]{minid, maxid});
+        GenericEntity<List<Media>> list = new GenericEntity<List<Media>>(range) {
+        };
+
+        Response build = Response.ok(list).build();
+        return build;
+    }
+
+    @GET
+    @Path("/v1/images/count")
+    @Produces("text/plain")
+    public Response countImages() {
+        int count = service.count(Image.class);
+        return Response.ok(count).build();
+    }
+
+    @GET
+    @Path("/v1/videos/count")
+    @Produces("text/plain")
+    public Response countVideos() {
+        int count = service.count(Video.class);
+        return Response.ok(count).build();
+    }
+
+    @GET
+    @Path("/v1/sounds/count")
+    @Produces("text/plain")
+    public Response countSounds() {
+        int count = service.count(Sound.class);
+        return Response.ok(count).build();
+    }
+
+    @GET
+    @Path("/v1/attachments/count")
+    @Produces("text/plain")
+    public Response countAttachments() {
+        int count = service.count(Attachment.class);
+        return Response.ok(count).build();
     }
 }

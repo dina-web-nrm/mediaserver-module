@@ -1,11 +1,15 @@
 package se.nrm.bio.mediaserver.business;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import se.nrm.bio.mediaserver.domain.Lic;
 import se.nrm.bio.mediaserver.domain.Media;
 import org.apache.log4j.Logger;
@@ -106,6 +110,36 @@ public class MediaserviceBean<T> implements Serializable {
         return licence;
     }
 
+    /**
+     * @Todo , duplicate in AdminBean Adjusted to fit a table with version,
+     * defaults to version 3.0
+     * @param abbrevAndLicense
+     * @return
+     */
+    public T getNewLicenseByAbbr(String abbrevAndLicense) {
+        Query namedQuery = em.createNamedQuery(Lic.FIND_BY_ABBREV_AND_VERSION);
+        int indexOfVersion = abbrevAndLicense.indexOf('v');
+        if (indexOfVersion == -1) {
+            String defaultLicense = "v3.0";
+            String concat = abbrevAndLicense.concat(" ").concat(defaultLicense);
+            return getNewLicenseByAbbr(concat);
+        }
+        String version = abbrevAndLicense.substring(indexOfVersion + 1);
+        String licenseType = abbrevAndLicense.substring(0, indexOfVersion);
+        namedQuery.setParameter("abbrev", licenseType);
+        namedQuery.setParameter("version", version);
+
+        T licence = null;
+        try {
+            licence = (T) namedQuery.getSingleResult();
+        } catch (Exception ex) {
+            logger.info("no license linked to '" + abbrevAndLicense + "' : \n" + ex);
+            return null;
+        }
+
+        return licence;
+    }
+
     public List<Image> getMetadataByTags_MEDIA(String tags) {
         TagHelper tagHelper = new TagHelper();
         String parsedTags = tagHelper.sqlUsageParseWithLike(tags);
@@ -122,35 +156,30 @@ public class MediaserviceBean<T> implements Serializable {
     }
 
     public List getXImages(String in, int limit) {
-
         Query query = em.createNamedQuery(in);
         List<Media> images = query.setMaxResults(limit).getResultList();
         return images;
     }
 
-    public T getVechicle(String uuid) {
-        Query namedQuery = em.createNamedQuery("Vehicle.findByUuid");
-        namedQuery.setParameter("uuid", uuid);
+    public List<T> findRange(Class<T> entityClass, int[] range) {
+        List list = Collections.EMPTY_LIST;
+        CriteriaQuery<Object> criteriaQ = em.getCriteriaBuilder().createQuery();
+        criteriaQ.select(criteriaQ.from(entityClass));
+        TypedQuery<Object> typedQ = em.createQuery(criteriaQ);
+        typedQ.setMaxResults(range[1] - range[0] + 1);
+        typedQ.setFirstResult(range[0]);
+        list = typedQ.getResultList();
 
-        T media = null;
-        try {
-            media = (T) namedQuery.getSingleResult();
-        } catch (Exception ex) {
-
-        }
-        return media;
+        return list;
     }
 
-    public T getTitle(String title) {
-        Query namedQuery = em.createNamedQuery("Dummy.FindByTitle");
-        namedQuery.setParameter("title", title);
-
-        T y = null;
-        try {
-            y = (T) namedQuery.getSingleResult();
-        } catch (Exception ex) {
-
-        }
-        return y;
+    public int count(Class<T> entityClass) {
+        CriteriaQuery criteriaQ = em.getCriteriaBuilder().createQuery();
+        Root<T> rt = criteriaQ.from(entityClass);
+        criteriaQ.select(em.getCriteriaBuilder().count(rt));
+        Query query = em.createQuery(criteriaQ);
+        int value = ((Long) query.getSingleResult()).intValue();
+        return value;
     }
+
 }

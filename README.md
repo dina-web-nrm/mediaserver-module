@@ -1,9 +1,10 @@
+[![Build Status](https://api.travis-ci.org/DINA-Web/mediaserver-module.svg?branch=master)](https://api.travis-ci.org/DINA-Web/mediaserver-module)
 # mediaserver-module
 Mediaserver core module
 
 ![alt mediaserver in fokus](docs/Mediaserver-module(1-2).png)
 
-#Background & Purpose
+# Background & Purpose
 The Mediaserver (aka. 'attachment server')  handles media files and their metadata.<p>
 The functionality is implemented using the RESTful-architecture style <p>
 
@@ -17,10 +18,10 @@ The Mediaservers has the basic CRUD responsibilities:
 3. Update: Updating the binaries and updating the metadata for the binaries.
 4. Delete: Deleting the binaries and updating the metadata for the binaries.
 
-##Constraints
+## Constraints
 1. The Mediaserver stores the binary-files to the local file system, to the file system where the Mediaserver is installed.
 
-#Functional Requirements
+# Functional Requirements
 
 The Mediaserver should provide services for other systems.
 
@@ -29,7 +30,7 @@ The Mediaserver should provide services for other systems.
 3. To search on metadata, fetch mediafiles (Retrieve) 
 4. To delete media files (Delete)
 
-##Storing the media files 
+## Storing the media files 
 The mediafiles are stored in the filesystem, which has a depth of 3 levels.
 Only one mediafile is stored, no derivates for images are created at the same time. <p>
 All medifiles are stored using UUID as names. <p>

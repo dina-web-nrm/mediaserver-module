@@ -7,7 +7,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -76,21 +75,21 @@ public class NewMediaResourceForm {
     public Response createMedia(FileUploadJSON form) {
         String mimeType = "unknown", hashChecksum = "unknown";
         String msg = "attribute 'fileData' is null or empty \n";
-        // kolla igenom , undvika tråkig excepton om fil glöms bort
+        // Check, howto avoid long-stacktrace if file is forgotten ?
         if (form == null) {
-            logger.info(msg);
-            return Response.status(500).entity(msg).build();
+            logger.debug(msg);
+            return Response.status(Response.Status.BAD_REQUEST).entity(msg).build();
         }
         String fileDataBase64 = form.getFileDataBase64();
         if (null == fileDataBase64 || fileDataBase64.isEmpty()) {
-            logger.info(msg);
-            return Response.status(500).entity(msg).build();
+            logger.debug(msg);
+            return Response.status(Response.Status.BAD_REQUEST).entity(msg).build();
         }
         byte[] fileData = DatatypeConverter.parseBase64Binary(fileDataBase64);
 
         if (null == fileData || fileData.length == 0) {
-            logger.info(msg);
-            return Response.status(500).entity(msg).build();
+            logger.debug(msg);
+            return Response.status(Response.Status.BAD_REQUEST).entity(msg).build();
         }
 
         String fileUUID = generateRandomUUID();
@@ -128,6 +127,7 @@ public class NewMediaResourceForm {
                 media = MediaFactory.createSound(checkStartEndTime(startTime), checkStartEndTime(endTime));
                 break;
             }
+            case "text":
             case "application": {
                 media = MediaFactory.createAttachement();
                 break;
@@ -136,7 +136,7 @@ public class NewMediaResourceForm {
 
         if (null == media) {
             logger.info("media is null:  ");
-            return Response.status(500).entity(msg).build();
+            return Response.status(Response.Status.BAD_REQUEST).entity(msg).build();
         }
 
         hashChecksum = CheckSumFactory.createMD5ChecksumFromBytestream(fileData);
@@ -175,13 +175,12 @@ public class NewMediaResourceForm {
 
         final String licenceType = form.getLicenseType();
         if (licenceType != null) {
-            Lic license = fetchFromDB(licenceType);
+            Lic license = fetchNewLicenseFromDB(licenceType); // enhanced with version, check the liquibase ( foreign key constraints)
             media.getLics().add(license);
         }
 
         writeToDatabase(media);
-//        String responseOutput = fileUUID;
-        Response response = Response.status(201).entity(media).build();
+        Response response = Response.status(Response.Status.CREATED).entity(media).build();
 
         return response;
     }
@@ -194,21 +193,24 @@ public class NewMediaResourceForm {
         return mediaURL;
     }
 
+    /**
+     * @param form with base64-encoding.
+     * @return 
+     */
     @PUT
     @Path("")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateMedia(FileUploadJSON form) {
-        final int HTTP_STATUS_NOT_FOUND = 404;
 
         String mediaUUID = form.getMediaUUID();
         if (null == mediaUUID) {
-            return Response.status(HTTP_STATUS_NOT_FOUND).build();
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
 
         Media media = (Media) bean.get(mediaUUID);
         if (null == media) {
-            return Response.status(HTTP_STATUS_NOT_FOUND).build();
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
 
         String base64EncodedFile = form.getFileDataBase64();
@@ -287,7 +289,7 @@ public class NewMediaResourceForm {
         }
 
         writeToDatabase(media);
-        Response response = Response.status(200).entity(media).build();
+        Response response = Response.status(Response.Status.OK).entity(media).build();
 
         return response;
     }
@@ -319,7 +321,7 @@ public class NewMediaResourceForm {
      * @return
      */
     protected Media updateLicense(final String licenceType, Media media) {
-        Lic updateLicense = fetchFromDB(licenceType);
+        Lic updateLicense = fetchNewLicenseFromDB(licenceType);
         media.getLics().clear();
         media.getLics().add(updateLicense);
         return media;
@@ -328,7 +330,6 @@ public class NewMediaResourceForm {
     private void addingTags(Media media, String inTags) {
         TagHelper helper = new TagHelper();
         helper.addingTags(media, inTags);
-//        return tags;
     }
 
     /**
@@ -353,6 +354,7 @@ public class NewMediaResourceForm {
     private String getAbsolutePathToFile(String uuid) {
         envMap = envBean.getEnvironment();
         String basePath = (String) envMap.get("path_to_files");
+        logger.debug("Reading path from database : " + basePath);
         return PathHelper.getEmptyOrAbsolutePathToFile(uuid, basePath);
     }
 
@@ -365,10 +367,16 @@ public class NewMediaResourceForm {
         bean.save(media);
     }
 
-    private Lic fetchFromDB(String abbrevation) {
-        String trimmedAbbrevation = abbrevation.trim();
-        Lic license = (Lic) bean.getLicenseByAbbr(trimmedAbbrevation);
+    private Lic fetchNewLicenseFromDB(String abbrAndLicense) {
+        String trimmedAbbrevation = abbrAndLicense.trim();
 
+        int indexOfVersion = trimmedAbbrevation.indexOf('v');
+        if (indexOfVersion == -1) {
+            String defaultLicense = (String) envMap.get("default_CC_license");
+            trimmedAbbrevation = abbrAndLicense.concat(" ").concat(defaultLicense);
+        }
+
+        Lic license = (Lic) bean.getNewLicenseByAbbr(trimmedAbbrevation);
         return license;
     }
 

@@ -2,18 +2,19 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
-    <artifactId>nrm-mediaserver</artifactId>
+    
     <groupId>se.nrm.bio.mediaserver</groupId>
-    <version>9.0.0-SNAPSHOT</version>
+    <artifactId>nrm-mediaserver</artifactId>
+    <name>Mediaserver-Root pom</name> 
     <packaging>pom</packaging>
-    <name>Mediaserver-Root pom</name>
+    <version>9.0.0-SNAPSHOT</version>
 
     <modules>
         <module>ejb</module>
         <module>web</module>
         <module>ear</module>
         <!--<module>db</module>-->
+        <module>MediaServerClient</module>
     </modules>
 
     <properties>

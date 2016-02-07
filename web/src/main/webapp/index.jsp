@@ -1,4 +1,4 @@
-<%--<%@page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8"%>--%>
+<%@ page contentType="text/html; charset=UTF-8" %> 
 <html>
     <head>
         <META http-equiv="Content-Type" content="text/html;charset=UTF-8">
@@ -7,7 +7,7 @@
     <body>
         <h1>Image - JAX-RS File Upload Example [returns a UUID]</h1>
         <input type="hidden" name="branch" id="branch" value="development-liquibase-mysql">
-        <input type="hidden" name="version.date" id="version.date" value="latest: 2015-03-07-16:20, now: 2015-03-07-16:44">
+        <input type="hidden" name="version.date" id="version.date" value="latest: 2015-03-07-16:44, now: 2015-06-08-14:06">
         <form action="media/load" method="post" enctype="multipart/form-data"  accept-charset="utf-8" >
             <p>
                 Owner : <input type="text" name="owner" /></br>
@@ -16,7 +16,7 @@
                 private/public ( as in visibility ) : <input type="text" name="access" /></br>
             </p>
             <p>
-                tags ( such as 'view:dorsal'&'country:sweden' : <input type="text" name="tags" /></br>
+                tags ( ?? such as 'view:dorsal'&'country:sweden' : <input type="text" name="tags" /></br>
             </p>
             <p>
                 legend : <input type="text" name="legend" /></br>

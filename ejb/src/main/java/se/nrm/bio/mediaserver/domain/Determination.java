@@ -31,6 +31,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Determination.findById", query = "SELECT d FROM Determination d WHERE d.id = :id"),
     @NamedQuery(name = "Determination.findByTagKey", query = "SELECT d FROM Determination d WHERE d.tagKey = :tagKey"),
     @NamedQuery(name = Determination.FIND_BY_EXTERNAL_TAG, query = "SELECT d FROM Determination d WHERE d.tagValue = :tagValue"),
+    @NamedQuery(name = Determination.FIND_BY_TAXONUUID_AND_MEDIAUUID,
+            query = "SELECT d FROM Determination d WHERE d.tagValue = :tagValue AND d.media.uuid= :mediaUUID"),
     @NamedQuery(name = Determination.FIND_ONE_BY_EXTERNAL_TAG, query = "SELECT DISTINCT d FROM Determination d WHERE d.tagValue = :tagValue"),
     @NamedQuery(name = "Determination.findByExternalSystem", query = "SELECT d FROM Determination d WHERE d.externalSystem = :externalSystem"),
     @NamedQuery(name = "Determination.findByExternalSystemUrl", query = "SELECT d FROM Determination d WHERE d.externalSystemUrl = :externalSystemUrl")
@@ -38,11 +40,13 @@ import javax.xml.bind.annotation.XmlTransient;
 })
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement
-public class Determination implements Serializable {
+public class Determination implements Comparable<Determination>, Serializable {
 
     public static final String FIND_BY_EXTERNAL_TAG = "Determination.findByTagValue";
 
     public static final String FIND_ONE_BY_EXTERNAL_TAG = "Determination.findOneTagValue";
+
+    public static final String FIND_BY_TAXONUUID_AND_MEDIAUUID = "Determination.findBtTagValueAndMediaUUID";
 
     private static final long serialVersionUID = 123423432L;
 
@@ -63,18 +67,18 @@ public class Determination implements Serializable {
 
     @Column(name = "EXTERNAL_SYSTEM_URL")
     private String externalSystemUrl;
-    
-    @Column(name = "SORT_ORDER")
-    private int sortOrder;
-
-    @Transient
-    private Date dateCreated;
 
 //    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "MEDIA_UUID")
     @XmlTransient
     private Media media;
+
+    @Transient
+    private Date dateCreated;
+
+    @Column(name = "SORT_ORDER")
+    private int sortOrder;
 
     public Determination() {
     }
@@ -88,6 +92,15 @@ public class Determination implements Serializable {
         this.tagValue = tagValue;
         this.externalSystem = externalSystem;
         this.externalSystemUrl = externalSystemUrl;
+        this.media = media;
+    }
+
+    public Determination(String tagValue, int sortOrder, Media media) {
+        this.tagKey = "NF_Taxon";
+        this.tagValue = tagValue;
+        this.externalSystem = "NF_SYSTEM";
+        this.externalSystemUrl = "http://naturforskaren.se";
+        this.sortOrder = sortOrder;
         this.media = media;
     }
 
@@ -138,7 +151,7 @@ public class Determination implements Serializable {
     public void setSortOrder(int sortOrder) {
         this.sortOrder = sortOrder;
     }
-    
+
     public Date getDateCreated() {
         return dateCreated;
     }
@@ -155,8 +168,6 @@ public class Determination implements Serializable {
         this.media = media;
     }
 
-  
-
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
@@ -169,6 +180,12 @@ public class Determination implements Serializable {
         sb.append(", externalSystemUrl='").append(externalSystemUrl).append('\'');
         sb.append('}');
         return sb.toString();
+    }
+
+    @Override
+    public int compareTo(Determination d) {
+        Integer mySortOrder = this.getSortOrder();
+        return mySortOrder.compareTo(d.getSortOrder());
     }
 
 }

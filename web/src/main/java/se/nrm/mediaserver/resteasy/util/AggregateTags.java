@@ -9,7 +9,7 @@ import se.nrm.bio.mediaserver.util.TagHelper;
  */
 public class AggregateTags {
 
-    public String aggregateTags(FileUploadForm form) {
+    public String aggregateTags(UploadForm form) {
         String tagsConcatenated="";
         String tags = form.getTags();
         String newTaglist = getEmptyOrtransformed(form.getTaglist());

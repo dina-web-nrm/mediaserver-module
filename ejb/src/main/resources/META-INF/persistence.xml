@@ -2,7 +2,9 @@
 <persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
   <persistence-unit name="MysqlPU" transaction-type="JTA">
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-    <jta-data-source>java:/MediaDS</jta-data-source>
+    <!--<jta-data-source>java:/MediaDS</jta-data-source>-->
+    <jta-data-source>java:/MediaNaturforskarenDS</jta-data-source> <!-- jdbc:mysql://localhost:3306/nrm_media_test_1 -->
+    <!--<jta-data-source>java:/MigrationDS</jta-data-source>-->
     <class>se.nrm.bio.mediaserver.domain.Media</class>
     <class>se.nrm.bio.mediaserver.domain.Image</class>
     <class>se.nrm.bio.mediaserver.domain.Video</class>
@@ -17,6 +19,6 @@
     <class>se.nrm.bio.mediaserver.domain.AdminConfig</class>
     <class>se.nrm.bio.mediaserver.domain.Lic</class>
     <class>se.nrm.bio.mediaserver.domain.AdminMedia</class>
-    <class>se.nrm.bio.mediaserver.domain.LicVersions</class>
+    <!--<class>se.nrm.bio.mediaserver.domain.LicVersions</class>-->
   </persistence-unit>
 </persistence>

@@ -1,3 +1,11 @@
+*~
+*.sh~
+.gitignore~
+README.md~
+README.html
+pom.xml~
+
+notes-ie.txt
 *.class
 
 # Package Files #
@@ -7,10 +15,6 @@
 
 # virtual machine crash logs
 hs_err_pid*
-
-.gitignore~
-*~
-README.html
 
 /ear/target/
 /ejb/target/
@@ -24,3 +28,4 @@ README.html
 /docs/*.txt~
 docs/.Rhistory
 
+/MediaServerClient/target/

@@ -27,6 +27,7 @@ import org.apache.log4j.Logger;
 import org.apache.tika.Tika;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.json.simple.JSONObject;
+import se.nrm.bio.mediaserver.business.MediaCouplingBean;
 import se.nrm.bio.mediaserver.business.MediaserviceBean;
 import se.nrm.bio.mediaserver.business.StartupBean;
 import se.nrm.bio.mediaserver.domain.Attachment;
@@ -48,6 +49,7 @@ import se.nrm.bio.mediaserver.util.TagHelper;
 import se.nrm.mediaserver.resteasy.util.FileUploadJSON;
 import se.nrm.mediaserver.resteasy.util.LinkUploadForm;
 import se.nrm.mediaserver.resteasy.util.SingleLinkUploadForm;
+import se.nrm.mediaserver.resteasy.util.UploadForm;
 import se.nrm.mediaserver.resteasy.util.Writeable;
 
 /**
@@ -61,6 +63,9 @@ public class MediaResourceForm {
 
     @EJB
     private MediaserviceBean bean;
+
+    @EJB
+    private MediaCouplingBean coupBean;
 
     @EJB
     private StartupBean envBean;
@@ -354,7 +359,7 @@ public class MediaResourceForm {
     public void ajaxDelete(@PathParam("mediaUUID") String mediaUUID) {
         boolean deleted = this.deleteAll(mediaUUID);
     }
-
+   
     @DELETE
     @Path("/delete/all/{mediaUUID}")
     @Consumes(MediaType.TEXT_PLAIN)
@@ -369,7 +374,7 @@ public class MediaResourceForm {
         if (successfulDeletion) {
             successfulDeletion = this.deleteFileFromFS(mediaUUID);
         }
-
+        
         return successfulDeletion;
     }
 
@@ -490,7 +495,6 @@ public class MediaResourceForm {
      *
      * @param form
      * @return
-     * @throws java.io.IOException
      */
     @POST
     @Path("/upload-file/base64")
@@ -662,7 +666,7 @@ public class MediaResourceForm {
         return PathHelper.getEmptyOrAbsolutePathToFile(uuid, basePath);
     }
 
-    private void writeToFile(FileUploadForm form, String location) {
+    private void writeToFile(UploadForm form, String location) {
         Writeable writer = new FileSystemWriter();
         writer.writeBytesTo(form.getFileData(), location);
     }
@@ -678,7 +682,7 @@ public class MediaResourceForm {
 
     private Lic fetchFromDB(String abbrevation) {
         String trimmedAbbrevation = abbrevation.trim();
-        Lic license = (Lic) bean.getLicenseByAbbr(trimmedAbbrevation);
+        Lic license = (Lic) bean.getNewLicenseByAbbr(trimmedAbbrevation); // 2015-07-15 with version
 
         return license;
     }
