@@ -9,14 +9,16 @@
 hs_err_pid*
 
 .gitignore~
-pom.xml~
+*~
 README.html
 
 /ear/target/
 /ejb/target/
 /web/target/
+
 /db/target/
 /db/liquibase.properties
+
 /docs/*.html
 /docs/*.html~
 /docs/*.txt~

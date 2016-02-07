@@ -1,6 +1,15 @@
-GET Metadata   (JSON)
->curl http://localhost:8080/MediaServerResteasy/media/5f14c6c9-6fc6-4e56-8037-01a61560eb38?content=metadata
->curl http://localhost:8080/MediaServerResteasy/media/v1/search?view=flying&date=20140724
+Check if you have the demo-data in the database and that the files are in the path:
+
+GET Metadata
+curl http://localhost:8080/MediaServerResteasy/media/2dbb201e-c3e7-4c8d-bed4-ed22422d21c3?content=metadata
+curl http://localhost:8080/MediaServerResteasy/media/v1/search?view=sitting
+curl http://localhost:8080/MediaServerResteasy/media/v1/search?view=sitting&country=sweden
+curl http://localhost:8080/MediaServerResteasy/media/v1/search?view=sitting&country=sweden&photo=diginatour
+
+curl http://localhost:8080/MediaServerResteasy/media/863ec044-17cf-4c87-81cc-783ab13230ae?content=metadata
+
+Get the binary
+curl http://localhost:8080/MediaServerResteasy/media/2dbb201e-c3e7-4c8d-bed4-ed22422d21c3?format=image/jpeg
 
 GET MediaFile ( kolla URI till när man sätter en annan höjd ... /image/ ska det vara så ? ) 
 > http://localhost:8080/MediaServerResteasy/media/5f14c6c9-6fc6-4e56-8037-01a61560eb38?format=image/jpeg
