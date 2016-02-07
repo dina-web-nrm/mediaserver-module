@@ -13,7 +13,6 @@ import javax.ejb.EJB;
 import javax.imageio.ImageIO;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -339,7 +338,7 @@ public class NewMediaResource {
 
     final int DEFAULT_LIMIT_SIZE_FOR_TYPES = 15;
 
-     @GET
+    @GET
     @Path("/range/media/v1")
     @Produces({MediaType.APPLICATION_JSON})
     public Response getRangeOfMedia(
@@ -361,7 +360,8 @@ public class NewMediaResource {
 
         Response build = Response.ok(list).build();
         return build;
-    } 
+    }
+
     /**
      * Returning list in a 'Response' ( GenericEntity ) :
      * http://www.adam-bien.com/roller/abien/entry/jax_rs_returning_a_list
