@@ -647,6 +647,10 @@ public class MediaResourceForm {
         return Integer.parseInt(time);
     }
 
+    /**
+     * https://docs.oracle.com/javase/7/docs/api/java/util/UUID.html#randomUUID()
+     * @return 
+     */
     private String generateRandomUUID() {
         final String uuIdFilename = UUID.randomUUID().toString();
         return uuIdFilename;

@@ -230,5 +230,10 @@
             <column name="NAME" type="varchar(255)"/>
         </createTable>
     </changeSet>
+     <changeSet id="issue3" author="ingimar">
+         <modifyDataType tableName="MEDIA" 
+                         columnName="UUID" 
+                         newDataType="char(36)" />
+    </changeSet>
 </databaseChangeLog>
 

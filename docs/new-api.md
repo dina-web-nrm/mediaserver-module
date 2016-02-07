@@ -1,3 +1,6 @@
+---
+output: html_document
+---
 # Demo-Standalone, the RESTful-API :
 The 3 images are packaged with the mediaserver :<p>
 * 863ec044-17cf-4c87-81cc-783ab13230ae (sitting 'pica pica')
