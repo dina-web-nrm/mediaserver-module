@@ -13,6 +13,7 @@ import javax.ejb.EJB;
 import javax.imageio.ImageIO;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -128,7 +129,7 @@ public class NewMediaResource {
      * @return
      */
     @GET
-    @Path("/image/{uuid}")
+    @Path("/image/v1/{uuid}")
     @Produces({"image/jpeg", "image/png"})
     public Response getImageByDimension(@PathParam("uuid") String uuid, @QueryParam("format") String format, @QueryParam("height") Integer height) {
         ByteArrayOutputStream out = new ByteArrayOutputStream(2048);
@@ -176,7 +177,7 @@ public class NewMediaResource {
         MultivaluedMap<String, String> param = uriInfo.getQueryParameters();
         StringBuffer sb = buildKeyValueString(param);
         List<Media> mediaList = service.getMetadataByTags_MEDIA(sb.toString());
-        
+
         return mediaList;
     }
 
@@ -338,18 +339,45 @@ public class NewMediaResource {
 
     final int DEFAULT_LIMIT_SIZE_FOR_TYPES = 15;
 
+     @GET
+    @Path("/range/media/v1")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response getRangeOfMedia(
+            @QueryParam("minid") Integer minid,
+            @QueryParam("maxid") Integer maxid) {
+
+        if (minid == null || maxid == null) {
+            minid = 0;
+            maxid = DEFAULT_LIMIT_SIZE_FOR_TYPES;
+        }
+
+        if (minid > maxid || (maxid - minid) > 1000) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+        List<Media> range = service.findRange(Media.class, new int[]{minid, maxid});
+        GenericEntity<List<Media>> list = new GenericEntity<List<Media>>(range) {
+        };
+
+        Response build = Response.ok(list).build();
+        return build;
+    } 
     /**
      * Returning list in a 'Response' ( GenericEntity ) :
      * http://www.adam-bien.com/roller/abien/entry/jax_rs_returning_a_list
+     *
+     * @DefaultValue(0)
      *
      * @param minid
      * @param maxid
      * @return
      */
     @GET
-    @Path("/v1/images")
+    @Path("/range/images/v1")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response getRangeOfImages(@QueryParam("minid") Integer minid, @QueryParam("maxid") Integer maxid) {
+    public Response getRangeOfImages(
+            @QueryParam("minid") Integer minid,
+            @QueryParam("maxid") Integer maxid) {
 
         if (minid == null || maxid == null) {
             minid = 0;
@@ -369,7 +397,7 @@ public class NewMediaResource {
     }
 
     @GET
-    @Path("/v1/sounds")
+    @Path("/range/sounds/v1")
     @Produces({MediaType.APPLICATION_JSON})
     public Response getRangeOfSounds(@QueryParam("minid") Integer minid, @QueryParam("maxid") Integer maxid) {
 
@@ -391,7 +419,7 @@ public class NewMediaResource {
     }
 
     @GET
-    @Path("/v1/videos")
+    @Path("/range/videos/v1")
     @Produces({MediaType.APPLICATION_JSON})
     public Response getRangeOfVideos(@QueryParam("minid") Integer minid, @QueryParam("maxid") Integer maxid) {
 
@@ -413,7 +441,7 @@ public class NewMediaResource {
     }
 
     @GET
-    @Path("/v1/attachments")
+    @Path("/range/attachments/v1")
     @Produces({MediaType.APPLICATION_JSON})
     public Response getRangeOfAttachment(@QueryParam("minid") Integer minid, @QueryParam("maxid") Integer maxid) {
 
@@ -434,8 +462,20 @@ public class NewMediaResource {
         return build;
     }
 
+    /**
+     *
+     * @return
+     */
     @GET
-    @Path("/v1/images/count")
+    @Path("/media/v1/count")
+    @Produces("text/plain")
+    public Response countMedia() {
+        int count = service.count(Media.class);
+        return Response.ok(count).build();
+    }
+
+    @GET
+    @Path("/images/v1/count")
     @Produces("text/plain")
     public Response countImages() {
         int count = service.count(Image.class);
@@ -443,7 +483,7 @@ public class NewMediaResource {
     }
 
     @GET
-    @Path("/v1/videos/count")
+    @Path("/videos/v1/count")
     @Produces("text/plain")
     public Response countVideos() {
         int count = service.count(Video.class);
@@ -451,7 +491,7 @@ public class NewMediaResource {
     }
 
     @GET
-    @Path("/v1/sounds/count")
+    @Path("/sounds/v1/count")
     @Produces("text/plain")
     public Response countSounds() {
         int count = service.count(Sound.class);
@@ -459,7 +499,7 @@ public class NewMediaResource {
     }
 
     @GET
-    @Path("/v1/attachments/count")
+    @Path("/attachments/v1/count")
     @Produces("text/plain")
     public Response countAttachments() {
         int count = service.count(Attachment.class);

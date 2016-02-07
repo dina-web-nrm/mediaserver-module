@@ -1,31 +1,33 @@
-<<<<<<< HEAD
+2016-01-07: http://localhost:8080/MediaServerResteasy/media/v1/
+
 Check if you have the demo-data in the database and that the files are in the path:
-
+Using the demo-file : 863ec044-17cf-4c87-81cc-783ab13230ae
 GET Metadata
-curl http://localhost:8080/MediaServerResteasy/media/2dbb201e-c3e7-4c8d-bed4-ed22422d21c3?content=metadata
-curl http://localhost:8080/MediaServerResteasy/media/v1/search?view=sitting
-curl http://localhost:8080/MediaServerResteasy/media/v1/search?view=sitting&country=sweden
-curl http://localhost:8080/MediaServerResteasy/media/v1/search?view=sitting&country=sweden&photo=diginatour
-
-curl http://localhost:8080/MediaServerResteasy/media/863ec044-17cf-4c87-81cc-783ab13230ae?content=metadata
+http://localhost:8080/MediaServerResteasy/media/v1/863ec044-17cf-4c87-81cc-783ab13230ae?content=metadata
+http://localhost:8080/MediaServerResteasy/media/v1/search?view=sitting
+http://localhost:8080/MediaServerResteasy/media/v1/search?view=sitting&country=sweden
+http://localhost:8080/MediaServerResteasy/media/v1/search?view=sitting&country=sweden&photo=diginatour
 
 Get the binary
-curl http://localhost:8080/MediaServerResteasy/media/2dbb201e-c3e7-4c8d-bed4-ed22422d21c3?format=image/jpeg
-=======
-GET Metadata   (JSON) - ( should it be '?content=metadata' on both ? )
->curl http://localhost:8080/MediaServerResteasy/media/5f14c6c9-6fc6-4e56-8037-01a61560eb38?content=metadata
->curl http://localhost:8080/MediaServerResteasy/media/v1/search?view=flying&date=20140724
->>>>>>> c11d8956bdc508187e019ef05ebcad1d71dfa54a
+http://localhost:8080/MediaServerResteasy/media/v1/863ec044-17cf-4c87-81cc-783ab13230ae?format=image/jpeg
+http://localhost:8080/MediaServerResteasy/media/image/v1/863ec044-17cf-4c87-81cc-783ab13230ae?format=image/jpeg&height=150
+
+Get number of Images :
+http://localhost:8080/MediaServerResteasy/media/media/v1/count
+http://localhost:8080/MediaServerResteasy/media/images/v1/count
+http://localhost:8080/MediaServerResteasy/media/sounds/v1/count
+http://localhost:8080/MediaServerResteasy/media/videos/v1/count
+http://localhost:8080/MediaServerResteasy/media/attachments/v1/count
+
 
 GET Metadata , with a range (JSON):
 - only for 'images' right now : 
-> curl -v -L -G -d "minid=10&maxid=14" http://127.0.0.1:8080/MediaServerResteasy/media/images 
+curl -v -L -G -d "minid=10&maxid=14" http://127.0.0.1:8080/MediaServerResteasy/media/images 
 GET Metadata , with a range (JSON):
 - no range given (default is minid=0&maxid=20)
 > curl -v http://localhost:8080/MediaServerResteasy/media/images
 
-Get number of Images :
-curl http://localhost:8080/MediaServerResteasy/media/images/count
+
 
 GET MediaFile ( kolla URI till när man sätter en annan höjd ... /image/ ska det vara så ? ) 
 > http://localhost:8080/MediaServerResteasy/media/5f14c6c9-6fc6-4e56-8037-01a61560eb38?format=image/jpeg
