@@ -12,22 +12,26 @@ Get the binary
 http://localhost:8080/MediaServerResteasy/media/v1/863ec044-17cf-4c87-81cc-783ab13230ae?format=image/jpeg
 http://localhost:8080/MediaServerResteasy/media/image/v1/863ec044-17cf-4c87-81cc-783ab13230ae?format=image/jpeg&height=150
 
-Get number of Images :
+Get the number of entities :
 http://localhost:8080/MediaServerResteasy/media/media/v1/count
 http://localhost:8080/MediaServerResteasy/media/images/v1/count
 http://localhost:8080/MediaServerResteasy/media/sounds/v1/count
 http://localhost:8080/MediaServerResteasy/media/videos/v1/count
 http://localhost:8080/MediaServerResteasy/media/attachments/v1/count
 
+Get range of 
+http://localhost:8080/MediaServerResteasy/media/range/images/v1/
+http://localhost:8080/MediaServerResteasy/media/range/images/v1?minid=1&maxid=2
 
+beneatch is older than 2016-02-07 , needs a review
 GET Metadata , with a range (JSON):
 - only for 'images' right now : 
 curl -v -L -G -d "minid=10&maxid=14" http://127.0.0.1:8080/MediaServerResteasy/media/images 
 GET Metadata , with a range (JSON):
 - no range given (default is minid=0&maxid=20)
-> curl -v http://localhost:8080/MediaServerResteasy/media/images
+curl -v http://localhost:8080/MediaServerResteasy/media/images
 
-
+curl -v -L -G -d "minid=10&maxid=14" http://127.0.0.1:8080/MediaServerResteasy/media/videos/v1
 
 GET MediaFile ( kolla URI till när man sätter en annan höjd ... /image/ ska det vara så ? ) 
 > http://localhost:8080/MediaServerResteasy/media/5f14c6c9-6fc6-4e56-8037-01a61560eb38?format=image/jpeg
