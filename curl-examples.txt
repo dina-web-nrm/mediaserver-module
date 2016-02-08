@@ -19,7 +19,7 @@ http://localhost:8080/MediaServerResteasy/media/sounds/v1/count
 http://localhost:8080/MediaServerResteasy/media/videos/v1/count
 http://localhost:8080/MediaServerResteasy/media/attachments/v1/count
 
-Get range of 
+Get range of , below an 'images' example
 http://localhost:8080/MediaServerResteasy/media/range/images/v1/
 http://localhost:8080/MediaServerResteasy/media/range/images/v1?minid=1&maxid=2
 
