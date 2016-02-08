@@ -52,7 +52,7 @@ public class NewMediaResource {
     private MediaserviceBean service;
 
     @EJB
-    private StartupBean envBean;
+    protected StartupBean envBean;
 
     private ConcurrentHashMap envMap = null;
 
