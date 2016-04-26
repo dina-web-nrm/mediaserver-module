@@ -101,7 +101,7 @@ if you fail on setting up the datasource you will get the following error <br>
 * [ERROR] Failed to execute goal org.wildfly.plugins:wildfly-maven-plugin:1.0.2.Final:deploy (default-cli) on project mediaserver-ear: *
 
 #### Adding a datasource to wildfly
-[Adding datasource on gist] (https://gist.github.com/Inkimar/d81639a9cd41e96903bfbaa9d07decff)
+[Adding datasource to Wildfly from CLI ] (https://gist.github.com/Inkimar/d81639a9cd41e96903bfbaa9d07decff)
 ##How to connect to an external system
 A link-table in the database maps the ID from the external system to one or many media files.
 
