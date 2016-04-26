@@ -13,7 +13,6 @@ NB: inconsistent, version on @GET but not on @POST/@PUT/@DELETE <br>
 **URI:** http://localhost:8080/MediaServerResteasy/media/v1/<uuid>?content=metadata <p>
 http://localhost:8080/MediaServerResteasy/media/v1/863ec044-17cf-4c87-81cc-783ab13230ae**?content=metadata**<p>
 
-
 ## @Get media file : returns an image (?format=image/jpeg)
 **URI:** http://localhost:8080/MediaServerResteasy/media/v1/<uuid>?format=image/jpeg <p>
 http://localhost:8080/MediaServerResteasy/media/v1/863ec044-17cf-4c87-81cc-783ab13230ae**?format=image/jpeg**<p>
@@ -36,7 +35,8 @@ curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POS
 ### posting all content in a file
 when the content (metadata + base64-encoded file) is packaged in the file named i.e '@meta_and_image_corvux-corax.json' <p>
 curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d @meta_and_image_corvux-corax.json http://127.0.0.1:8080/MediaServerResteasy/media <p>
-location of this testfile '/docs/example-files/meta_and_image_corvux-corax.json'<p>
+location of this [testfile](https://github.com/DINA-Web/mediaserver-module/tree/master/docs/example-files)<p>
+
 
 ## @Get a media file(s) -filtering  on the tags 
 ### ex :  filter on the  tag 'view:sitting'
