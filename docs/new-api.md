@@ -63,6 +63,21 @@ curl -v -H "Accept: application/json" -H "Content-type: application/json" -X PUT
 **URI:**  http://localhost:8080/MediaServerResteasy/media/<uuid>
 curl -i -H "Accept: application/json" -X DELETE   http://localhost:8080/MediaServerResteasy/media/863ec044-17cf-4c87-81cc-783ab13230ae
 
+## @Get range
+where <type> can be 'media','images','sounds','videos','attachments' <p>
+if parameters are not given then minid is set to 0 and  maxid is limited to 15 <p>
+**URI:** http://localhost:8080/MediaServerResteasy/media/v1/range/<type> <p>
+**URI:** http://localhost:8080/MediaServerResteasy/media/v1/range/<type>?minid=0&maxid=14 <p>
+
+i.e  http://localhost:8080/MediaServerResteasy/media/v1/range/media?minid=0&maxid=2 <p>
+i.e  http://localhost:8080/MediaServerResteasy/media/v1/range/images?minid=0&maxid=6 <p>
+
+## @Get count
+where type can be 'media','images','sounds','videos','attachments' <p>
+**URI:** http://localhost:8080/MediaServerResteasy/media/<type>/v1/count<type> <p>
+
+i.e  http://localhost:8080/MediaServerResteasy/media/images/v1/count <p>
+
 ## Admin-stuff :
 @GET licenses<p>
 To see all the licenses that are available, only @GET <br>
