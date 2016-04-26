@@ -96,7 +96,8 @@ If not using the vagrant-project, then the basic steps are as follows:
 7. prompt>**mvn clean package wildfly:deploy**
 
 <br>
-NB: if you fail on setting up the datasource you will get the following error <br>
+#NB: 
+if you fail on setting up the datasource you will get the following error <br>
 * [ERROR] Failed to execute goal org.wildfly.plugins:wildfly-maven-plugin:1.0.2.Final:deploy (default-cli) on project mediaserver-ear: *
 ##How to connect to an external system
 A link-table in the database maps the ID from the external system to one or many media files.
