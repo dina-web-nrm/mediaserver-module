@@ -16,7 +16,8 @@ curl -v -H "Accept: application/json" http://localhost:8080/MediaServerResteasy/
 ## @Get media file : returns an image (?format=image/jpeg)
 http://localhost:8080/MediaServerResteasy/media/v1/863ec044-17cf-4c87-81cc-783ab13230ae**?format=image/jpeg**<p>
 
-## @Get image : returns an image with height 150 (?format=image/jpeg&height=150)
+## @Get image : returns an image with height xxx (?format=image/jpeg&height=xxx)
+for instance height=150 <br>
 http://localhost:8080/MediaServerResteasy/media/image/v1/863ec044-17cf-4c87-81cc-783ab13230ae**?format=image/jpeg&height=150**
 
 ## @Get a media file(s) -filtering  on the tags  'view=sitting'
