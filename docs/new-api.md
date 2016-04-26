@@ -10,26 +10,30 @@ The 3 images are packaged with the mediaserver :<p>
 NB: inconsistent, version on @GET but not on @POST/@PUT/@DELETE <br>
 
 ## @GET metadata : returns metadata (?content=metadata)
+**URI:** http://localhost:8080/MediaServerResteasy/media/v1/<uuid>?content=metadata <p>
 http://localhost:8080/MediaServerResteasy/media/v1/863ec044-17cf-4c87-81cc-783ab13230ae**?content=metadata**<p>
-curl -v -H "Accept: application/json" http://localhost:8080/MediaServerResteasy/media/v1/863ec044-17cf-4c87-81cc-783ab13230ae**?content=metadata** <p>
+
 
 ## @Get media file : returns an image (?format=image/jpeg)
+**URI:** http://localhost:8080/MediaServerResteasy/media/v1/<uuid>?format=image/jpeg <p>
 http://localhost:8080/MediaServerResteasy/media/v1/863ec044-17cf-4c87-81cc-783ab13230ae**?format=image/jpeg**<p>
 
 ## @Get image : returns an image with height xxx (?format=image/jpeg&height=xxx)
+**URI:** http://localhost:8080/MediaServerResteasy/media/image/v1/<uuid>?format=image/jpeg&height=xxx <p>
 for instance height=150 <br>
 http://localhost:8080/MediaServerResteasy/media/image/v1/863ec044-17cf-4c87-81cc-783ab13230ae**?format=image/jpeg&height=150**
 
 ## @Get a media file(s) -filtering  on the tags  'view=sitting'
 http://localhost:8080/MediaServerResteasy/media/v1/search**?view=sitting**
 
-## @Post base64-encoding file
-http://127.0.0.1:8080/MediaServerResteasy/media<p>
+## @Post a base64-encoded file
+**URI:** http://127.0.0.1:8080/MediaServerResteasy/media<p>
 * **observe on how to add the tags** : "taggar": ["view:facial", "music:reggea"] <p>
-(1) one-liner <p>
+### one-liner
 curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"owner":"dina","access":"public","licenseType":"CC BY","legend":"this is chess","fileName":"chess.png","fileDataBase64":"iVBORw0KGgoAAAANSUhEUgAAAAIAAAACAQMAAABIeJ9nAAAABlBMVEUAAAD///+l2Z/dAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4AQZCR0TdgIZugAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAAAMSURBVAjXY3BgaAAAAUQAwetZAwkAAAAASUVORK5CYII="}' http://localhost:8080/MediaServerResteasy/media <p>
 
-(2) when the content (metadata + base64-encoded file) is packaged in the file named i.e '@meta_and_image_corvux-corax.json' <p>
+### posting all content in a file
+when the content (metadata + base64-encoded file) is packaged in the file named i.e '@meta_and_image_corvux-corax.json' <p>
 curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d @meta_and_image_corvux-corax.json http://127.0.0.1:8080/MediaServerResteasy/media <p>
 location of this testfile '/docs/example-files/meta_and_image_corvux-corax.json'<p>
 
