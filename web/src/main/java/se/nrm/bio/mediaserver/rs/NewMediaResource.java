@@ -347,10 +347,10 @@ public class NewMediaResource {
 
     /**
      * http://localhost:8080/MediaServerResteasy/media/v1/range/media?minid=0&maxid=2
-     * 
+     *
      * @param minid
      * @param maxid
-     * @return 
+     * @return
      */
     @GET
     @Path("/v1/range/media")
@@ -379,7 +379,7 @@ public class NewMediaResource {
     /**
      * Returning list in a 'Response' ( GenericEntity ) :
      * http://www.adam-bien.com/roller/abien/entry/jax_rs_returning_a_list
-     * 
+     *
      * http://localhost:8080/MediaServerResteasy/media/v1/range/images?minid=0&maxid=2
      *
      * @DefaultValue(0)
@@ -413,11 +413,11 @@ public class NewMediaResource {
     }
 
     /**
-     *  http://localhost:8080/MediaServerResteasy/media/v1/range/sounds?minid=0&maxid=2
-     * 
+     * http://localhost:8080/MediaServerResteasy/media/v1/range/sounds?minid=0&maxid=2
+     *
      * @param minid
      * @param maxid
-     * @return 
+     * @return
      */
     @GET
     @Path("/v1/range/sounds")
@@ -443,10 +443,10 @@ public class NewMediaResource {
 
     /**
      * http://localhost:8080/MediaServerResteasy/media/v1/range/videos?minid=0&maxid=2
-     * 
+     *
      * @param minid
      * @param maxid
-     * @return 
+     * @return
      */
     @GET
     @Path("/v1/range/videos")
@@ -530,5 +530,23 @@ public class NewMediaResource {
     public Response countAttachments() {
         int count = service.count(Attachment.class);
         return Response.ok(count).build();
+    }
+
+    /**
+     *
+     */
+    @GET
+    @Path("/v1/base64/{uuid}")
+    @Produces({MediaType.APPLICATION_JSON, "image/jpeg", "image/png"})
+    public Response getVersionMedia(@PathParam("uuid") String mediaUUID, @QueryParam("content") String content, @QueryParam("format") String format) {
+        return this.getMedia(mediaUUID, content, format);
+    }
+
+    @DELETE
+    @Path("/v1/{uuid}")
+    @Consumes(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteVersionAll(@PathParam("uuid") String uuid) {
+        return this.deleteAll(uuid);
     }
 }
