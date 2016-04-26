@@ -492,12 +492,8 @@ public class NewMediaResource {
         return build;
     }
 
-    /**
-     *
-     * @return
-     */
     @GET
-    @Path("/media/v1/count")
+    @Path("/v1/media/count")
     @Produces("text/plain")
     public Response countMedia() {
         int count = service.count(Media.class);
@@ -505,7 +501,7 @@ public class NewMediaResource {
     }
 
     @GET
-    @Path("/images/v1/count")
+    @Path("/v1/images/count")
     @Produces("text/plain")
     public Response countImages() {
         int count = service.count(Image.class);
@@ -513,7 +509,7 @@ public class NewMediaResource {
     }
 
     @GET
-    @Path("/videos/v1/count")
+    @Path("/v1/videos/count")
     @Produces("text/plain")
     public Response countVideos() {
         int count = service.count(Video.class);
@@ -521,7 +517,7 @@ public class NewMediaResource {
     }
 
     @GET
-    @Path("/sounds/v1/count")
+    @Path("/v1/sounds/count")
     @Produces("text/plain")
     public Response countSounds() {
         int count = service.count(Sound.class);
@@ -529,7 +525,7 @@ public class NewMediaResource {
     }
 
     @GET
-    @Path("/attachments/v1/count")
+    @Path("/v1/attachments/count")
     @Produces("text/plain")
     public Response countAttachments() {
         int count = service.count(Attachment.class);
