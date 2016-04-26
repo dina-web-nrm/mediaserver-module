@@ -51,7 +51,7 @@ http://localhost:8080/MediaServerResteasy/media/v1/search?where=Reykjavik
 ## @Put 
 **URI:** http://127.0.0.1:8080/MediaServerResteasy/media<p>
 updating a
-* **must have**: key:value => mediaUUID:<UUID>  . ex.  "mediaUUID":"cf170678-7fc1-42e5-b7c2-cadac44250e2"
+* **must have**: key:value => mediaUUID:<UUID>  . i.e.  "mediaUUID":"cf170678-7fc1-42e5-b7c2-cadac44250e2" <p>
 *In this example: changing 'access' ='public' to 'access' ='private'* <p>
 curl -v -H "Accept: application/json" -H "Content-type: application/json" -X PUT -d  '{"mediaUUID":"863ec044-17cf-4c87-81cc-783ab13230ae","access":"public"}' http://127.0.0.1:8080/MediaServerResteasy/media
 
