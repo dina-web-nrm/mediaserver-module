@@ -29,7 +29,7 @@ http://localhost:8080/MediaServerResteasy/media/image/v1/863ec044-17cf-4c87-81cc
 curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"owner":"dina","access":"public","licenseType":"CC BY","legend":"this is chess","fileName":"chess.png","fileDataBase64":"iVBORw0KGgoAAAANSUhEUgAAAAIAAAACAQMAAABIeJ9nAAAABlBMVEUAAAD///+l2Z/dAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4AQZCR0TdgIZugAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAAAMSURBVAjXY3BgaAAAAUQAwetZAwkAAAAASUVORK5CYII="}' http://localhost:8080/MediaServerResteasy/media <p>
 
 ### posting an image with 6 metadata-attributes ( owner+access+licenseType+legend+fileName+taggar )
-adding tags <p>
+adding tags, *"taggar": ["where:Reykjavik", "sport:chess"]* <p>
 curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"owner":"dina","access":"public","licenseType":"CC BY","legend":"this is chess","taggar": ["where:Reykjavik", "sport:chess"], "fileName":"chess.png","fileDataBase64":"iVBORw0KGgoAAAANSUhEUgAAAAIAAAACAQMAAABIeJ9nAAAABlBMVEUAAAD///+l2Z/dAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4AQZCR0TdgIZugAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAAAMSURBVAjXY3BgaAAAAUQAwetZAwkAAAAASUVORK5CYII="}' http://localhost:8080/MediaServerResteasy/media
 
 ### posting all content in a file
