@@ -34,7 +34,6 @@ location of the file '/docs/example-files/meta_and_image_corvux-corax.json'<p>
 ## @Put base64-encoding 
 http://127.0.0.1:8080/MediaServerResteasy/media<p>
 * **must have**: key:value => mediaUUID:<UUID>  . ex.  "mediaUUID":"cf170678-7fc1-42e5-b7c2-cadac44250e2"
-* key:value => "fileDataBase64":"/9j/4AAQSkZJ /9k="  (where '/9j/4AAQSkZJ /9k=' is not a valid example of a file)<p>
 *This example: changing 'access' from 'public' to 'private'*<p>
 curl -v -H "Accept: application/json" -H "Content-type: application/json" -X PUT -d  '{"mediaUUID":"863ec044-17cf-4c87-81cc-783ab13230ae","access":"public"}' http://127.0.0.1:8080/MediaServerResteasy/media
 
