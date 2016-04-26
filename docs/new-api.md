@@ -39,17 +39,18 @@ location of this testfile '/docs/example-files/meta_and_image_corvux-corax.json'
 
 
 ## @Put 
-http://127.0.0.1:8080/MediaServerResteasy/media<p>
+**URI:** http://127.0.0.1:8080/MediaServerResteasy/media<p>
 * **must have**: key:value => mediaUUID:<UUID>  . ex.  "mediaUUID":"cf170678-7fc1-42e5-b7c2-cadac44250e2"
 *In this example: changing 'access' ='public' to 'access' ='private'*<p>
 curl -v -H "Accept: application/json" -H "Content-type: application/json" -X PUT -d  '{"mediaUUID":"863ec044-17cf-4c87-81cc-783ab13230ae","access":"public"}' http://127.0.0.1:8080/MediaServerResteasy/media
 
 ## @Delete
-**obs:** check the URI, not up to standard right now <p>
+**URI:**  http://localhost:8080/MediaServerResteasy/media/<uuid>
 curl -i -H "Accept: application/json" -X DELETE   http://localhost:8080/MediaServerResteasy/media/863ec044-17cf-4c87-81cc-783ab13230ae
 
 ## Admin-stuff :
 @GET licenses<p>
+To see all the licenses that are available, only @GET <br>
 * localhost:8080/MediaServerResteasy/media/admin/licenses
 
 
