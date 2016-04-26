@@ -7,6 +7,8 @@ The 3 images are packaged with the mediaserver :<p>
 * c41bd445-8796-4421-9b77-fd1e65b14974 (flying 'pica pica')
 * e4a3cf7d-add4-4949-a6ce-0f5594e61970 (sitting 'Corvus corax')
 
+NB: inconsistent, version on @GET but not on @POST/@PUT/@DELETE <br>
+
 ## @GET metadata : returns metadata (?content=metadata)
 http://localhost:8080/MediaServerResteasy/media/v1/863ec044-17cf-4c87-81cc-783ab13230ae**?content=metadata**<p>
 curl -v -H "Accept: application/json" http://localhost:8080/MediaServerResteasy/media/v1/863ec044-17cf-4c87-81cc-783ab13230ae**?content=metadata** <p>
@@ -28,7 +30,7 @@ curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POS
 
 (2) when the content (metadata + base64-encoded file) is packaged in the file named i.e '@meta_and_image_corvux-corax.json' <p>
 curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d @meta_and_image_corvux-corax.json http://127.0.0.1:8080/MediaServerResteasy/media <p>
-location of the file '/docs/example-files/meta_and_image_corvux-corax.json'<p>
+location of this testfile '/docs/example-files/meta_and_image_corvux-corax.json'<p>
 
 
 ## @Put 
