@@ -25,6 +25,10 @@ http://localhost:8080/MediaServerResteasy/media/v1/863ec044-17cf-4c87-81cc-783ab
 for instance height=150 <br>
 http://localhost:8080/MediaServerResteasy/media/image/v1/863ec044-17cf-4c87-81cc-783ab13230ae**?format=image/jpeg&height=150**
 
+## @Get the base64-encoded value
+**URI:** http://localhost:8080/MediaServerResteasy/media/base64/<uuid> <p>
+curl -v  http://localhost:8080/MediaServerResteasy/media/base64/55df001f-646b-47cf-a0c4-a3340a815615
+
 ## @Post a base64-encoded file
 **URI:** http://127.0.0.1:8080/MediaServerResteasy/media<p>
 
