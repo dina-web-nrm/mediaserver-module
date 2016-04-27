@@ -89,12 +89,19 @@ If not using the vagrant-project, then the basic steps are as follows:
 
 1. git clone
 2. install and populate the chosen database-engine, use the  liquibase-script
-3. install the Application server, [Wildfly 8.x](http://wildfly.org/downloads/)
-set up a datasource/datapool/JNDI-handle ( JNDI: java:/MediaDS)
-4. set up the filesystem-path for the media files
-5. cd '/mediaserver-module' ( root pom ) :<p>
-6. prompt><b> mvn clean package wildfly:deploy</b>
+3. install the Application server (AS), [Wildfly 8.x](http://wildfly.org/downloads/)
+4. Set up a datasource/datapool/JNDI-handle ( JNDI: java:/MediaDS), same JNDI-name as in the persistence.xml
+5. set up the filesystem-path for the media files
+6. cd '/mediaserver-module' ( root pom ) :<p>
+7. prompt>**mvn clean package wildfly:deploy**
 
+<br>
+###NB: 
+if you fail on setting up the datasource you will get the following error <br>
+* [ERROR] Failed to execute goal org.wildfly.plugins:wildfly-maven-plugin:1.0.2.Final:deploy (default-cli) on project mediaserver-ear: *
+
+#### Adding a datasource to wildfly
+[Adding datasource to Wildfly from CLI ] (https://gist.github.com/Inkimar/d81639a9cd41e96903bfbaa9d07decff)
 ##How to connect to an external system
 A link-table in the database maps the ID from the external system to one or many media files.
 

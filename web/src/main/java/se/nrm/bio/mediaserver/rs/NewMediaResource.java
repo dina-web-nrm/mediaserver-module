@@ -345,8 +345,15 @@ public class NewMediaResource {
 
     final int DEFAULT_LIMIT_SIZE_FOR_TYPES = 15;
 
+    /**
+     * http://localhost:8080/MediaServerResteasy/media/v1/range/media?minid=0&maxid=2
+     *
+     * @param minid
+     * @param maxid
+     * @return
+     */
     @GET
-    @Path("/range/media/v1")
+    @Path("/v1/range/media")
     @Produces({MediaType.APPLICATION_JSON})
     public Response getRangeOfMedia(
             @QueryParam("minid") Integer minid,
@@ -373,6 +380,8 @@ public class NewMediaResource {
      * Returning list in a 'Response' ( GenericEntity ) :
      * http://www.adam-bien.com/roller/abien/entry/jax_rs_returning_a_list
      *
+     * http://localhost:8080/MediaServerResteasy/media/v1/range/images?minid=0&maxid=2
+     *
      * @DefaultValue(0)
      *
      * @param minid
@@ -380,7 +389,7 @@ public class NewMediaResource {
      * @return
      */
     @GET
-    @Path("/range/images/v1")
+    @Path("/v1/range/images")
     @Produces({MediaType.APPLICATION_JSON})
     public Response getRangeOfImages(
             @QueryParam("minid") Integer minid,
@@ -403,8 +412,15 @@ public class NewMediaResource {
         return build;
     }
 
+    /**
+     * http://localhost:8080/MediaServerResteasy/media/v1/range/sounds?minid=0&maxid=2
+     *
+     * @param minid
+     * @param maxid
+     * @return
+     */
     @GET
-    @Path("/range/sounds/v1")
+    @Path("/v1/range/sounds")
     @Produces({MediaType.APPLICATION_JSON})
     public Response getRangeOfSounds(@QueryParam("minid") Integer minid, @QueryParam("maxid") Integer maxid) {
 
@@ -425,8 +441,15 @@ public class NewMediaResource {
         return build;
     }
 
+    /**
+     * http://localhost:8080/MediaServerResteasy/media/v1/range/videos?minid=0&maxid=2
+     *
+     * @param minid
+     * @param maxid
+     * @return
+     */
     @GET
-    @Path("/range/videos/v1")
+    @Path("/v1/range/videos")
     @Produces({MediaType.APPLICATION_JSON})
     public Response getRangeOfVideos(@QueryParam("minid") Integer minid, @QueryParam("maxid") Integer maxid) {
 
@@ -448,7 +471,7 @@ public class NewMediaResource {
     }
 
     @GET
-    @Path("/range/attachments/v1")
+    @Path("/v1/range/attachments")
     @Produces({MediaType.APPLICATION_JSON})
     public Response getRangeOfAttachment(@QueryParam("minid") Integer minid, @QueryParam("maxid") Integer maxid) {
 
@@ -469,12 +492,8 @@ public class NewMediaResource {
         return build;
     }
 
-    /**
-     *
-     * @return
-     */
     @GET
-    @Path("/media/v1/count")
+    @Path("/v1/media/count")
     @Produces("text/plain")
     public Response countMedia() {
         int count = service.count(Media.class);
@@ -482,7 +501,7 @@ public class NewMediaResource {
     }
 
     @GET
-    @Path("/images/v1/count")
+    @Path("/v1/images/count")
     @Produces("text/plain")
     public Response countImages() {
         int count = service.count(Image.class);
@@ -490,7 +509,7 @@ public class NewMediaResource {
     }
 
     @GET
-    @Path("/videos/v1/count")
+    @Path("/v1/videos/count")
     @Produces("text/plain")
     public Response countVideos() {
         int count = service.count(Video.class);
@@ -498,7 +517,7 @@ public class NewMediaResource {
     }
 
     @GET
-    @Path("/sounds/v1/count")
+    @Path("/v1/sounds/count")
     @Produces("text/plain")
     public Response countSounds() {
         int count = service.count(Sound.class);
@@ -506,10 +525,28 @@ public class NewMediaResource {
     }
 
     @GET
-    @Path("/attachments/v1/count")
+    @Path("/v1/attachments/count")
     @Produces("text/plain")
     public Response countAttachments() {
         int count = service.count(Attachment.class);
         return Response.ok(count).build();
+    }
+
+    /**
+     *
+     */
+    @GET
+    @Path("/v1/base64/{uuid}")
+    @Produces({MediaType.APPLICATION_JSON, "image/jpeg", "image/png"})
+    public Response getVersionMedia(@PathParam("uuid") String mediaUUID, @QueryParam("content") String content, @QueryParam("format") String format) {
+        return this.getMedia(mediaUUID, content, format);
+    }
+
+    @DELETE
+    @Path("/v1/{uuid}")
+    @Consumes(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteVersionAll(@PathParam("uuid") String uuid) {
+        return this.deleteAll(uuid);
     }
 }
