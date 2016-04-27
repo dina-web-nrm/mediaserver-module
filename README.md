@@ -99,13 +99,14 @@ set up a datasource/datapool/JNDI-handle ( JNDI: java:/MediaDS)
 A link-table in the database maps the ID from the external system to one or many media files.
 
 ## RESTful-API
-See the RESTful-API documenation ... found here (@TODO)
+[apiary](http://docs.media8.apiary.io/#)
 
-1. @post mediafile
-2. @get mediafile
-3. @get derivate of an image-file
-4. @update
-5. @delete
+1. @POST mediafile
+2. @GET the metadata of the mediafile
+3. @GET the mediafile
+3. @GET a derivate of an image-file ( i.e : height = 150)
+4. @UPDATE the mediafile
+5. @DELETE the mediafile
 
 ##How to add supported licenses
 Licenses are stored in a separate license-table<p>
