@@ -83,7 +83,9 @@ The Mediaserver is database- and application server agnostic. <p>
 The guiding principle is 'ease of installation and management'.
 
 ##How to install
-see the 'turn-key vagrant'-project at [dw-media](https://github.com/DINA-Web/dw-media) 
+'turn-key' vagrant-project at [dw-media](https://github.com/DINA-Web/dw-media) <br>
+'turn-key' docker-project at [dw-media](https://github.com/Inkimar/dw-media) <br>
+
 
 If not using the vagrant-project, then the basic steps are as follows:
 
@@ -106,7 +108,7 @@ if you fail on setting up the datasource you will get the following error <br>
 A link-table in the database maps the ID from the external system to one or many media files.
 
 ## RESTful-API
-[apiary](http://docs.media8.apiary.io/#)
+Documentation according to [apiary](http://docs.media8.apiary.io/#)
 
 1. @POST mediafile
 2. @GET the metadata of the mediafile
