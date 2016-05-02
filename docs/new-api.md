@@ -39,10 +39,19 @@ curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POS
 With tags: **"taggar": ["where:Reykjavik", "sport:chess"]** <p>
 curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"owner":"dina","access":"public","licenseType":"CC BY","legend":"this is chess","taggar": ["where:Reykjavik", "sport:chess"], "fileName":"chess.png","fileDataBase64":"iVBORw0KGgoAAAANSUhEUgAAAAIAAAACAQMAAABIeJ9nAAAABlBMVEUAAAD///+l2Z/dAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4AQZCR0TdgIZugAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAAAMSURBVAjXY3BgaAAAAUQAwetZAwkAAAAASUVORK5CYII="}' http://localhost:8080/MediaServerResteasy/media
 
-### posting all content in one single file file
-Where the content (metadata + base64-encoded file) is packaged in the file named i.e '@meta_and_image_corvux-corax.json' <p>
-curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d @meta_and_image_corvux-corax.json http://127.0.0.1:8080/MediaServerResteasy/media <p>
-location of this [testfile](https://github.com/DINA-Web/mediaserver-module/tree/master/docs/example-files)<p>
+## @Post a base64-encoded file ( metadata + base64 in same file)
+post 3 images with <p>
+location of  [testfile](https://github.com/DINA-Web/mediaserver-module/tree/master/docs/example-files)<p>
+
+### posting @corvuxcorax.b64
+curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d @corvuxcorax.b64 http://127.0.0.1:8080/MediaServerResteasy/media
+
+
+### posting @picapica.b64
+curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d @picapica.b64 http://127.0.0.1:18080/MediaServerResteasy/media
+
+### posting @picapica-fly.b64
+curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d @picapica.b64 http://127.0.0.1:18080/MediaServerResteasy/media
 
 
 ## @Get a media file(s) -filtering  on the tags 
