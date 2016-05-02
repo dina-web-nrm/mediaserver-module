@@ -15,10 +15,8 @@
 1. $mvn clean install
 
 ## If deploying in Glassfish 
-1. update the glassfish-resources.xml (in module xyz )
+1. update the glassfish-resources.xml
 2. set URL to database
-3. <property name="URL" value="jdbc:mysql://localhost:<port>/nrm_demo_media"/> 
-default port is = 3306 <br>
 
 ##  If deploying to Wildfly.
 1. Create a JNDI-connection according to the following.
