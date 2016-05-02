@@ -3,7 +3,7 @@
 ## Check out the docker-machine at @ToDO else do the steps
 1. Create a database and a user on your machine.
 2. for instance : db = 'media', user='mediaserver'/ psw='mediaserver'
-3. Update the liquibase.properties-file,  use the above db + user/psw
+3. Update the **liquibase.properties**-file,  use the above db + user/psw
 
 ### log in as root to MySQL 
 
@@ -15,11 +15,11 @@
 1. $mvn clean install
 
 ## If deploying in Glassfish 
-1. update thglassfish-resources.xml (in module xyz )
+1. update the glassfish-resources.xml (in module xyz )
 2. set URL to database
 3. <property name="URL" value="jdbc:mysql://localhost:<port>/nrm_demo_media"/> 
 default port is = 3306 <br>
 
 ##  If deploying to Wildfly.
-1.Create a JNDI-connection according to the following -> 
+1. Create a JNDI-connection according to the following.
 [Wildfly] (https://gist.github.com/Inkimar/d81639a9cd41e96903bfbaa9d07decff)
