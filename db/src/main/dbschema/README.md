@@ -8,7 +8,8 @@
 ### log in as root to MySQL 
 
 1. mysql> CREATE database media;
-2. mysql> GRANT ALL PRIVILEGES ON nrm_demo_media.* To 'media'@'localhost' IDENTIFIED BY 'mediaserver';
+2. mysql> CREATE USER 'mediaserver'@'localhost' IDENTIFIED BY 'mediaserver';
+3. mysql> GRANT ALL PRIVILEGES ON media . * TO 'mediaserver'@'localhost';
 
 ###  Execute the 'db-project by running :
 1. $mvn clean install
