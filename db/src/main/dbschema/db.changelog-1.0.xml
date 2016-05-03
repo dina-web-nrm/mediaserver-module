@@ -10,7 +10,4 @@
     <changeSet id="default-values-for-admin" author="ingimar">
         <sqlFile path="src/main/dbschema/default-insert-for-admin_config.sql"/>
     </changeSet>
-    <changeSet id="default-values" author="ingimar">
-        <sqlFile path="src/main/dbschema/default-insert-for-demo.sql"/>
-    </changeSet>
 </databaseChangeLog>
