@@ -1,10 +1,13 @@
 [![Build Status](https://api.travis-ci.org/DINA-Web/mediaserver-module.svg?branch=master)](https://api.travis-ci.org/DINA-Web/mediaserver-module)
+
 # mediaserver-module
+
 Mediaserver core module
 
 ![alt mediaserver in fokus](docs/Mediaserver-module(1-2).png)
 
 # Background & Purpose
+Restful-API -> documentation according to [apiary](http://docs.media8.apiary.io/#).<p>
 The Mediaserver (aka. 'attachment server')  handles media files and their metadata.<p>
 The functionality is implemented using the RESTful-architecture style <p>
 
@@ -107,12 +110,12 @@ if you fail on setting up the datasource you will get the following error <br>
 ##How to connect to an external system
 A link-table in the database maps the ID from the external system to one or many media files.
 
-## RESTful-API
+##RESTful-API
 Documentation according to [apiary](http://docs.media8.apiary.io/#)
 
 1. @POST mediafile
 2. @GET the metadata of the mediafile
-3. @GET the mediafile
+3. @GET the mediafile itself
 3. @GET a derivate of an image-file ( i.e : height = 150)
 4. @UPDATE the mediafile
 5. @DELETE the mediafile
