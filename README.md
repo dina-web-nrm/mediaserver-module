@@ -1,10 +1,13 @@
 [![Build Status](https://api.travis-ci.org/DINA-Web/mediaserver-module.svg?branch=master)](https://api.travis-ci.org/DINA-Web/mediaserver-module)
+
 # mediaserver-module
+
 Mediaserver core module
 
 ![alt mediaserver in fokus](docs/Mediaserver-module(1-2).png)
 
 # Background & Purpose
+Restful-API -> documentation according to [apiary](http://docs.media8.apiary.io/#).<p>
 The Mediaserver (aka. 'attachment server')  handles media files and their metadata.<p>
 The functionality is implemented using the RESTful-architecture style <p>
 
@@ -83,29 +86,39 @@ The Mediaserver is database- and application server agnostic. <p>
 The guiding principle is 'ease of installation and management'.
 
 ##How to install
-see the 'turn-key vagrant'-project at [dw-media](https://github.com/DINA-Web/dw-media) 
+'turn-key' vagrant-project at [dw-media](https://github.com/DINA-Web/dw-media) <br>
+'turn-key' docker-project at [dw-media](https://github.com/Inkimar/dw-media) <br>
+
 
 If not using the vagrant-project, then the basic steps are as follows:
 
 1. git clone
 2. install and populate the chosen database-engine, use the  liquibase-script
-3. install the Application server, [Wildfly 8.x](http://wildfly.org/downloads/)
-set up a datasource/datapool/JNDI-handle ( JNDI: java:/MediaDS)
-4. set up the filesystem-path for the media files
-5. cd '/mediaserver-module' ( root pom ) :<p>
-6. prompt><b> mvn clean package wildfly:deploy</b>
+3. install the Application server (AS), [Wildfly 8.x](http://wildfly.org/downloads/)
+4. Set up a datasource/datapool/JNDI-handle ( JNDI: java:/MediaDS), same JNDI-name as in the persistence.xml
+5. set up the filesystem-path for the media files
+6. cd '/mediaserver-module' ( root pom ) :<p>
+7. prompt>**mvn clean package wildfly:deploy**
 
+<br>
+###NB: 
+if you fail on setting up the datasource you will get the following error <br>
+* [ERROR] Failed to execute goal org.wildfly.plugins:wildfly-maven-plugin:1.0.2.Final:deploy (default-cli) on project mediaserver-ear: *
+
+#### Adding a datasource to wildfly
+[Adding datasource to Wildfly from CLI ] (https://gist.github.com/Inkimar/d81639a9cd41e96903bfbaa9d07decff)
 ##How to connect to an external system
 A link-table in the database maps the ID from the external system to one or many media files.
 
-## RESTful-API
-See the RESTful-API documenation ... found here (@TODO)
+##RESTful-API
+Documentation according to [apiary](http://docs.media8.apiary.io/#)
 
-1. @post mediafile
-2. @get mediafile
-3. @get derivate of an image-file
-4. @update
-5. @delete
+1. @POST mediafile
+2. @GET the metadata of the mediafile
+3. @GET the mediafile itself
+3. @GET a derivate of an image-file ( i.e : height = 150)
+4. @UPDATE the mediafile
+5. @DELETE the mediafile
 
 ##How to add supported licenses
 Licenses are stored in a separate license-table<p>
