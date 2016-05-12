@@ -66,6 +66,7 @@
         </dependency>
         
         <!-- Import the JAX-RS API, we use provided scope as the API is included in JBoss WildFly -->
+        <!-- in wildfly 8.2.0 , resteasy-jaxrs-3.0.10.Final.jar -->
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>jaxrs-api</artifactId>
@@ -191,6 +192,12 @@
             <!--<version>4.11</version>-->
             <version>4.11</version>
             <scope>test</scope>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>2.4</version>
             <type>jar</type>
         </dependency>
     </dependencies>

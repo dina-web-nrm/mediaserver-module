@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -32,6 +33,9 @@ import org.apache.commons.codec.binary.*;
 import org.apache.log4j.Logger;
 import org.apache.tika.Tika;
 import org.apache.tika.io.IOUtils;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
 import se.nrm.bio.mediaserver.business.MediaserviceBean;
 import se.nrm.bio.mediaserver.business.StartupBean;
 import se.nrm.bio.mediaserver.domain.Attachment;
@@ -75,19 +79,31 @@ public class NewMediaResource {
             @QueryParam("format") String format) {
         logger.info("uuid " + mediaUUID);
         Response resp = Response.status(Response.Status.NOT_FOUND).entity("Entity not found for UUID: " + mediaUUID).build();
-        
+
         if (content != null && content.equals("metadata")) {
             logger.info("fetching metadata ");
             Media media = (Media) service.get(mediaUUID);
-        
-//            return Response.status(Response.Status.OK).entity(media).header("apiVersion", "1.0").build();
-            return Response.status(Response.Status.OK).entity(media).header("apiVersion", "1.0").build();
+            Response resp1 = Response.status(Response.Status.OK).entity(media).build();
+            return this.getHeader(resp1);
         }
 
         if (format != null) {
             logger.info("fetching mediafile with format " + format);
             resp = getMedia(mediaUUID, format);
         }
+        return resp;
+    }
+
+    private Response getHeader(Response resp) {
+
+        DateTime dt = new DateTime();
+        DateTimeFormatter fmt = ISODateTimeFormat.dateTime();
+        String nowAsISO = fmt.print(dt);
+
+        resp.getHeaders().add("apiVersion", "2.2");
+        resp.getHeaders().add("callDate", nowAsISO);
+        resp.getHeaders().add("statuscode", Response.Status.OK.getStatusCode());
+    
         return resp;
     }
 
