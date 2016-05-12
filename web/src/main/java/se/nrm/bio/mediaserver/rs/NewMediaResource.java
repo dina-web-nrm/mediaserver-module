@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -15,6 +16,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
+import javax.ws.rs.HEAD;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -57,10 +59,7 @@ public class NewMediaResource {
     private ConcurrentHashMap envMap = null;
 
     /**
-     * curl
-     * http://localhost:8080/MediaServerResteasy/media/863ec044-17cf-4c87-81cc-783ab13230ae?content=metadata
-     * http://localhost:8080/MediaServerResteasy/media/863ec044-17cf-4c87-81cc-783ab13230ae?format=image/jpeg
-     *
+     * @Path("/v1/{uuid}")
      * @param mediaUUID
      * @param content
      * @param format
@@ -68,23 +67,28 @@ public class NewMediaResource {
      * @return binary or metadata.
      */
     @GET
-    @Path("/v1/{uuid}")
+    @HEAD
+    @Path("/v1/{uuid: [\\w]{8}-[\\w]{4}-[\\w]{4}-[\\w]{4}-[\\w]{12}}")
     @Produces({MediaType.APPLICATION_JSON, "image/jpeg", "image/png", "audio/ogg", "audio/wav", "audio/wav", "video/mp4", "video/ogg"})
     public Response getMetadata(@PathParam("uuid") String mediaUUID,
             @QueryParam("content") String content,
             @QueryParam("format") String format) {
         logger.info("uuid " + mediaUUID);
+        Response resp = Response.status(Response.Status.NOT_FOUND).entity("Entity not found for UUID: " + mediaUUID).build();
+        
         if (content != null && content.equals("metadata")) {
             logger.info("fetching metadata ");
             Media media = (Media) service.get(mediaUUID);
-            return Response.status(Response.Status.OK).entity(media).build();
+        
+//            return Response.status(Response.Status.OK).entity(media).header("apiVersion", "1.0").build();
+            return Response.status(Response.Status.OK).entity(media).header("apiVersion", "1.0").build();
         }
 
         if (format != null) {
             logger.info("fetching mediafile with format " + format);
-            return getMedia(mediaUUID, format);
+            resp = getMedia(mediaUUID, format);
         }
-        return Response.status(Response.Status.NOT_FOUND).entity("Entity not found for UUID: " + mediaUUID).build();
+        return resp;
     }
 
     @GET
@@ -129,7 +133,7 @@ public class NewMediaResource {
      * @return
      */
     @GET
-    @Path("/image/v1/{uuid}")
+    @Path("/v1/image/{uuid}")
     @Produces({"image/jpeg", "image/png"})
     public Response getImageByDimension(
             @PathParam("uuid") String uuid,
@@ -205,9 +209,6 @@ public class NewMediaResource {
     }
 
     /**
-     * curl -i -H "Accept: application/json" -X DELETE 
-     * http://localhost:8080/MediaServerResteasy/media/f4bbe574-68eb-4423-b9e4-4384c6a3353c
-     *
      * @param uuid
      * @return
      */
@@ -253,7 +254,12 @@ public class NewMediaResource {
         return deleted;
     }
 
-    // https://docs.oracle.com/javase/8/docs/api/java/util/Base64.Decoder.html
+    /**
+     * https://docs.oracle.com/javase/8/docs/api/java/util/Base64.Decoder.html
+     *
+     * @param file
+     * @return
+     */
     private static Response returnBase64(File file) {
         if (!file.exists()) {
             logger.info("File does not exist");
@@ -346,52 +352,19 @@ public class NewMediaResource {
     final int DEFAULT_LIMIT_SIZE_FOR_TYPES = 15;
 
     /**
-     * http://localhost:8080/MediaServerResteasy/media/v1/range/media?minid=0&maxid=2
-     *
-     * @param minid
-     * @param maxid
-     * @return
-     */
-    @GET
-    @Path("/v1/range/media")
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response getRangeOfMedia(
-            @QueryParam("minid") Integer minid,
-            @QueryParam("maxid") Integer maxid) {
-
-        if (minid == null || maxid == null) {
-            minid = 0;
-            maxid = DEFAULT_LIMIT_SIZE_FOR_TYPES;
-        }
-
-        if (minid > maxid || (maxid - minid) > 1000) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
-
-        List<Media> range = service.findRange(Media.class, new int[]{minid, maxid});
-        GenericEntity<List<Media>> list = new GenericEntity<List<Media>>(range) {
-        };
-
-        Response build = Response.ok(list).build();
-        return build;
-    }
-
-    /**
      * Returning list in a 'Response' ( GenericEntity ) :
      * http://www.adam-bien.com/roller/abien/entry/jax_rs_returning_a_list
      *
-     * http://localhost:8080/MediaServerResteasy/media/v1/range/images?minid=0&maxid=2
-     *
-     * @DefaultValue(0)
-     *
+     * @param type
      * @param minid
      * @param maxid
      * @return
      */
     @GET
-    @Path("/v1/range/images")
+    @Path("/v1/{type}")
     @Produces({MediaType.APPLICATION_JSON})
     public Response getRangeOfImages(
+            @PathParam("type") String type,
             @QueryParam("minid") Integer minid,
             @QueryParam("maxid") Integer maxid) {
 
@@ -403,138 +376,46 @@ public class NewMediaResource {
         if (minid > maxid || (maxid - minid) > 1000) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
+        List<Media> range = Collections.EMPTY_LIST;
+        if (type.equals("images")) {
+            range = service.findRange(Image.class, new int[]{minid, maxid});
+        } else if (type.equals("sounds")) {
+            range = service.findRange(Sound.class, new int[]{minid, maxid});
+        } else if (type.equals("videos")) {
+            range = service.findRange(Video.class, new int[]{minid, maxid});
+        } else if (type.equals("attachments")) {
+            range = service.findRange(Attachment.class, new int[]{minid, maxid});
+        } else if (type.equals("all")) {
+            range = service.findRange(Media.class, new int[]{minid, maxid});
+        }
 
-        List<Media> range = service.findRange(Image.class, new int[]{minid, maxid});
         GenericEntity<List<Media>> list = new GenericEntity<List<Media>>(range) {
         };
-
-        Response build = Response.ok(list).build();
-        return build;
-    }
-
-    /**
-     * http://localhost:8080/MediaServerResteasy/media/v1/range/sounds?minid=0&maxid=2
-     *
-     * @param minid
-     * @param maxid
-     * @return
-     */
-    @GET
-    @Path("/v1/range/sounds")
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response getRangeOfSounds(@QueryParam("minid") Integer minid, @QueryParam("maxid") Integer maxid) {
-
-        if (minid == null || maxid == null) {
-            minid = 0;
-            maxid = DEFAULT_LIMIT_SIZE_FOR_TYPES;
-        }
-
-        if (minid > maxid || (maxid - minid) > 1000) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
-
-        List<Media> range = service.findRange(Sound.class, new int[]{minid, maxid});
-        GenericEntity<List<Media>> list = new GenericEntity<List<Media>>(range) {
-        };
-
-        Response build = Response.ok(list).build();
-        return build;
-    }
-
-    /**
-     * http://localhost:8080/MediaServerResteasy/media/v1/range/videos?minid=0&maxid=2
-     *
-     * @param minid
-     * @param maxid
-     * @return
-     */
-    @GET
-    @Path("/v1/range/videos")
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response getRangeOfVideos(@QueryParam("minid") Integer minid, @QueryParam("maxid") Integer maxid) {
-
-        if (minid == null || maxid == null) {
-            minid = 0;
-            maxid = DEFAULT_LIMIT_SIZE_FOR_TYPES;
-        }
-
-        if (minid > maxid || (maxid - minid) > 1000) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
-
-        List<Media> range = service.findRange(Video.class, new int[]{minid, maxid});
-        GenericEntity<List<Media>> list = new GenericEntity<List<Media>>(range) {
-        };
-
         Response build = Response.ok(list).build();
         return build;
     }
 
     @GET
-    @Path("/v1/range/attachments")
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response getRangeOfAttachment(@QueryParam("minid") Integer minid, @QueryParam("maxid") Integer maxid) {
+    @Path("/v1/{type}/count")
+    @Produces("text/plain")
+    public Response countMedia(@PathParam("type") String type) {
+        int count = 0;
 
-        if (minid == null || maxid == null) {
-            minid = 0;
-            maxid = DEFAULT_LIMIT_SIZE_FOR_TYPES;
+        if (type.equals("images")) {
+            count = service.count(Image.class);
+        } else if (type.equals("sounds")) {
+            count = service.count(Sound.class);
+        } else if (type.equals("videos")) {
+            count = service.count(Video.class);
+        } else if (type.equals("attachments")) {
+            count = service.count(Attachment.class);
+        } else if (type.equals("all")) {
+            count = service.count(Media.class);
         }
 
-        if (minid > maxid || (maxid - minid) > 1000) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
-
-        List<Media> range = service.findRange(Attachment.class, new int[]{minid, maxid});
-        GenericEntity<List<Media>> list = new GenericEntity<List<Media>>(range) {
-        };
-
-        Response build = Response.ok(list).build();
-        return build;
-    }
-
-    @GET
-    @Path("/v1/media/count")
-    @Produces("text/plain")
-    public Response countMedia() {
-        int count = service.count(Media.class);
         return Response.ok(count).build();
     }
 
-    @GET
-    @Path("/v1/images/count")
-    @Produces("text/plain")
-    public Response countImages() {
-        int count = service.count(Image.class);
-        return Response.ok(count).build();
-    }
-
-    @GET
-    @Path("/v1/videos/count")
-    @Produces("text/plain")
-    public Response countVideos() {
-        int count = service.count(Video.class);
-        return Response.ok(count).build();
-    }
-
-    @GET
-    @Path("/v1/sounds/count")
-    @Produces("text/plain")
-    public Response countSounds() {
-        int count = service.count(Sound.class);
-        return Response.ok(count).build();
-    }
-
-    @GET
-    @Path("/v1/attachments/count")
-    @Produces("text/plain")
-    public Response countAttachments() {
-        int count = service.count(Attachment.class);
-        return Response.ok(count).build();
-    }
-
-    /**
-     *
-     */
     @GET
     @Path("/v1/base64/{uuid}")
     @Produces({MediaType.APPLICATION_JSON, "image/jpeg", "image/png"})
@@ -549,4 +430,101 @@ public class NewMediaResource {
     public Response deleteVersionAll(@PathParam("uuid") String uuid) {
         return this.deleteAll(uuid);
     }
+    // <editor-fold defaultstate="collapsed" desc="using this before, one method for every 'type' as in 'media'/'image' and so forth.">
+//     @GET
+//    @Path("/v1/range/media")
+//    @Produces({MediaType.APPLICATION_JSON})
+//    public Response getRangeOfMedia(
+//            @QueryParam("minid") Integer minid,
+//            @QueryParam("maxid") Integer maxid) {
+//
+//        if (minid == null || maxid == null) {
+//            minid = 0;
+//            maxid = DEFAULT_LIMIT_SIZE_FOR_TYPES;
+//        }
+//
+//        if (minid > maxid || (maxid - minid) > 1000) {
+//            return Response.status(Response.Status.NOT_FOUND).build();
+//        }
+//
+//        List<Media> range = service.findRange(Media.class, new int[]{minid, maxid});
+//        GenericEntity<List<Media>> list = new GenericEntity<List<Media>>(range) {
+//        };
+//
+//        Response build = Response.ok(list).build();
+//        return build;
+//    }
+//    
+//    @GET
+//    @Path("/v1/sounds")
+//    @Produces({MediaType.APPLICATION_JSON})
+//    public Response getRangeOfSounds(@QueryParam("minid") Integer minid, @QueryParam("maxid") Integer maxid) {
+//
+//        if (minid == null || maxid == null) {
+//            minid = 0;
+//            maxid = DEFAULT_LIMIT_SIZE_FOR_TYPES;
+//        }
+//
+//        if (minid > maxid || (maxid - minid) > 1000) {
+//            return Response.status(Response.Status.NOT_FOUND).build();
+//        }
+//
+//        List<Media> range = service.findRange(Sound.class, new int[]{minid, maxid});
+//        GenericEntity<List<Media>> list = new GenericEntity<List<Media>>(range) {
+//        };
+//
+//        Response build = Response.ok(list).build();
+//        return build;
+//    }
+//
+//    /**
+//     *
+//     * @param minid
+//     * @param maxid
+//     * @return
+//     */
+//    @GET
+//    @Path("/v1/videos")
+//    @Produces({MediaType.APPLICATION_JSON})
+//    public Response getRangeOfVideos(@QueryParam("minid") Integer minid, @QueryParam("maxid") Integer maxid) {
+//
+//        if (minid == null || maxid == null) {
+//            minid = 0;
+//            maxid = DEFAULT_LIMIT_SIZE_FOR_TYPES;
+//        }
+//
+//        if (minid > maxid || (maxid - minid) > 1000) {
+//            return Response.status(Response.Status.NOT_FOUND).build();
+//        }
+//
+//        List<Media> range = service.findRange(Video.class, new int[]{minid, maxid});
+//        GenericEntity<List<Media>> list = new GenericEntity<List<Media>>(range) {
+//        };
+//
+//        Response build = Response.ok(list).build();
+//        return build;
+//    }
+//
+//    @GET
+//    @Path("/v1/attachments")
+//    @Produces({MediaType.APPLICATION_JSON})
+//    public Response getRangeOfAttachment(@QueryParam("minid") Integer minid, @QueryParam("maxid") Integer maxid) {
+//
+//        if (minid == null || maxid == null) {
+//            minid = 0;
+//            maxid = DEFAULT_LIMIT_SIZE_FOR_TYPES;
+//        }
+//
+//        if (minid > maxid || (maxid - minid) > 1000) {
+//            return Response.status(Response.Status.NOT_FOUND).build();
+//        }
+//
+//        List<Media> range = service.findRange(Attachment.class, new int[]{minid, maxid});
+//        GenericEntity<List<Media>> list = new GenericEntity<List<Media>>(range) {
+//        };
+//
+//        Response build = Response.ok(list).build();
+//        return build;
+//    }
+    // </editor-fold>
 }
