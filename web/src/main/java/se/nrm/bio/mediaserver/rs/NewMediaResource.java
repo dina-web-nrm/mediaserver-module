@@ -84,7 +84,7 @@ public class NewMediaResource {
             logger.info("fetching metadata ");
             Media media = (Media) service.get(mediaUUID);
             Response resp1 = Response.status(Response.Status.OK).entity(media).build();
-            return this.getHeader(resp1);
+            return resp1;
         }
 
         if (format != null) {
