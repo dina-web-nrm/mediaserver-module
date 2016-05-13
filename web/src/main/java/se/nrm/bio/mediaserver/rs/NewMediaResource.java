@@ -103,9 +103,8 @@ public class NewMediaResource {
         if (content != null && content.equals("metadata")) {
             logger.info("fetching metadata ");
             Media media = (Media) service.get(mediaUUID);
-            Metadata metadata = MetadataFactory.getMetadata("ground");
+            Metadata metadata = MetadataFactory.getMetadata("ground","2.0");
             Wrapper wrapper = new Wrapper(metadata, media);
-
             Response resp1 = Response.status(Response.Status.OK).entity(wrapper).build();
             return resp1;
         }
