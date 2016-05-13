@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -33,15 +32,15 @@ import org.apache.commons.codec.binary.*;
 import org.apache.log4j.Logger;
 import org.apache.tika.Tika;
 import org.apache.tika.io.IOUtils;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
 import se.nrm.bio.mediaserver.business.MediaserviceBean;
 import se.nrm.bio.mediaserver.business.StartupBean;
 import se.nrm.bio.mediaserver.domain.Attachment;
 import se.nrm.bio.mediaserver.domain.Image;
 import se.nrm.bio.mediaserver.domain.Media;
+import se.nrm.bio.mediaserver.domain.Metadata;
+import se.nrm.bio.mediaserver.domain.MetadataFactory;
 import se.nrm.bio.mediaserver.domain.Sound;
+import se.nrm.bio.mediaserver.domain.Wrapper;
 import se.nrm.bio.mediaserver.domain.Video;
 import se.nrm.mediaserver.resteasy.util.PathHelper;
 
@@ -74,7 +73,8 @@ public class NewMediaResource {
     @HEAD
     @Path("/v1/{uuid: [\\w]{8}-[\\w]{4}-[\\w]{4}-[\\w]{4}-[\\w]{12}}")
     @Produces({MediaType.APPLICATION_JSON, "image/jpeg", "image/png", "audio/ogg", "audio/wav", "audio/wav", "video/mp4", "video/ogg"})
-    public Response getMetadata(@PathParam("uuid") String mediaUUID,
+    public Response getMetadata(
+            @PathParam("uuid") String mediaUUID,
             @QueryParam("content") String content,
             @QueryParam("format") String format) {
         logger.info("uuid " + mediaUUID);
@@ -83,8 +83,7 @@ public class NewMediaResource {
         if (content != null && content.equals("metadata")) {
             logger.info("fetching metadata ");
             Media media = (Media) service.get(mediaUUID);
-            Response resp1 = Response.status(Response.Status.OK).entity(media).build();
-            return resp1;
+            return Response.status(Response.Status.OK).entity(media).build();
         }
 
         if (format != null) {
@@ -93,17 +92,28 @@ public class NewMediaResource {
         }
         return resp;
     }
+    @GET
+    @HEAD
+    @Path("/v2/{uuid: [\\w]{8}-[\\w]{4}-[\\w]{4}-[\\w]{4}-[\\w]{12}}")
+    @Produces({MediaType.APPLICATION_JSON, "image/jpeg", "image/png", "audio/ogg", "audio/wav", "audio/wav", "video/mp4", "video/ogg"})
+    public Response getMetadataV2(@PathParam("uuid") String mediaUUID,@QueryParam("content") String content,@QueryParam("format") String format) {
+        logger.info("uuid " + mediaUUID);
+        Response resp = Response.status(Response.Status.NOT_FOUND).entity("Entity not found for UUID: " + mediaUUID).build();
 
-    private Response getHeader(Response resp) {
+        if (content != null && content.equals("metadata")) {
+            logger.info("fetching metadata ");
+            Media media = (Media) service.get(mediaUUID);
+            Metadata metadata = MetadataFactory.getMetadata("ground");
+            Wrapper wrapper = new Wrapper(metadata, media);
 
-        DateTime dt = new DateTime();
-        DateTimeFormatter fmt = ISODateTimeFormat.dateTime();
-        String nowAsISO = fmt.print(dt);
+            Response resp1 = Response.status(Response.Status.OK).entity(wrapper).build();
+            return resp1;
+        }
 
-        resp.getHeaders().add("apiVersion", "2.2");
-        resp.getHeaders().add("callDate", nowAsISO);
-        resp.getHeaders().add("statuscode", Response.Status.OK.getStatusCode());
-    
+        if (format != null) {
+            logger.info("fetching mediafile with format " + format);
+            resp = getMedia(mediaUUID, format);
+        }
         return resp;
     }
 
