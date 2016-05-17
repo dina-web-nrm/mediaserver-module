@@ -10,14 +10,14 @@ package se.nrm.bio.mediaserver.domain;
  * @author ingimar
  */
 public class MetadataFactory {
-    public static Metadata  getMetadata(String metadataType, String apiVersion) throws IllegalArgumentException {
+    public static MetadataHeader  getMetadata(String metadataType, String apiVersion, int statusCode) throws IllegalArgumentException {
        
         if (metadataType == null) {
             throw new IllegalArgumentException("null is not valid argument!");
         }
 
         if (metadataType.equalsIgnoreCase("ground")) {
-            return new Metadata(apiVersion);
+            return new MetadataHeader(apiVersion,statusCode);
 
         } else if (metadataType.equalsIgnoreCase("medium")) {
 //            return new Metadata();
