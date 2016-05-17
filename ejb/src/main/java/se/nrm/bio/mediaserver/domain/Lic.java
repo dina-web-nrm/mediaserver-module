@@ -1,5 +1,6 @@
 package se.nrm.bio.mediaserver.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -45,6 +46,7 @@ public class Lic implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "ID")
+    @JsonIgnore
     private Integer id;
 
     @Column(name = "ABBREV")
