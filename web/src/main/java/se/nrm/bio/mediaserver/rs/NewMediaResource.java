@@ -6,9 +6,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.ejb.EJB;
 import javax.imageio.ImageIO;
@@ -36,9 +38,11 @@ import se.nrm.bio.mediaserver.business.MediaserviceBean;
 import se.nrm.bio.mediaserver.business.StartupBean;
 import se.nrm.bio.mediaserver.domain.Attachment;
 import se.nrm.bio.mediaserver.domain.Image;
+import se.nrm.bio.mediaserver.domain.Lic;
+import se.nrm.bio.mediaserver.domain.ListWrapper;
 import se.nrm.bio.mediaserver.domain.Media;
-import se.nrm.bio.mediaserver.domain.Metadata;
-import se.nrm.bio.mediaserver.domain.MetadataFactory;
+import se.nrm.bio.mediaserver.domain.MediaText;
+import se.nrm.bio.mediaserver.domain.MetadataHeader;
 import se.nrm.bio.mediaserver.domain.Sound;
 import se.nrm.bio.mediaserver.domain.Wrapper;
 import se.nrm.bio.mediaserver.domain.Video;
@@ -88,30 +92,50 @@ public class NewMediaResource {
 
         if (format != null) {
             logger.info("fetching mediafile with format " + format);
-            resp = getMedia(mediaUUID, format);
+            resp = getBinaryMediafile(mediaUUID, format);
         }
         return resp;
     }
+
     @GET
     @HEAD
     @Path("/v2/{uuid: [\\w]{8}-[\\w]{4}-[\\w]{4}-[\\w]{4}-[\\w]{12}}")
     @Produces({MediaType.APPLICATION_JSON, "image/jpeg", "image/png", "audio/ogg", "audio/wav", "audio/wav", "video/mp4", "video/ogg"})
-    public Response getMetadataV2(@PathParam("uuid") String mediaUUID,@QueryParam("content") String content,@QueryParam("format") String format) {
+    public Response getMetadataV2(@PathParam("uuid") String mediaUUID, @QueryParam("content") String content, @QueryParam("format") String format) {
+        final String API_VERSION = "2.0";
         logger.info("uuid " + mediaUUID);
         Response resp = Response.status(Response.Status.NOT_FOUND).entity("Entity not found for UUID: " + mediaUUID).build();
 
         if (content != null && content.equals("metadata")) {
             logger.info("fetching metadata ");
             Media media = (Media) service.get(mediaUUID);
-            Metadata metadata = MetadataFactory.getMetadata("ground","2.0");
-            Wrapper wrapper = new Wrapper(metadata, media);
-            Response resp1 = Response.status(Response.Status.OK).entity(wrapper).build();
-            return resp1;
+            if (media != null) {
+                Set<Lic> licenses = media.getLics();
+                List<String> listLicenses = new ArrayList<>();
+                for (Lic l : licenses) {
+                    String lic = l.getAbbrev() + "-" + l.getVersion();
+                    listLicenses.add(lic);
+                }
+                Set<MediaText> texts = media.getTexts();
+                List<String> listDescription = new ArrayList<>();
+                for (MediaText l : texts) {
+                    String lang = l.getLang();
+                    listDescription.add(lang);
+                }
+
+                String[] licenseArray = listLicenses.toArray(new String[listLicenses.size()]);
+                String[] descArray = listDescription.toArray(new String[listDescription.size()]);
+                MetadataHeader metadata = new MetadataHeader(API_VERSION, Response.Status.OK.getStatusCode(), licenseArray, descArray);
+
+                Wrapper wrapper = new Wrapper(metadata, media);
+                Response resp1 = Response.status(Response.Status.OK).entity(wrapper).build();
+                return resp1;
+            }
         }
 
         if (format != null) {
             logger.info("fetching mediafile with format " + format);
-            resp = getMedia(mediaUUID, format);
+            resp = getBinaryMediafile(mediaUUID, format);
         }
         return resp;
     }
@@ -119,7 +143,7 @@ public class NewMediaResource {
     @GET
     @Path("/base64/{uuid}")
     @Produces({MediaType.APPLICATION_JSON, "image/jpeg", "image/png"})
-    public Response getMedia(@PathParam("uuid") String mediaUUID, @QueryParam("content") String content, @QueryParam("format") String format) {
+    public Response getEncodedMedia(@PathParam("uuid") String mediaUUID, @QueryParam("content") String content, @QueryParam("format") String format) {
         logger.info("fetching mediafile with format " + format);
         return getBase64Media(mediaUUID, format);
     }
@@ -136,7 +160,7 @@ public class NewMediaResource {
         return response;
     }
 
-    private Response getMedia(@PathParam("uuid") String uuid, @QueryParam("format") String format) {
+    private Response getBinaryMediafile(@PathParam("uuid") String uuid, @QueryParam("format") String format) {
         String filename = getDynamicPath(uuid, getBasePath());
         logger.info("with filename  " + filename);
         File file = new File(filename);
@@ -416,7 +440,47 @@ public class NewMediaResource {
 
         GenericEntity<List<Media>> list = new GenericEntity<List<Media>>(range) {
         };
+//        List<Media> entities = list.getEntity();
+//        MetadataHeader metadata = new MetadataHeader("2.0", Response.Status.OK.getStatusCode());
+//        ListWrapper wrapper = new ListWrapper(metadata, entities);
         Response build = Response.ok(list).build();
+        return build;
+    }
+    @GET
+    @Path("/v2/{type}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response getVersion1RangeOfJSON(
+            @PathParam("type") String type,
+            @QueryParam("minid") Integer minid,
+            @QueryParam("maxid") Integer maxid) {
+
+        if (minid == null || maxid == null) {
+            minid = 0;
+            maxid = DEFAULT_LIMIT_SIZE_FOR_TYPES;
+        }
+
+        if (minid > maxid || (maxid - minid) > 1000) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        List<Media> range = Collections.EMPTY_LIST;
+        if (type.equals("images")) {
+            range = service.findRange(Image.class, new int[]{minid, maxid});
+        } else if (type.equals("sounds")) {
+            range = service.findRange(Sound.class, new int[]{minid, maxid});
+        } else if (type.equals("videos")) {
+            range = service.findRange(Video.class, new int[]{minid, maxid});
+        } else if (type.equals("attachments")) {
+            range = service.findRange(Attachment.class, new int[]{minid, maxid});
+        } else if (type.equals("all")) {
+            range = service.findRange(Media.class, new int[]{minid, maxid});
+        }
+
+        GenericEntity<List<Media>> list = new GenericEntity<List<Media>>(range) {
+        };
+        List<Media> entities = list.getEntity();
+        MetadataHeader metadata = new MetadataHeader("2.0", Response.Status.OK.getStatusCode());
+        ListWrapper wrapper = new ListWrapper(metadata, entities);
+        Response build = Response.ok(wrapper).build();
         return build;
     }
 
@@ -444,8 +508,8 @@ public class NewMediaResource {
     @GET
     @Path("/v1/base64/{uuid}")
     @Produces({MediaType.APPLICATION_JSON, "image/jpeg", "image/png"})
-    public Response getVersionMedia(@PathParam("uuid") String mediaUUID, @QueryParam("content") String content, @QueryParam("format") String format) {
-        return this.getMedia(mediaUUID, content, format);
+    public Response getVersion1EncodedMedia(@PathParam("uuid") String mediaUUID, @QueryParam("content") String content, @QueryParam("format") String format) {
+        return this.getEncodedMedia(mediaUUID, content, format);
     }
 
     @DELETE
