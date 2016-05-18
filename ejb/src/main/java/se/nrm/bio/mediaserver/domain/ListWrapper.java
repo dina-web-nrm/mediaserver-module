@@ -22,10 +22,10 @@ public class ListWrapper {
     private static final long serialVersionUID = 1L;
 
     @XmlAttribute(name = "metadata")
-    private MetadataHeader metadata;
+    private final MetadataHeader metadata;
     
     @XmlAttribute(name = "data")
-    private List<Media> list;
+    private final List<Media> list;
 
     public ListWrapper(MetadataHeader metadata, List<Media> list) {
         this.metadata = metadata;

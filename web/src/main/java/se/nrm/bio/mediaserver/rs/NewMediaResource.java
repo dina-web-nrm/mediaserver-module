@@ -77,7 +77,7 @@ public class NewMediaResource {
     @HEAD
     @Path("/v1/{uuid: [\\w]{8}-[\\w]{4}-[\\w]{4}-[\\w]{4}-[\\w]{12}}")
     @Produces({MediaType.APPLICATION_JSON, "image/jpeg", "image/png", "audio/ogg", "audio/wav", "audio/wav", "video/mp4", "video/ogg"})
-    public Response getMetadata(
+    public Response getData(
             @PathParam("uuid") String mediaUUID,
             @QueryParam("content") String content,
             @QueryParam("format") String format) {
@@ -101,10 +101,11 @@ public class NewMediaResource {
     @HEAD
     @Path("/v2/{uuid: [\\w]{8}-[\\w]{4}-[\\w]{4}-[\\w]{4}-[\\w]{12}}")
     @Produces({MediaType.APPLICATION_JSON, "image/jpeg", "image/png", "audio/ogg", "audio/wav", "audio/wav", "video/mp4", "video/ogg"})
-    public Response getMetadataV2(@PathParam("uuid") String mediaUUID, @QueryParam("content") String content, @QueryParam("format") String format) {
+    public Response getDataVersion2(@PathParam("uuid") String mediaUUID, @QueryParam("content") String content, @QueryParam("format") String format) {
         final String API_VERSION = "2.0";
         logger.info("uuid " + mediaUUID);
-        Response resp = Response.status(Response.Status.NOT_FOUND).entity("Entity not found for UUID: " + mediaUUID).build();
+        
+        Response response = Response.status(Response.Status.NOT_FOUND).entity("Entity not found for UUID: " + mediaUUID).build();
 
         if (content != null && content.equals("metadata")) {
             logger.info("fetching metadata ");
@@ -135,9 +136,10 @@ public class NewMediaResource {
 
         if (format != null) {
             logger.info("fetching mediafile with format " + format);
-            resp = getBinaryMediafile(mediaUUID, format);
+            response = getBinaryMediafile(mediaUUID, format);
         }
-        return resp;
+        
+        return response;
     }
 
     @GET
@@ -440,9 +442,7 @@ public class NewMediaResource {
 
         GenericEntity<List<Media>> list = new GenericEntity<List<Media>>(range) {
         };
-//        List<Media> entities = list.getEntity();
-//        MetadataHeader metadata = new MetadataHeader("2.0", Response.Status.OK.getStatusCode());
-//        ListWrapper wrapper = new ListWrapper(metadata, entities);
+
         Response build = Response.ok(list).build();
         return build;
     }
@@ -475,9 +475,10 @@ public class NewMediaResource {
             range = service.findRange(Media.class, new int[]{minid, maxid});
         }
 
-        GenericEntity<List<Media>> list = new GenericEntity<List<Media>>(range) {
+        GenericEntity<List<Media>> genericList = new GenericEntity<List<Media>>(range) {
         };
-        List<Media> entities = list.getEntity();
+        
+        List<Media> entities = genericList.getEntity();
         MetadataHeader metadata = new MetadataHeader("2.0", Response.Status.OK.getStatusCode());
         ListWrapper wrapper = new ListWrapper(metadata, entities);
         Response build = Response.ok(wrapper).build();
