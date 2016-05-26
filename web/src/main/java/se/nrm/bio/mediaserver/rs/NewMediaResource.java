@@ -161,30 +161,29 @@ public class NewMediaResource {
 
     @GET
     @Path("/base64/{uuid}")
-    @Produces({MediaType.APPLICATION_JSON, "image/jpeg", "image/png"})
+    @Produces({"image/jpeg", "image/png"})
     @Deprecated
     public Response getEncodedMedia(@PathParam("uuid") String mediaUUID, @QueryParam("content") String content, @QueryParam("format") String format) {
-        logger.info("fetching mediafile with format " + format);
         return getBase64Media(mediaUUID, format);
     }
 
     @GET
     @Path("/v1/base64/{uuid}")
     @Deprecated
-    @Produces({MediaType.APPLICATION_JSON, "image/jpeg", "image/png"})
+    @Produces({"image/jpeg", "image/png"})
     public Response getV1EncodedMedia(@PathParam("uuid") String mediaUUID, @QueryParam("content") String content, @QueryParam("format") String format) {
-        return this.getEncodedMedia(mediaUUID, content, format);
+        return getBase64Media(mediaUUID, format);
     }
 
     /**
-     * @TODO, v2 -> v1 ()
-     *  Linux : (1) fetch with curl: curl http://127.0.0.1:8080/MediaServerResteasy/media/v2/base64/'uuid'> 'uuid'.b64
-     *          (2) transform the file:  cat 'uuid'.b64 | base64 -d > 'uuid'.jpg
-     *          (3) open the file : xdg-open 'uuid'.jpg
+     * @TODO, v2 -> v1 () Linux : (1) fetch with curl: curl
+     * http://127.0.0.1:8080/MediaServerResteasy/media/v2/base64/'uuid'>
+     * 'uuid'.b64 (2) transform the file: cat 'uuid'.b64 | base64 -d >
+     * 'uuid'.jpg (3) open the file : xdg-open 'uuid'.jpg
      * @param uuid
      * @param content
      * @param format
-     * @return the base64 in plain text 
+     * @return the base64 in plain text
      */
     @GET
     @Path("/v2/base64/{uuid}")
@@ -199,9 +198,10 @@ public class NewMediaResource {
             byte[] bytes = new byte[(int) originalFile.length()];
             fileInputStreamReader.read(bytes);
             encodedBase64 = new String(Base64.encodeBase64(bytes));
-        } catch (Exception e) {
+            response = Response.status(Response.Status.OK).entity(encodedBase64).build();
+        } catch (Exception ex) {
+            logger.debug(ex);
         }
-        response = Response.status(Response.Status.OK).entity(encodedBase64).build();
 
         return response;
     }
@@ -234,11 +234,6 @@ public class NewMediaResource {
         return response;
     }
 
-//    private Response _getBinaryMediafile(String uuid, String format, Integer height) {
-//
-//        Response response = _returnFile(uuid, format, height);
-//        return response;
-//    }
     /**
      * http://localhost:8080/MediaServerResteasy/media/v1/search?view=flying&date=20140724
      * http://localhost:8080/MediaServerResteasy/media/f4bbe574-68eb-4423-b9e4-4384c6a3353c
@@ -290,7 +285,6 @@ public class NewMediaResource {
         try {
             successfulDeletion = this.deleteMediaMetadata(uuid);
         } catch (Exception ex) {
-            //logger.info("unsuccessful deletion of [".concat(uuid).concat("]"));g
             logger.debug(ex);
         }
 
@@ -299,10 +293,20 @@ public class NewMediaResource {
         }
 
         if (successfulDeletion) {
-            return Response.status(204).entity("successful delete: " + uuid).build();
+//            return Response.status(204).entity("successful delete: " + uuid).build();
+            return Response.status(Response.Status.NO_CONTENT).entity("successful delete: " + uuid).build();
+            
         }
+//        return Response.status(404).entity("unsuccessful delete: " + uuid).build();
+        return Response.status(Response.Status.NOT_FOUND).entity("unsuccessful delete: " + uuid).build();
+    }
 
-        return Response.status(404).entity("unsuccessful delete: " + uuid).build();
+    @DELETE
+    @Path("/v1/{uuid}")
+    @Consumes(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteVersionAll(@PathParam("uuid") String uuid) {
+        return this.deleteAll(uuid);
     }
 
     private boolean deleteFileFromFS(@PathParam("mediaUUID") String mediaUUID) {
@@ -322,30 +326,25 @@ public class NewMediaResource {
         return deleted;
     }
 
-    /**
-     * https://docs.oracle.com/javase/8/docs/api/java/util/Base64.Decoder.html
-     *
-     * @param file
-     * @return
-     */
-    private Response returnBase64(File file) {
-        if (!file.exists()) {
-            logger.info("File does not exist");
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
 
-        try {
-            String mimeType = getMimeType(file);
-            InputStream fileInputStream = new FileInputStream(file);
-            byte[] bytes = IOUtils.toByteArray(fileInputStream);
-            byte[] encodeBase64 = Base64.encodeBase64(bytes);
-
-            return Response.ok(encodeBase64, mimeType).build();
-        } catch (IOException ioEx) {
-            logger.info(ioEx);
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
-    }
+//    private Response returnBase64(File file) {
+//        if (!file.exists()) {
+//            logger.info("File does not exist");
+//            return Response.status(Response.Status.NOT_FOUND).build();
+//        }
+//
+//        try {
+//            String mimeType = getMimeType(file);
+//            InputStream fileInputStream = new FileInputStream(file);
+//            byte[] bytes = IOUtils.toByteArray(fileInputStream);
+//            byte[] encodeBase64 = Base64.encodeBase64(bytes);
+//
+//            return Response.ok(encodeBase64, mimeType).build();
+//        } catch (IOException ioEx) {
+//            logger.info(ioEx);
+//            return Response.status(Response.Status.NOT_FOUND).build();
+//        }
+//    }
 
     private Response returnFile(File file) {
         if (!file.exists()) {
@@ -552,14 +551,6 @@ public class NewMediaResource {
         }
 
         return Response.ok(count).build();
-    }
-
-    @DELETE
-    @Path("/v1/{uuid}")
-    @Consumes(MediaType.TEXT_PLAIN)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteVersionAll(@PathParam("uuid") String uuid) {
-        return this.deleteAll(uuid);
     }
 
     // <editor-fold defaultstate="collapsed" desc="using this before, one method for every 'type' as in 'media'/'image' and so forth.">
