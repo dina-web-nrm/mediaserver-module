@@ -246,12 +246,31 @@ public class NewMediaResource {
     @Path("/v1/search")
     @Produces({MediaType.APPLICATION_JSON})
     public List<Media> showParameters(@Context UriInfo uriInfo) {
-
         MultivaluedMap<String, String> param = uriInfo.getQueryParameters();
         StringBuffer sb = buildKeyValueString(param);
         List<Media> mediaList = service.getMetadataByTags_MEDIA(sb.toString());
 
         return mediaList;
+    }
+
+    /**
+     * @TODO, check the search - using OR or AND ?
+     * @param uriInfo
+     * @return 
+     */
+    @GET
+    @Path("/v2/search")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response show2Parameters(@Context UriInfo uriInfo) {
+        Response response = Response.status(Response.Status.NOT_FOUND).entity("Nothing found").build();
+        MultivaluedMap<String, String> param = uriInfo.getQueryParameters();
+        StringBuffer sb = buildKeyValueString(param);
+        List<Media> mediaList = service.getMetadataByTags_MEDIA(sb.toString());
+        if (mediaList.size() > 0) {
+            response = Response.status(Response.Status.FORBIDDEN).entity(mediaList).build();
+        }
+
+        return response;
     }
 
     private StringBuffer buildKeyValueString(MultivaluedMap<String, String> param) {
@@ -273,6 +292,7 @@ public class NewMediaResource {
 
     /**
      * curl -v -X 'url'
+     *
      * @param uuid
      * @return
      */
@@ -295,7 +315,7 @@ public class NewMediaResource {
 
         if (successfulDeletion) {
             return Response.status(Response.Status.NO_CONTENT).entity("successful delete: " + uuid).build();
-            
+
         }
         return Response.status(Response.Status.NOT_FOUND).entity("unsuccessful delete: " + uuid).build();
     }
