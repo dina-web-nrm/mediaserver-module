@@ -98,25 +98,20 @@ public class NewMediaResource {
         return resp;
     }
 
-//    @GET
-//    @HEAD
-//    @Path("/v3/{uuid: [\\w]{8}-[\\w]{4}-[\\w]{4}-[\\w]{4}-[\\w]{12}}")
-//    @Produces({"image/jpeg", "image/png", "audio/ogg", "audio/wav", "audio/wav", "video/mp4", "video/ogg"})
-//    public Response gettest(@PathParam("uuid") String mediaUUID,
-//            @QueryParam("content") String content,
-//            @QueryParam("format") String format,
-//            @QueryParam("height") Integer height) {
-//        Response response = Response.status(Response.Status.NOT_FOUND).entity("Entity not found for UUID: " + mediaUUID).build();
-//
-//        if (format != null) {
-//            logger.info("fetching mediafile with format " + format);
-//            response = _getBinaryMediafile(mediaUUID, format, height);
-//        }
-//        return response;
-//    }
+    /**
+     * With additional 'metadata' before 'data' - transforms height. -
+     * transforms to another image format
+     * http://127.0.0.1:8080/MediaServerResteasy/media/v3/0a2b314e-9fb5-4084-a72f-937879dc221c?format=image/png&height=9
+     *
+     * @param mediaUUID
+     * @param content
+     * @param format
+     * @param height
+     * @return
+     */
     @GET
     @HEAD
-    @Path("/v3/{uuid: [\\w]{8}-[\\w]{4}-[\\w]{4}-[\\w]{4}-[\\w]{12}}")
+    @Path("/v2/{uuid: [\\w]{8}-[\\w]{4}-[\\w]{4}-[\\w]{4}-[\\w]{12}}")
     @Produces({MediaType.APPLICATION_JSON, "image/jpeg", "image/png", "audio/ogg", "audio/wav", "audio/wav", "video/mp4", "video/ogg"})
     public Response _getDataVersion2(@PathParam("uuid") String mediaUUID,
             @QueryParam("content") String content,
@@ -153,56 +148,12 @@ public class NewMediaResource {
                 return resp1;
             }
         }
-        if (format != null) {
+        
+        if (format != null && !format.isEmpty()) {
             logger.info("fetching mediafile with format " + format);
             response = _getBinaryMediafile(mediaUUID, format, height);
-        }
-
-        return response;
-    }
-
-    @GET
-    @HEAD
-    @Path("/v2/{uuid: [\\w]{8}-[\\w]{4}-[\\w]{4}-[\\w]{4}-[\\w]{12}}")
-    @Produces({MediaType.APPLICATION_JSON, "image/jpeg", "image/png", "audio/ogg", "audio/wav", "audio/wav", "video/mp4", "video/ogg"})
-    public Response getDataVersion2(@PathParam("uuid") String mediaUUID,
-            @QueryParam("content") String content,
-            @QueryParam("format") String format) {
-        final String API_VERSION = "2.0";
-        logger.info("uuid " + mediaUUID);
-
-        Response response = Response.status(Response.Status.NOT_FOUND).entity("Entity not found for UUID: " + mediaUUID).build();
-
-        if (content != null && content.equals("metadata")) {
-            logger.info("fetching metadata ");
-            Media media = (Media) service.get(mediaUUID);
-            if (media != null) {
-                Set<Lic> licenses = media.getLics();
-                List<String> listLicenses = new ArrayList<>();
-                for (Lic l : licenses) {
-                    String lic = l.getAbbrev() + "-" + l.getVersion();
-                    listLicenses.add(lic);
-                }
-                Set<MediaText> texts = media.getTexts();
-                List<String> listDescription = new ArrayList<>();
-                for (MediaText l : texts) {
-                    String lang = l.getLang();
-                    listDescription.add(lang);
-                }
-
-                String[] licenseArray = listLicenses.toArray(new String[listLicenses.size()]);
-                String[] descArray = listDescription.toArray(new String[listDescription.size()]);
-                MetadataHeader metadata = new MetadataHeader(API_VERSION, Response.Status.OK.getStatusCode(), licenseArray, descArray);
-
-                Wrapper wrapper = new Wrapper(metadata, media);
-                Response resp1 = Response.status(Response.Status.OK).entity(wrapper).build();
-                return resp1;
-            }
-        }
-
-        if (format != null) {
-            logger.info("fetching mediafile with format " + format);
-            response = getBinaryMediafile(mediaUUID, format);
+        } else {
+            response = Response.status(Response.Status.BAD_REQUEST).entity("The format missing").build();
         }
 
         return response;
@@ -246,54 +197,6 @@ public class NewMediaResource {
         return response;
     }
 
-    /**
-     * http://localhost:8080/MediaServerResteasy/media/image/863ec044-17cf-4c87-81cc-783ab13230ae?format=image/jpeg&height=150
-     * - work-in-progress : 'image' , because we only transform 'images'
-     *
-     * @param uuid
-     * @param formatMime , format=image/jpeg or format=image/png
-     * @param height
-     * @return
-     */
-    @GET
-    @Path("/v1/image/{uuid}")
-    @Produces({"image/jpeg", "image/png"})
-    public Response getImageByDimension(
-            @PathParam("uuid") String uuid,
-            @DefaultValue("image/png") @QueryParam("format") String formatMime,
-            @QueryParam("height") Integer height) {
-
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream(2048);
-        BufferedImage transformedImage = null;
-
-        String format = formatMime.substring(6);
-
-        try {
-            if (uuid == null) {
-                return Response.status(Response.Status.NOT_ACCEPTABLE).build();
-            }
-            if (height != null) {
-                transformedImage = this.getTransformed(uuid, height);
-            } else {
-                transformedImage = this.getImage(uuid);
-            }
-            ImageIO.write(transformedImage, format, outputStream);
-        } catch (IOException ex) {
-            logger.info(ex);
-        }
-
-        return Response.ok(outputStream.toByteArray()).build();
-    }
-
-//    @GET
-//    @Path("/v1/search/{tags}")
-//    @Produces({MediaType.APPLICATION_JSON})
-//    public List<Media> getMediaMetadataByLangAndTags(@PathParam("tags") String tags) {
-//        String replaceAll = tags.replaceAll("=", ":");
-//        List<Media> mediaList = service.getMetadataByTags_MEDIA(replaceAll);
-//        
-//        return mediaList;
-//    }
     /**
      * http://localhost:8080/MediaServerResteasy/media/v1/search?view=flying&date=20140724
      * http://localhost:8080/MediaServerResteasy/media/f4bbe574-68eb-4423-b9e4-4384c6a3353c
@@ -421,23 +324,28 @@ public class NewMediaResource {
     private Response _returnFile(String uuid, String formatMime, Integer height) {
         String filename = getDynamicPath(uuid, getBasePath());
         File file = new File(filename);
+
         if (!file.exists()) {
             logger.info("File does not exist");
             return Response.status(Response.Status.NOT_FOUND).build();
         }
+
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream(2048);
         BufferedImage transformedImage = null;
 
         try {
             String mimeType = getMimeType(file);
+            String format = formatMime.substring(6);
             if (height != null) {
-                String format = formatMime.substring(6);
                 transformedImage = this.getTransformed(uuid, height);
                 ImageIO.write(transformedImage, format, outputStream);
                 InputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
                 return Response.ok(inputStream, mimeType).build();
             } else {
-                InputStream inputStream = new FileInputStream(file);
+                InputStream fis = new FileInputStream(file);
+                transformedImage = ImageIO.read(fis);
+                ImageIO.write(transformedImage, format, outputStream);
+                InputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
                 return Response.ok(inputStream, mimeType).build();
             }
         } catch (IOException ioEx) {
@@ -459,16 +367,6 @@ public class NewMediaResource {
 
         BufferedImage image = Thumbnails.of(originalImage).height(inHeight).asBufferedImage();
         return image;
-    }
-
-    private BufferedImage getImage(String uuid) throws IOException {
-
-        String filename = getDynamicPath(uuid, getBasePath());
-
-        File fileHandle = new File(filename);
-        BufferedImage originalImage = ImageIO.read(fileHandle);
-
-        return originalImage;
     }
 
     private String getMimeType(File file) throws IOException {
@@ -621,6 +519,7 @@ public class NewMediaResource {
     public Response deleteVersionAll(@PathParam("uuid") String uuid) {
         return this.deleteAll(uuid);
     }
+    
     // <editor-fold defaultstate="collapsed" desc="using this before, one method for every 'type' as in 'media'/'image' and so forth.">
 //     @GET
 //    @Path("/v1/range/media")
@@ -716,6 +615,100 @@ public class NewMediaResource {
 //
 //        Response build = Response.ok(list).build();
 //        return build;
+//    }
+    //
+//    @GET
+//    @HEAD
+//    @Path("/v2/{uuid: [\\w]{8}-[\\w]{4}-[\\w]{4}-[\\w]{4}-[\\w]{12}}")
+//    @Produces({MediaType.APPLICATION_JSON, "image/jpeg", "image/png", "audio/ogg", "audio/wav", "audio/wav", "video/mp4", "video/ogg"})
+//    public Response getDataVersion2(@PathParam("uuid") String mediaUUID,
+//            @QueryParam("content") String content,
+//            @QueryParam("format") String format) {
+//        final String API_VERSION = "2.0";
+//        logger.info("uuid " + mediaUUID);
+//
+//        Response response = Response.status(Response.Status.NOT_FOUND).entity("Entity not found for UUID: " + mediaUUID).build();
+//
+//        if (content != null && content.equals("metadata")) {
+//            logger.info("fetching metadata ");
+//            Media media = (Media) service.get(mediaUUID);
+//            if (media != null) {
+//                Set<Lic> licenses = media.getLics();
+//                List<String> listLicenses = new ArrayList<>();
+//                for (Lic l : licenses) {
+//                    String lic = l.getAbbrev() + "-" + l.getVersion();
+//                    listLicenses.add(lic);
+//                }
+//                Set<MediaText> texts = media.getTexts();
+//                List<String> listDescription = new ArrayList<>();
+//                for (MediaText l : texts) {
+//                    String lang = l.getLang();
+//                    listDescription.add(lang);
+//                }
+//
+//                String[] licenseArray = listLicenses.toArray(new String[listLicenses.size()]);
+//                String[] descArray = listDescription.toArray(new String[listDescription.size()]);
+//                MetadataHeader metadata = new MetadataHeader(API_VERSION, Response.Status.OK.getStatusCode(), licenseArray, descArray);
+//
+//                Wrapper wrapper = new Wrapper(metadata, media);
+//                Response resp1 = Response.status(Response.Status.OK).entity(wrapper).build();
+//                return resp1;
+//            }
+//        }
+//
+//        if (format != null) {
+//            logger.info("fetching mediafile with format " + format);
+//            response = getBinaryMediafile(mediaUUID, format);
+//        }
+//
+//        return response;
+//    }
+//    private BufferedImage getImage(String uuid) throws IOException {
+//
+//        String filename = getDynamicPath(uuid, getBasePath());
+//
+//        File fileHandle = new File(filename);
+//        BufferedImage originalImage = ImageIO.read(fileHandle);
+//
+//        return originalImage;
+//    }
+    //    @GET
+//    @Path("/v1/image/{uuid}")
+//    @Produces({"image/jpeg", "image/png"})
+//    public Response getImageByDimension(
+//            @PathParam("uuid") String uuid,
+//            @DefaultValue("image/png") @QueryParam("format") String formatMime,
+//            @QueryParam("height") Integer height) {
+//
+//        ByteArrayOutputStream outputStream = new ByteArrayOutputStream(2048);
+//        BufferedImage transformedImage = null;
+//
+//        String format = formatMime.substring(6);
+//
+//        try {
+//            if (uuid == null) {
+//                return Response.status(Response.Status.NOT_ACCEPTABLE).build();
+//            }
+//            if (height != null) {
+//                transformedImage = this.getTransformed(uuid, height);
+//            } else {
+//                transformedImage = this.getImage(uuid);
+//            }
+//            ImageIO.write(transformedImage, format, outputStream);
+//        } catch (IOException ex) {
+//            logger.info(ex);
+//        }
+//
+//        return Response.ok(outputStream.toByteArray()).build();
+//    }
+//    @GET
+//    @Path("/v1/search/{tags}")
+//    @Produces({MediaType.APPLICATION_JSON})
+//    public List<Media> getMediaMetadataByLangAndTags(@PathParam("tags") String tags) {
+//        String replaceAll = tags.replaceAll("=", ":");
+//        List<Media> mediaList = service.getMetadataByTags_MEDIA(replaceAll);
+//        
+//        return mediaList;
 //    }
     // </editor-fold>
 }
