@@ -1,6 +1,7 @@
 package se.nrm.bio.mediaserver.rs;
 
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -97,14 +98,79 @@ public class NewMediaResource {
         return resp;
     }
 
+//    @GET
+//    @HEAD
+//    @Path("/v3/{uuid: [\\w]{8}-[\\w]{4}-[\\w]{4}-[\\w]{4}-[\\w]{12}}")
+//    @Produces({"image/jpeg", "image/png", "audio/ogg", "audio/wav", "audio/wav", "video/mp4", "video/ogg"})
+//    public Response gettest(@PathParam("uuid") String mediaUUID,
+//            @QueryParam("content") String content,
+//            @QueryParam("format") String format,
+//            @QueryParam("height") Integer height) {
+//        Response response = Response.status(Response.Status.NOT_FOUND).entity("Entity not found for UUID: " + mediaUUID).build();
+//
+//        if (format != null) {
+//            logger.info("fetching mediafile with format " + format);
+//            response = _getBinaryMediafile(mediaUUID, format, height);
+//        }
+//        return response;
+//    }
+    @GET
+    @HEAD
+    @Path("/v3/{uuid: [\\w]{8}-[\\w]{4}-[\\w]{4}-[\\w]{4}-[\\w]{12}}")
+    @Produces({MediaType.APPLICATION_JSON, "image/jpeg", "image/png", "audio/ogg", "audio/wav", "audio/wav", "video/mp4", "video/ogg"})
+    public Response _getDataVersion2(@PathParam("uuid") String mediaUUID,
+            @QueryParam("content") String content,
+            @QueryParam("format") String format,
+            @QueryParam("height") Integer height) {
+        final String API_VERSION = "2.0";
+        logger.info("uuid " + mediaUUID);
+
+        Response response = Response.status(Response.Status.NOT_FOUND).entity("Entity not found for UUID: " + mediaUUID).build();
+
+        if (content != null && content.equals("metadata")) {
+            logger.info("fetching metadata ");
+            Media media = (Media) service.get(mediaUUID);
+            if (media != null) {
+                Set<Lic> licenses = media.getLics();
+                List<String> listLicenses = new ArrayList<>();
+                for (Lic l : licenses) {
+                    String lic = l.getAbbrev() + "-" + l.getVersion();
+                    listLicenses.add(lic);
+                }
+                Set<MediaText> texts = media.getTexts();
+                List<String> listDescription = new ArrayList<>();
+                for (MediaText l : texts) {
+                    String lang = l.getLang();
+                    listDescription.add(lang);
+                }
+
+                String[] licenseArray = listLicenses.toArray(new String[listLicenses.size()]);
+                String[] descArray = listDescription.toArray(new String[listDescription.size()]);
+                MetadataHeader metadata = new MetadataHeader(API_VERSION, Response.Status.OK.getStatusCode(), licenseArray, descArray);
+
+                Wrapper wrapper = new Wrapper(metadata, media);
+                Response resp1 = Response.status(Response.Status.OK).entity(wrapper).build();
+                return resp1;
+            }
+        }
+        if (format != null) {
+            logger.info("fetching mediafile with format " + format);
+            response = _getBinaryMediafile(mediaUUID, format, height);
+        }
+
+        return response;
+    }
+
     @GET
     @HEAD
     @Path("/v2/{uuid: [\\w]{8}-[\\w]{4}-[\\w]{4}-[\\w]{4}-[\\w]{12}}")
     @Produces({MediaType.APPLICATION_JSON, "image/jpeg", "image/png", "audio/ogg", "audio/wav", "audio/wav", "video/mp4", "video/ogg"})
-    public Response getDataVersion2(@PathParam("uuid") String mediaUUID, @QueryParam("content") String content, @QueryParam("format") String format) {
+    public Response getDataVersion2(@PathParam("uuid") String mediaUUID,
+            @QueryParam("content") String content,
+            @QueryParam("format") String format) {
         final String API_VERSION = "2.0";
         logger.info("uuid " + mediaUUID);
-        
+
         Response response = Response.status(Response.Status.NOT_FOUND).entity("Entity not found for UUID: " + mediaUUID).build();
 
         if (content != null && content.equals("metadata")) {
@@ -138,7 +204,7 @@ public class NewMediaResource {
             logger.info("fetching mediafile with format " + format);
             response = getBinaryMediafile(mediaUUID, format);
         }
-        
+
         return response;
     }
 
@@ -171,6 +237,12 @@ public class NewMediaResource {
         logger.info("full filename exist [true || false ] == " + exists);
         logger.info("filename readable or not [true || false ] ==  " + canRead);
         Response response = returnFile(file);
+        return response;
+    }
+
+    private Response _getBinaryMediafile(String uuid, String format, Integer height) {
+
+        Response response = _returnFile(uuid, format, height);
         return response;
     }
 
@@ -311,7 +383,7 @@ public class NewMediaResource {
      * @param file
      * @return
      */
-    private static Response returnBase64(File file) {
+    private Response returnBase64(File file) {
         if (!file.exists()) {
             logger.info("File does not exist");
             return Response.status(Response.Status.NOT_FOUND).build();
@@ -330,7 +402,7 @@ public class NewMediaResource {
         }
     }
 
-    private static Response returnFile(File file) {
+    private Response returnFile(File file) {
         if (!file.exists()) {
             logger.info("File does not exist");
             return Response.status(Response.Status.NOT_FOUND).build();
@@ -340,6 +412,34 @@ public class NewMediaResource {
             String mimeType = getMimeType(file);
             InputStream inputStream = new FileInputStream(file);
             return Response.ok(inputStream, mimeType).build();
+        } catch (IOException ioEx) {
+            logger.info(ioEx);
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+    }
+
+    private Response _returnFile(String uuid, String formatMime, Integer height) {
+        String filename = getDynamicPath(uuid, getBasePath());
+        File file = new File(filename);
+        if (!file.exists()) {
+            logger.info("File does not exist");
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream(2048);
+        BufferedImage transformedImage = null;
+
+        try {
+            String mimeType = getMimeType(file);
+            if (height != null) {
+                String format = formatMime.substring(6);
+                transformedImage = this.getTransformed(uuid, height);
+                ImageIO.write(transformedImage, format, outputStream);
+                InputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
+                return Response.ok(inputStream, mimeType).build();
+            } else {
+                InputStream inputStream = new FileInputStream(file);
+                return Response.ok(inputStream, mimeType).build();
+            }
         } catch (IOException ioEx) {
             logger.info(ioEx);
             return Response.status(Response.Status.NOT_FOUND).build();
@@ -371,7 +471,7 @@ public class NewMediaResource {
         return originalImage;
     }
 
-    private static String getMimeType(File file) throws IOException {
+    private String getMimeType(File file) throws IOException {
         Tika tika = new Tika();
         String mimeType = tika.detect(file);
         return mimeType;
@@ -446,6 +546,7 @@ public class NewMediaResource {
         Response build = Response.ok(list).build();
         return build;
     }
+
     @GET
     @Path("/v2/{type}")
     @Produces({MediaType.APPLICATION_JSON})
@@ -477,7 +578,7 @@ public class NewMediaResource {
 
         GenericEntity<List<Media>> genericList = new GenericEntity<List<Media>>(range) {
         };
-        
+
         List<Media> entities = genericList.getEntity();
         MetadataHeader metadata = new MetadataHeader("2.0", Response.Status.OK.getStatusCode());
         ListWrapper wrapper = new ListWrapper(metadata, entities);
