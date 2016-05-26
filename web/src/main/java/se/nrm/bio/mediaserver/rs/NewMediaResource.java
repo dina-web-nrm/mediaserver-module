@@ -272,6 +272,7 @@ public class NewMediaResource {
     }
 
     /**
+     * curl -v -X 'url'
      * @param uuid
      * @return
      */
@@ -293,11 +294,9 @@ public class NewMediaResource {
         }
 
         if (successfulDeletion) {
-//            return Response.status(204).entity("successful delete: " + uuid).build();
             return Response.status(Response.Status.NO_CONTENT).entity("successful delete: " + uuid).build();
             
         }
-//        return Response.status(404).entity("unsuccessful delete: " + uuid).build();
         return Response.status(Response.Status.NOT_FOUND).entity("unsuccessful delete: " + uuid).build();
     }
 
@@ -325,26 +324,6 @@ public class NewMediaResource {
         deleted = service.deleteMediaMetadata(mediaUUID);
         return deleted;
     }
-
-
-//    private Response returnBase64(File file) {
-//        if (!file.exists()) {
-//            logger.info("File does not exist");
-//            return Response.status(Response.Status.NOT_FOUND).build();
-//        }
-//
-//        try {
-//            String mimeType = getMimeType(file);
-//            InputStream fileInputStream = new FileInputStream(file);
-//            byte[] bytes = IOUtils.toByteArray(fileInputStream);
-//            byte[] encodeBase64 = Base64.encodeBase64(bytes);
-//
-//            return Response.ok(encodeBase64, mimeType).build();
-//        } catch (IOException ioEx) {
-//            logger.info(ioEx);
-//            return Response.status(Response.Status.NOT_FOUND).build();
-//        }
-//    }
 
     private Response returnFile(File file) {
         if (!file.exists()) {
@@ -414,7 +393,6 @@ public class NewMediaResource {
         boolean isSolid = (file.exists() && file.canRead());
         logger.info("does the file exist and is it readable ? " + isSolid);
         return isSolid;
-
     }
 
     private String getMimeType(File file) throws IOException {
