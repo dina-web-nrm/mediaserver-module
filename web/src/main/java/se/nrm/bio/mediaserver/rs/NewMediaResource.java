@@ -5,6 +5,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -17,7 +18,6 @@ import javax.ejb.EJB;
 import javax.imageio.ImageIO;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.HEAD;
 import javax.ws.rs.Path;
@@ -56,7 +56,7 @@ import se.nrm.mediaserver.resteasy.util.PathHelper;
 @Path("")
 public class NewMediaResource {
 
-    private final static Logger logger = Logger.getLogger(MediaResource.class);
+    private final static Logger logger = Logger.getLogger(NewMediaResource.class);
 
     @EJB
     private MediaserviceBean service;
@@ -93,7 +93,7 @@ public class NewMediaResource {
 
         if (format != null) {
             logger.info("fetching mediafile with format " + format);
-            resp = getBinaryMediafile(mediaUUID, format);
+            resp = getV1BinaryMediafile(mediaUUID, format);
         }
         return resp;
     }
@@ -148,10 +148,10 @@ public class NewMediaResource {
                 return resp1;
             }
         }
-        
+
         if (format != null && !format.isEmpty()) {
             logger.info("fetching mediafile with format " + format);
-            response = _getBinaryMediafile(mediaUUID, format, height);
+            response = _returnFile(mediaUUID, format, height);
         } else {
             response = Response.status(Response.Status.BAD_REQUEST).entity("The format missing").build();
         }
@@ -162,41 +162,83 @@ public class NewMediaResource {
     @GET
     @Path("/base64/{uuid}")
     @Produces({MediaType.APPLICATION_JSON, "image/jpeg", "image/png"})
+    @Deprecated
     public Response getEncodedMedia(@PathParam("uuid") String mediaUUID, @QueryParam("content") String content, @QueryParam("format") String format) {
         logger.info("fetching mediafile with format " + format);
         return getBase64Media(mediaUUID, format);
     }
 
+    @GET
+    @Path("/v1/base64/{uuid}")
+    @Deprecated
+    @Produces({MediaType.APPLICATION_JSON, "image/jpeg", "image/png"})
+    public Response getV1EncodedMedia(@PathParam("uuid") String mediaUUID, @QueryParam("content") String content, @QueryParam("format") String format) {
+        return this.getEncodedMedia(mediaUUID, content, format);
+    }
+
+    /**
+     * @TODO, v2 -> v1 ()
+     *  Linux : (1) fetch with curl: curl http://127.0.0.1:8080/MediaServerResteasy/media/v2/base64/'uuid'> 'uuid'.b64
+     *          (2) transform the file:  cat 'uuid'.b64 | base64 -d > 'uuid'.jpg
+     *          (3) open the file : xdg-open 'uuid'.jpg
+     * @param uuid
+     * @param content
+     * @param format
+     * @return the base64 in plain text 
+     */
+    @GET
+    @Path("/v2/base64/{uuid}")
+    @Produces({MediaType.TEXT_PLAIN})
+    public Response getV2EncodedMedia(@PathParam("uuid") String uuid, @QueryParam("content") String content, @QueryParam("format") String format) {
+        Response response = Response.status(Response.Status.FORBIDDEN).entity("problems converting to base64").build();
+        String filename = getDynamicPath(uuid, getBasePath());
+        File originalFile = new File(filename);
+        String encodedBase64 = null;
+        try {
+            FileInputStream fileInputStreamReader = new FileInputStream(originalFile);
+            byte[] bytes = new byte[(int) originalFile.length()];
+            fileInputStreamReader.read(bytes);
+            encodedBase64 = new String(Base64.encodeBase64(bytes));
+        } catch (Exception e) {
+        }
+        response = Response.status(Response.Status.OK).entity(encodedBase64).build();
+
+        return response;
+    }
+
     private Response getBase64Media(@PathParam("uuid") String uuid, @QueryParam("format") String format) {
+        Response response = Response.status(Response.Status.FORBIDDEN).entity("File does not exist or the file is not readable").build();
+
         String filename = getDynamicPath(uuid, getBasePath());
-        logger.info("with filename  " + filename);
         File file = new File(filename);
-        boolean exists = file.exists();
-        boolean canRead = file.canRead();
-        logger.info("full filename exist [true || false ] == " + exists);
-        logger.info("filename readable or not [true || false ] ==  " + canRead);
-        Response response = returnBase64(file);
+
+        boolean checkFilestatus = this.checkFilestatus(file);
+        if (checkFilestatus) {
+            response = returnFile(file);
+        }
+
         return response;
     }
 
-    private Response getBinaryMediafile(@PathParam("uuid") String uuid, @QueryParam("format") String format) {
+    private Response getV1BinaryMediafile(@PathParam("uuid") String uuid, @QueryParam("format") String format) {
+        Response response = Response.status(Response.Status.FORBIDDEN).entity("File does not exist or the file is not readable").build();
+
         String filename = getDynamicPath(uuid, getBasePath());
-        logger.info("with filename  " + filename);
         File file = new File(filename);
-        boolean exists = file.exists();
-        boolean canRead = file.canRead();
-        logger.info("full filename exist [true || false ] == " + exists);
-        logger.info("filename readable or not [true || false ] ==  " + canRead);
-        Response response = returnFile(file);
+
+        boolean checkFilestatus = this.checkFilestatus(file);
+        if (checkFilestatus) {
+            response = returnFile(file);
+        }
+
         return response;
     }
 
-    private Response _getBinaryMediafile(String uuid, String format, Integer height) {
-
-        Response response = _returnFile(uuid, format, height);
-        return response;
-    }
-
+//    private Response _getBinaryMediafile(String uuid, String format, Integer height) {
+//
+//        Response response = _returnFile(uuid, format, height);
+//        return response;
+//    }
     /**
      * http://localhost:8080/MediaServerResteasy/media/v1/search?view=flying&date=20140724
      * http://localhost:8080/MediaServerResteasy/media/f4bbe574-68eb-4423-b9e4-4384c6a3353c
@@ -369,6 +411,13 @@ public class NewMediaResource {
         return image;
     }
 
+    private boolean checkFilestatus(File file) {
+        boolean isSolid = (file.exists() && file.canRead());
+        logger.info("does the file exist and is it readable ? " + isSolid);
+        return isSolid;
+
+    }
+
     private String getMimeType(File file) throws IOException {
         Tika tika = new Tika();
         String mimeType = tika.detect(file);
@@ -505,13 +554,6 @@ public class NewMediaResource {
         return Response.ok(count).build();
     }
 
-    @GET
-    @Path("/v1/base64/{uuid}")
-    @Produces({MediaType.APPLICATION_JSON, "image/jpeg", "image/png"})
-    public Response getVersion1EncodedMedia(@PathParam("uuid") String mediaUUID, @QueryParam("content") String content, @QueryParam("format") String format) {
-        return this.getEncodedMedia(mediaUUID, content, format);
-    }
-
     @DELETE
     @Path("/v1/{uuid}")
     @Consumes(MediaType.TEXT_PLAIN)
@@ -519,7 +561,7 @@ public class NewMediaResource {
     public Response deleteVersionAll(@PathParam("uuid") String uuid) {
         return this.deleteAll(uuid);
     }
-    
+
     // <editor-fold defaultstate="collapsed" desc="using this before, one method for every 'type' as in 'media'/'image' and so forth.">
 //     @GET
 //    @Path("/v1/range/media")
