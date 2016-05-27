@@ -141,6 +141,8 @@ public class NewMediaResource {
 
                 String[] licenseArray = listLicenses.toArray(new String[listLicenses.size()]);
                 String[] descArray = listDescription.toArray(new String[listDescription.size()]);
+                
+                // adding 'metadata'-header
                 MetadataHeader metadata = new MetadataHeader(API_VERSION, Response.Status.OK.getStatusCode(), licenseArray, descArray);
 
                 Wrapper wrapper = new Wrapper(metadata, media);
@@ -176,10 +178,10 @@ public class NewMediaResource {
     }
 
     /**
-     * @TODO, v2 -> v1 () Linux : (1) fetch with curl: curl
-     * http://127.0.0.1:8080/MediaServerResteasy/media/v2/base64/'uuid'>
-     * 'uuid'.b64 (2) transform the file: cat 'uuid'.b64 | base64 -d >
-     * 'uuid'.jpg (3) open the file : xdg-open 'uuid'.jpg
+     * @TODO, v2 -> v1 () Linux : 
+     * (1) fetch with curl: curl http://127.0.0.1:8080/MediaServerResteasy/media/v2/base64/'uuid'> 'uuid'.b64 
+     * (2) transform the file: cat 'uuid'.b64 | base64 -d >'uuid'.jpg 
+     * (3) open the file : xdg-open 'uuid'.jpg
      * @param uuid
      * @param content
      * @param format
@@ -523,6 +525,7 @@ public class NewMediaResource {
         GenericEntity<List<Media>> genericList = new GenericEntity<List<Media>>(range) {
         };
 
+        // adding 'metadata'-header
         List<Media> entities = genericList.getEntity();
         MetadataHeader metadata = new MetadataHeader("2.0", Response.Status.OK.getStatusCode());
         ListWrapper wrapper = new ListWrapper(metadata, entities);
