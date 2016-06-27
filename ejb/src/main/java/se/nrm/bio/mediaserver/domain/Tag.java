@@ -1,5 +1,6 @@
 package se.nrm.bio.mediaserver.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Basic;
@@ -25,7 +26,6 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author ingimar
  */
 @Entity
-@Table(name = "TAGS")
 @NamedQueries({
     @NamedQuery(name = "Tag.findAll", query = "SELECT t FROM Tag t"),
     @NamedQuery(name = "Tag.findById", query = "SELECT t FROM Tag t WHERE t.id = :id"),
@@ -33,6 +33,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = Tag.FIND_KEY_VALUE, query = "SELECT t FROM Tag t WHERE t.tagKey = :tagKey and t.tagValue = :tagValue"),
     @NamedQuery(name = "Tag.findByTagValue", query = "SELECT t FROM Tag t WHERE t.tagValue = :tagValue")
 })
+@Table(name = "TAGS")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement
 public class Tag implements Serializable {
@@ -45,6 +46,7 @@ public class Tag implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "ID")
+    @JsonIgnore
     private Integer id;
 
     @Column(name = "TAG_KEY")
@@ -57,7 +59,8 @@ public class Tag implements Serializable {
 //    @Column(name = "tags")
 //    private String tags;
 
-    @Transient
+    @Transient 
+    @JsonIgnore
     private Date dateCreated;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)

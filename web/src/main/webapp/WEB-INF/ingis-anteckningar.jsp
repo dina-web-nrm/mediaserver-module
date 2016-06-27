@@ -7,6 +7,9 @@
         https://github.com/DINA-Web/mediaserver-module
     </head>
     <body>
+        2016-05-17 : 
+        får rawTypes i json.
+        http://stackoverflow.com/questions/14985435/not-getting-right-json-of-the-when-returning-list
         2015-06-15 : Integration med Naturforskaren
         - use nrm_media_test_1; 
         - bilder ligger i tar-fil

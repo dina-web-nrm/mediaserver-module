@@ -32,20 +32,20 @@ public class NewMediaResourceTest {
 
     @Test @Ignore
     public void testGetImageByDimension() {
-        String validUUID = "863ec044-17cf-4c87-81cc-783ab13230ae";
-        String mimeFormat = "image/png";
-        int height = 60;
-
-        StartupBean envBean = mock(StartupBean.class);
-        ConcurrentHashMap map = new ConcurrentHashMap();
-        map.put("path_to_files", "/opt/data/mediaserver/demo/");
-        when(envBean.getEnvironment()).thenReturn(map);
-
-        NewMediaResource instance = new NewMediaResource();
-        instance.envBean = envBean;
-        Response result = instance.getImageByDimension(validUUID, mimeFormat, height);
-        int actual = result.getStatus();
-        final int EXPECTED = 200;
-        assertEquals(EXPECTED, actual);
+//        String validUUID = "863ec044-17cf-4c87-81cc-783ab13230ae";
+//        String mimeFormat = "image/png";
+//        int height = 60;
+//
+//        StartupBean envBean = mock(StartupBean.class);
+//        ConcurrentHashMap map = new ConcurrentHashMap();
+//        map.put("path_to_files", "/opt/data/mediaserver/demo/");
+//        when(envBean.getEnvironment()).thenReturn(map);
+//
+//        NewMediaResource instance = new NewMediaResource();
+//        instance.envBean = envBean;
+//        Response result = instance.getImageByDimension(validUUID, mimeFormat, height);
+//        int actual = result.getStatus();
+//        final int EXPECTED = 200;
+//        assertEquals(EXPECTED, actual);
     }
 }

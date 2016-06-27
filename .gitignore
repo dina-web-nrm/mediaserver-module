@@ -5,6 +5,7 @@
 *.html
 *.Rmd
 pom.xml~
+.Rhistory
 
 notes-ie.txt
 *.class

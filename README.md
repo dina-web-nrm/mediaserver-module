@@ -135,8 +135,4 @@ For instance the below ( key/value ) is set in the database.
 
 ![alt Admin-table](docs/admin-table.png)
 
-#Demo
-
-## Mediaserver Standalone 
-
-## Mediaserver coupled to external system 
+## Mediaserver, coupling to an external system 

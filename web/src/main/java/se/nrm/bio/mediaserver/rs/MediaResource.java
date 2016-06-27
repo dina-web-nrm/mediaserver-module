@@ -17,6 +17,7 @@ import org.apache.log4j.Logger;
  * @author ingimar
  */
 @Path("")
+@Deprecated
 public class MediaResource {
 
     private final static Logger logger = Logger.getLogger(MediaResource.class);
