@@ -74,29 +74,29 @@ public class NewMediaResource {
      *
      * @return binary or metadata.
      */
-    @GET
-    @HEAD
-    @Path("/v1/{uuid: [\\w]{8}-[\\w]{4}-[\\w]{4}-[\\w]{4}-[\\w]{12}}")
-    @Produces({MediaType.APPLICATION_JSON, "image/jpeg", "image/png", "audio/ogg", "audio/wav", "audio/wav", "video/mp4", "video/ogg"})
-    public Response getData(
-            @PathParam("uuid") String mediaUUID,
-            @QueryParam("content") String content,
-            @QueryParam("format") String format) {
-        logger.info("uuid " + mediaUUID);
-        Response resp = Response.status(Response.Status.NOT_FOUND).entity("Entity not found for UUID: " + mediaUUID).build();
-
-        if (content != null && content.equals("metadata")) {
-            logger.info("fetching metadata ");
-            Media media = (Media) service.get(mediaUUID);
-            return Response.status(Response.Status.OK).entity(media).build();
-        }
-
-        if (format != null) {
-            logger.info("fetching mediafile with format " + format);
-            resp = getV1BinaryMediafile(mediaUUID, format);
-        }
-        return resp;
-    }
+//    @GET
+//    @HEAD
+//    @Path("/v1/{uuid: [\\w]{8}-[\\w]{4}-[\\w]{4}-[\\w]{4}-[\\w]{12}}")
+//    @Produces({MediaType.APPLICATION_JSON, "image/jpeg", "image/png", "audio/ogg", "audio/wav", "audio/wav", "video/mp4", "video/ogg"})
+//    public Response getData(
+//            @PathParam("uuid") String mediaUUID,
+//            @QueryParam("content") String content,
+//            @QueryParam("format") String format) {
+//        logger.info("uuid " + mediaUUID);
+//        Response resp = Response.status(Response.Status.NOT_FOUND).entity("Entity not found for UUID: " + mediaUUID).build();
+//
+//        if (content != null && content.equals("metadata")) {
+//            logger.info("fetching metadata ");
+//            Media media = (Media) service.get(mediaUUID);
+//            return Response.status(Response.Status.OK).entity(media).build();
+//        }
+//
+//        if (format != null) {
+//            logger.info("fetching mediafile with format " + format);
+//            resp = getV1BinaryMediafile(mediaUUID, format);
+//        }
+//        return resp;
+//    }
 
     /**
      * With additional 'metadata' before 'data' - transforms height. -
@@ -111,7 +111,7 @@ public class NewMediaResource {
      */
     @GET
     @HEAD
-    @Path("/v2/{uuid: [\\w]{8}-[\\w]{4}-[\\w]{4}-[\\w]{4}-[\\w]{12}}")
+    @Path("/v1/{uuid: [\\w]{8}-[\\w]{4}-[\\w]{4}-[\\w]{4}-[\\w]{12}}")
     @Produces({MediaType.APPLICATION_JSON, "image/jpeg", "image/png", "audio/ogg", "audio/wav", "audio/wav", "video/mp4", "video/ogg"})
     public Response _getDataVersion2(@PathParam("uuid") String mediaUUID,
             @QueryParam("content") String content,
