@@ -1,8 +1,9 @@
 *~
 *.sh~
 .gitignore~
-README.md~
-README.html
+*.md~
+*.html
+*.Rmd
 pom.xml~
 
 notes-ie.txt
