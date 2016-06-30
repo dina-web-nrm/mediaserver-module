@@ -172,6 +172,18 @@ public class MediaserviceBean<T> implements Serializable {
 
         return list;
     }
+    
+    public List<T> offSetLimit(Class<T> entityClass, int offset, int limit) {
+        List list = Collections.EMPTY_LIST;
+        CriteriaQuery<Object> criteriaQ = em.getCriteriaBuilder().createQuery();
+        criteriaQ.select(criteriaQ.from(entityClass));
+        TypedQuery<Object> typedQ = em.createQuery(criteriaQ);
+        typedQ.setFirstResult(offset);
+        typedQ.setMaxResults(limit);
+        list = typedQ.getResultList();
+
+        return list;
+    }
 
     public int count(Class<T> entityClass) {
         CriteriaQuery criteriaQ = em.getCriteriaBuilder().createQuery();

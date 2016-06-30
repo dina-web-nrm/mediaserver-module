@@ -5,10 +5,10 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -18,6 +18,7 @@ import javax.ejb.EJB;
 import javax.imageio.ImageIO;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.HEAD;
 import javax.ws.rs.Path;
@@ -34,13 +35,14 @@ import net.coobird.thumbnailator.Thumbnails;
 import org.apache.commons.codec.binary.*;
 import org.apache.log4j.Logger;
 import org.apache.tika.Tika;
-import org.apache.tika.io.IOUtils;
 import se.nrm.bio.mediaserver.business.MediaserviceBean;
 import se.nrm.bio.mediaserver.business.StartupBean;
 import se.nrm.bio.mediaserver.domain.Attachment;
+import se.nrm.bio.mediaserver.domain.ErrorHeader;
+import se.nrm.bio.mediaserver.domain.ErrorListWrapper;
 import se.nrm.bio.mediaserver.domain.Image;
 import se.nrm.bio.mediaserver.domain.Lic;
-import se.nrm.bio.mediaserver.domain.ListWrapper;
+import se.nrm.bio.mediaserver.domain.MetaListWrapper;
 import se.nrm.bio.mediaserver.domain.Media;
 import se.nrm.bio.mediaserver.domain.MediaText;
 import se.nrm.bio.mediaserver.domain.MetadataHeader;
@@ -97,7 +99,6 @@ public class NewMediaResource {
 //        }
 //        return resp;
 //    }
-
     /**
      * With additional 'metadata' before 'data' - transforms height. -
      * transforms to another image format
@@ -141,7 +142,7 @@ public class NewMediaResource {
 
                 String[] licenseArray = listLicenses.toArray(new String[listLicenses.size()]);
                 String[] descArray = listDescription.toArray(new String[listDescription.size()]);
-                
+
                 // adding 'metadata'-header
                 MetadataHeader metadata = new MetadataHeader(API_VERSION, Response.Status.OK.getStatusCode(), licenseArray, descArray);
 
@@ -178,9 +179,9 @@ public class NewMediaResource {
     }
 
     /**
-     * @TODO, v2 -> v1 () Linux : 
-     * (1) fetch with curl: curl http://127.0.0.1:8080/MediaServerResteasy/media/v2/base64/'uuid'> 'uuid'.b64 
-     * (2) transform the file: cat 'uuid'.b64 | base64 -d >'uuid'.jpg 
+     * @TODO, v2 -> v1 () Linux : (1) fetch with curl: curl
+     * http://127.0.0.1:8080/MediaServerResteasy/media/v2/base64/'uuid'>
+     * 'uuid'.b64 (2) transform the file: cat 'uuid'.b64 | base64 -d >'uuid'.jpg
      * (3) open the file : xdg-open 'uuid'.jpg
      * @param uuid
      * @param content
@@ -258,7 +259,7 @@ public class NewMediaResource {
     /**
      * @TODO, check the search - using OR or AND ?
      * @param uriInfo
-     * @return 
+     * @return
      */
     @GET
     @Path("/v2/search")
@@ -448,90 +449,7 @@ public class NewMediaResource {
 
     final int DEFAULT_LIMIT_SIZE_FOR_TYPES = 15;
 
-    /**
-     * Returning list in a 'Response' ( GenericEntity ) :
-     * http://www.adam-bien.com/roller/abien/entry/jax_rs_returning_a_list
-     *
-     * @param type
-     * @param minid
-     * @param maxid
-     * @return
-     */
-    @GET
-    @Path("/v1/{type}")
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response getRangeOfImages(
-            @PathParam("type") String type,
-            @QueryParam("minid") Integer minid,
-            @QueryParam("maxid") Integer maxid) {
-
-        if (minid == null || maxid == null) {
-            minid = 0;
-            maxid = DEFAULT_LIMIT_SIZE_FOR_TYPES;
-        }
-
-        if (minid > maxid || (maxid - minid) > 1000) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
-        List<Media> range = Collections.EMPTY_LIST;
-        if (type.equals("images")) {
-            range = service.findRange(Image.class, new int[]{minid, maxid});
-        } else if (type.equals("sounds")) {
-            range = service.findRange(Sound.class, new int[]{minid, maxid});
-        } else if (type.equals("videos")) {
-            range = service.findRange(Video.class, new int[]{minid, maxid});
-        } else if (type.equals("attachments")) {
-            range = service.findRange(Attachment.class, new int[]{minid, maxid});
-        } else if (type.equals("all")) {
-            range = service.findRange(Media.class, new int[]{minid, maxid});
-        }
-
-        GenericEntity<List<Media>> list = new GenericEntity<List<Media>>(range) {
-        };
-
-        Response build = Response.ok(list).build();
-        return build;
-    }
-
-    @GET
-    @Path("/v2/{type}")
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response getVersion1RangeOfJSON(
-            @PathParam("type") String type,
-            @QueryParam("minid") Integer minid,
-            @QueryParam("maxid") Integer maxid) {
-
-        if (minid == null || maxid == null) {
-            minid = 0;
-            maxid = DEFAULT_LIMIT_SIZE_FOR_TYPES;
-        }
-
-        if (minid > maxid || (maxid - minid) > 1000) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
-        List<Media> range = Collections.EMPTY_LIST;
-        if (type.equals("images")) {
-            range = service.findRange(Image.class, new int[]{minid, maxid});
-        } else if (type.equals("sounds")) {
-            range = service.findRange(Sound.class, new int[]{minid, maxid});
-        } else if (type.equals("videos")) {
-            range = service.findRange(Video.class, new int[]{minid, maxid});
-        } else if (type.equals("attachments")) {
-            range = service.findRange(Attachment.class, new int[]{minid, maxid});
-        } else if (type.equals("all")) {
-            range = service.findRange(Media.class, new int[]{minid, maxid});
-        }
-
-        GenericEntity<List<Media>> genericList = new GenericEntity<List<Media>>(range) {
-        };
-
-        // adding 'metadata'-header
-        List<Media> entities = genericList.getEntity();
-        MetadataHeader metadata = new MetadataHeader("2.0", Response.Status.OK.getStatusCode());
-        ListWrapper wrapper = new ListWrapper(metadata, entities);
-        Response build = Response.ok(wrapper).build();
-        return build;
-    }
+   
 
     @GET
     @Path("/v1/{type}/count")
@@ -553,6 +471,168 @@ public class NewMediaResource {
 
         return Response.ok(count).build();
     }
+
+    /**
+     * {
+     * error: { message: "Resource not found", detail: "There is no API hosted
+     * at this URL.
+     *
+     * For information about our API's, please refer to the documentation at:
+     * https://confluence.atlassian.com/x/IYBGDQ" } }
+     *
+     * @return
+     */
+    @GET 
+    @Path("/v1")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response paging() {
+
+        ErrorHeader h = new ErrorHeader();
+        ErrorListWrapper wrapper = new ErrorListWrapper(h);
+
+        return Response.ok(wrapper).build();
+    }
+
+
+    /**
+     * http://www.adam-bien.com/roller/abien/entry/jax_rs_returning_a_list
+     * 
+     * @param type
+     * @param offset
+     * @param limit
+     * @return 
+     */
+    @GET
+    @Path("/v1/{type}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response paging(
+            @PathParam("type") String type,
+            @QueryParam("offset") @DefaultValue("0") Integer offset,
+            @QueryParam("limit") @DefaultValue("10") Integer limit) {
+
+
+        if (offset < 0 || limit < 0) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+        List<Media> range = Collections.EMPTY_LIST;
+
+        switch (type) {
+            case "images":
+                range = service.offSetLimit(Image.class, offset, limit);
+                break;
+            case "sounds":
+                range = service.offSetLimit(Sound.class, offset, limit);
+                break;
+            case "videos":
+                range = service.offSetLimit(Video.class, offset, limit);
+                break;
+            case "attachments":
+                range = service.offSetLimit(Attachment.class, offset, limit);
+                break;
+            case "all":
+                range = service.offSetLimit(Media.class, offset, limit);
+                break;
+            default: // returnera en lista med alla entities
+                return Response.status(Response.Status.NOT_FOUND).build();
+
+        }
+
+        GenericEntity<List<Media>> genericList = new GenericEntity<List<Media>>(range) {
+        };
+
+        // adding 'metadata'-header
+        List<Media> entities = genericList.getEntity();
+        MetadataHeader metadata = new MetadataHeader("2.0", Response.Status.OK.getStatusCode());
+        MetaListWrapper wrapper = new MetaListWrapper(metadata, entities);
+        Response build = Response.ok(wrapper).build();
+        return build;
+    }
+    
+     /**
+     * Returning list in a 'Response' ( GenericEntity ) :
+     * http://www.adam-bien.com/roller/abien/entry/jax_rs_returning_a_list
+     *
+     * @param type
+     * @param minid
+     * @param maxid
+     * @return
+     */
+//    @GET
+//    @Path("/v1/{type}")
+//    @Produces({MediaType.APPLICATION_JSON})
+//    public Response getRangeOfImages(
+//            @PathParam("type") String type,
+//            @QueryParam("minid") Integer minid,
+//            @QueryParam("maxid") Integer maxid) {
+//
+//        if (minid == null || maxid == null) {
+//            minid = 0;
+//            maxid = DEFAULT_LIMIT_SIZE_FOR_TYPES;
+//        }
+//
+//        if (minid > maxid || (maxid - minid) > 1000) {
+//            return Response.status(Response.Status.NOT_FOUND).build();
+//        }
+//        List<Media> range = Collections.EMPTY_LIST;
+//        if (type.equals("images")) {
+//            range = service.findRange(Image.class, new int[]{minid, maxid});
+//        } else if (type.equals("sounds")) {
+//            range = service.findRange(Sound.class, new int[]{minid, maxid});
+//        } else if (type.equals("videos")) {
+//            range = service.findRange(Video.class, new int[]{minid, maxid});
+//        } else if (type.equals("attachments")) {
+//            range = service.findRange(Attachment.class, new int[]{minid, maxid});
+//        } else if (type.equals("all")) {
+//            range = service.findRange(Media.class, new int[]{minid, maxid});
+//        }
+//
+//        GenericEntity<List<Media>> list = new GenericEntity<List<Media>>(range) {
+//        };
+//
+//        Response build = Response.ok(list).build();
+//        return build;
+//    }
+//
+//    @GET
+//    @Path("/v2/{type}")
+//    @Produces({MediaType.APPLICATION_JSON})
+//    public Response getVersion1RangeOfJSON(
+//            @PathParam("type") String type,
+//            @QueryParam("minid") Integer minid,
+//            @QueryParam("maxid") Integer maxid) {
+//
+//        if (minid == null || maxid == null) {
+//            minid = 0;
+//            maxid = DEFAULT_LIMIT_SIZE_FOR_TYPES;
+//        }
+//
+//        if (minid > maxid || (maxid - minid) > 1000) {
+//            return Response.status(Response.Status.NOT_FOUND).build();
+//        }
+//        List<Media> range = Collections.EMPTY_LIST;
+//        if (type.equals("images")) {
+//            range = service.findRange(Image.class, new int[]{minid, maxid});
+//        } else if (type.equals("sounds")) {
+//            range = service.findRange(Sound.class, new int[]{minid, maxid});
+//        } else if (type.equals("videos")) {
+//            range = service.findRange(Video.class, new int[]{minid, maxid});
+//        } else if (type.equals("attachments")) {
+//            range = service.findRange(Attachment.class, new int[]{minid, maxid});
+//        } else if (type.equals("all")) {
+//            range = service.findRange(Media.class, new int[]{minid, maxid});
+//        }
+//
+//        GenericEntity<List<Media>> genericList = new GenericEntity<List<Media>>(range) {
+//        };
+//
+//        // adding 'metadata'-header
+//        List<Media> entities = genericList.getEntity();
+//        MetadataHeader metadata = new MetadataHeader("2.0", Response.Status.OK.getStatusCode());
+//        MetaListWrapper wrapper = new MetaListWrapper(metadata, entities);
+//        Response build = Response.ok(wrapper).build();
+//        return build;
+//    }
 
     // <editor-fold defaultstate="collapsed" desc="using this before, one method for every 'type' as in 'media'/'image' and so forth.">
 //     @GET

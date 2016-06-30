@@ -5,6 +5,7 @@
  */
 package se.nrm.bio.mediaserver.domain;
 
+import java.io.Serializable;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -17,17 +18,17 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement(name = "header")
-public class ListWrapper {
+public class MetaListWrapper implements Serializable{
 
     private static final long serialVersionUID = 1L;
 
-    @XmlAttribute(name = "metadata")
+    @XmlAttribute(name = "meta")
     private final MetadataHeader metadata;
     
     @XmlAttribute(name = "data")
     private final List<Media> list;
 
-    public ListWrapper(MetadataHeader metadata, List<Media> list) {
+    public MetaListWrapper(MetadataHeader metadata, List<Media> list) {
         this.metadata = metadata;
         this.list = list;
     }
