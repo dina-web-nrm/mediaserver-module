@@ -1,4 +1,4 @@
-[![Build Status](https://api.travis-ci.org/DINA-Web/mediaserver-module.svg?branch=master)](https://api.travis-ci.org/DINA-Web/mediaserver-module)
+[![Build Status](https://api.travis-ci.org/DINA-Web/mediaserver-module.svg?branch=master)](https://travis-ci.org/DINA-Web/mediaserver-module)
 
 # mediaserver-module
 
