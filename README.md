@@ -130,6 +130,7 @@ The database table ADMIN_CONFIG
 A table ( key/value) in the schema is used for managing settables :
 
 For instance the below ( key/value ) is set in the database.
+
 1. is_exif = [true||false]
 2. path_to_files = '/opt/data/mediaserver/newmedia'
 
