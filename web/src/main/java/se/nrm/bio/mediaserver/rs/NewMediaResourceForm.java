@@ -47,7 +47,7 @@ import se.nrm.mediaserver.resteasy.util.Writeable;
 @Path("")
 public class NewMediaResourceForm {
 
-    private final static Logger logger = Logger.getLogger(MediaResourceForm.class);
+    private final static Logger logger = Logger.getLogger(NewMediaResourceForm.class);
 
     @EJB
     private MediaserviceBean bean;
@@ -73,6 +73,8 @@ public class NewMediaResourceForm {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response createMedia(FileUploadJSON form) {
+        logger.info("in POST -> /media using multiform (base64)");
+
         String mimeType = "unknown", hashChecksum = "unknown";
         String msg = "attribute 'fileData' is null or empty \n";
         // Check, howto avoid long-stacktrace if file is forgotten ?
