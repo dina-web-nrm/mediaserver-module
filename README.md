@@ -85,6 +85,23 @@ Generics tags are supported and saved as a text-string in the database. <p>
 The Mediaserver is database- and application server agnostic. <p>
 The guiding principle is 'ease of installation and management'.
 
+# Verify the system.
+
+base url (default) : http://localhost:8080/MediaServerResteasy/
+
+## Test to post a binary-file from the interface
+If all goes welle, the server returns a UUID
+
+The log from the wildfly-server
+
+```
+00:42:13,996 INFO  [se.nrm.bio.mediaserver.rs.MediaResourceForm] (default task-3) in POST -> /load using multiform 
+00:42:14,005 INFO  [se.nrm.bio.mediaserver.rs.MediaResourceForm] (default task-3) writing to file /opt/data/media/9/f/e/9fe963f5-0125-45e3-bec1-23885031e952
+```
+
+## Test to post a base64-file using curl
+
+
 *** 
 ## How to install
 'turn-key' docker-project at [dw-media](https://github.com/Inkimar/dw-media) <br>
