@@ -64,7 +64,7 @@ The terms “metadata" and “tags” are distinguished in the following way: <p
 3. owner
 4. visibility (i.e 'private' or ‘public')
 5. md5hash
-  - Saving the md5hash for every media file facilitates finding duplicates.
+ - Saving the md5hash for every media file facilitates finding duplicates.
 6. Exif-metadata
 Exif-metadata for media files where type is an image are stored in a separate table.<p>
 - Exif-metadata is stored in a table of its own.<p>
