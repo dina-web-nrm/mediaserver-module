@@ -91,7 +91,7 @@ The guiding principle is 'ease of installation and management'.
 'turn-key' docker-project at [media-docker](https://github.com/dina-web-nrm/media-docker) <br>
 
 
-### not using the vagrant-project, then the basic steps are as follows:
+### Basic steps are as follows:
 
 1. git clone
 2. install and populate the chosen database-engine, use the  liquibase-script
@@ -112,7 +112,15 @@ if you fail on setting up the datasource you will get the following error <br>
 ![alt Adding datasource to Wildfly from CLI](docs/mysql-datasource.png) 
 
 same info here: https://gist.github.com/Inkimar/d81639a9cd41e96903bfbaa9d07decff 
-	
+
+#### Eclipse modules 
+
+0. need to have the mysql module
+
+1. Need to have the eclipse module
+https://docs.jboss.org/author/display/WFLY8/JPA+Reference+Guide#JPAReferenceGuide-UsingEclipseLink
+
+
 
 ## How to connect to an external system
 A link-table in the database maps the ID from the external system to one or many media files.
