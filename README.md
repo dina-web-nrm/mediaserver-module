@@ -89,7 +89,6 @@ The guiding principle is 'ease of installation and management'.
 
 base url (default) : http://localhost:8080/MediaServerResteasy/
 
-Same class : posting to binary and posting to base64
 
 ## Test to post a binary-file from the interface (action='media/load')
 If all goes well: the server returns a UUID
