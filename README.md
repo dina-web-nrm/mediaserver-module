@@ -87,8 +87,8 @@ The guiding principle is 'ease of installation and management'.
 
 *** 
 ## How to install
-'turn-key' vagrant-project at [dw-media](https://github.com/DINA-Web/dw-media) <br>
 'turn-key' docker-project at [dw-media](https://github.com/Inkimar/dw-media) <br>
+'turn-key' docker-project at [media-docker](https://github.com/dina-web-nrm/media-docker) <br>
 
 
 ### not using the vagrant-project, then the basic steps are as follows:
