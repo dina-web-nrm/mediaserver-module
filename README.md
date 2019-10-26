@@ -115,10 +115,11 @@ same info here: https://gist.github.com/Inkimar/d81639a9cd41e96903bfbaa9d07decff
 
 #### Eclipse modules 
 
-0. need to have the mysql module
-
-1. Need to have the eclipse module
+0. mysql module
+1.  eclipse module
 https://docs.jboss.org/author/display/WFLY8/JPA+Reference+Guide#JPAReferenceGuide-UsingEclipseLink
+
+![alt wildfly-modules](https://ia601408.us.archive.org/8/items/wildfly_3_module_eclipse_module.xml/wildfly-1_Modules_directory.png)
 
 
 
