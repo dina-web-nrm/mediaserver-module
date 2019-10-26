@@ -86,9 +86,10 @@ public class MediaResourceForm {
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.TEXT_PLAIN)
     public Response createNewFile(@MultipartForm FileUploadForm form) throws IOException {
+        logger.info("in POST -> /load using multiform (binary)");
         envMap = envBean.getEnvironment();
 
-        String mimeType = "unknown", hashChecksum = "unknown";
+        String mimeType = "unknown", hashChecksum = "unknown"; 
         final String NOT_APPLICABLE = "N/A";
 
         String displayOrder = form.getDisplayOrder();
