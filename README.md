@@ -64,7 +64,7 @@ The terms “metadata" and “tags” are distinguished in the following way: <p
 3. owner
 4. visibility (i.e 'private' or ‘public')
 5. md5hash
-- Saving the md5hash for every media file facilitates finding duplicates.
+  - Saving the md5hash for every media file facilitates finding duplicates.
 6. Exif-metadata
 Exif-metadata for media files where type is an image are stored in a separate table.<p>
 - Exif-metadata is stored in a table of its own.<p>
@@ -81,16 +81,17 @@ Generics tags are supported and saved as a text-string in the database. <p>
 <b>i.e setting key='country' with value='sweden' and key='view' with value='dorsal'. </b><p>
 <b>is saved as -> 'country:sweden&value=dorsal'</b> <p>
 
-#User Guide
+# User Guide
 The Mediaserver is database- and application server agnostic. <p>
 The guiding principle is 'ease of installation and management'.
 
-##How to install
+*** 
+## How to install
 'turn-key' vagrant-project at [dw-media](https://github.com/DINA-Web/dw-media) <br>
 'turn-key' docker-project at [dw-media](https://github.com/Inkimar/dw-media) <br>
 
 
-If not using the vagrant-project, then the basic steps are as follows:
+### not using the vagrant-project, then the basic steps are as follows:
 
 1. git clone
 2. install and populate the chosen database-engine, use the  liquibase-script
@@ -101,16 +102,17 @@ If not using the vagrant-project, then the basic steps are as follows:
 7. prompt>**mvn clean package wildfly:deploy**
 
 <br>
-###NB: 
+### NB: 
 if you fail on setting up the datasource you will get the following error <br>
 * [ERROR] Failed to execute goal org.wildfly.plugins:wildfly-maven-plugin:1.0.2.Final:deploy (default-cli) on project mediaserver-ear: *
 
 #### Adding a datasource to wildfly
 [Adding datasource to Wildfly from CLI ] (https://gist.github.com/Inkimar/d81639a9cd41e96903bfbaa9d07decff)
-##How to connect to an external system
+
+## How to connect to an external system
 A link-table in the database maps the ID from the external system to one or many media files.
 
-##RESTful-API
+## RESTful-API
 Documentation according to [apiary](http://docs.media8.apiary.io/#)
 
 1. @POST mediafile
@@ -120,11 +122,11 @@ Documentation according to [apiary](http://docs.media8.apiary.io/#)
 4. @UPDATE the mediafile
 5. @DELETE the mediafile
 
-##How to add supported licenses
+## How to add supported licenses
 Licenses are stored in a separate license-table<p>
 This gives the administrator full control of what licenses are permitted in the system.<p>
 
-##Maintenability , How to configure
+## Maintenability , Some configuration done in the database
 
 The database table ADMIN_CONFIG
 A table ( key/value) in the schema is used for managing settables :
@@ -136,4 +138,15 @@ For instance the below ( key/value ) is set in the database.
 
 ![alt Admin-table](docs/admin-table.png)
 
-## Mediaserver, coupling to an external system 
+## Wildfly and large files
+
+example to increase the possibility to post 4.2GB
+
+1. /opt/jboss/wildfly/bin/jboss-cli.sh
+2. [standalone@localhost:9990 /] connect
+3. [standalone@localhost:9990 /] /subsystem=undertow/server=default-server/http-listener=default/:write-attribute(name=max-post-size,value=4200000000)
+4. [standalone@localhost:9990 /] :reload 
+5. verify 
+6. [standalone@localhost:9990 /] /subsystem=undertow/server=default-server/http-listener=default/:read-attribute(name=max-post-size)
+
+
