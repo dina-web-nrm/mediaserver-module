@@ -89,10 +89,12 @@ The guiding principle is 'ease of installation and management'.
 
 base url (default) : http://localhost:8080/MediaServerResteasy/
 
-## Test to post a binary-file from the interface
-If all goes welle, the server returns a UUID
+Same class : posting to binary and posting to base64
 
-The log from the wildfly-server
+## Test to post a binary-file from the interface (action='media/load')
+If all goes well: the server returns a UUID
+
+The log from the wildfly-server : class se.nrm.bio.mediaserver.rs.MediaResourceForm
 
 ```
 00:42:13,996 INFO  [se.nrm.bio.mediaserver.rs.MediaResourceForm] (default task-3) in POST -> /load using multiform 
@@ -100,6 +102,22 @@ The log from the wildfly-server
 ```
 
 ## Test to post a base64-file using curl
+
+directory: docs/demo-data
+
+```
+BASE_URL="http://localhost:8080/MediaServerResteasy/media"
+echo "Base URL is " $BASE_URL
+
+curl -H "Accept: application/json" -H "Content-type: application/json" -X POST -d @corvuxcorax.b64 $BASE_URL | json_pp
+
+```
+
+The log from the wildfly-server : class se.nrm.bio.mediaserver.rs.MediaResourceForm
+
+```
+00:51:45,691 INFO  [se.nrm.bio.mediaserver.rs.MediaResourceForm] (default task-4) in POST -> /media using multiform 
+```
 
 
 *** 
