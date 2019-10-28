@@ -17,6 +17,7 @@ import org.codehaus.jettison.json.JSONObject;
 
 /**
  * Posting a minimal base64 encoding-file to the mediaserver.
+ * - here an image of 'Bob Marley'
  *
  * @author ingimar
  */
