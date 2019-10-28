@@ -1,4 +1,4 @@
-[![Build Status](https://api.travis-ci.org/DINA-Web/mediaserver-module.svg?branch=master)](https://travis-ci.org/DINA-Web/mediaserver-module)
+[![Build Status](https://travis-ci.org/dina-web-nrm/mediaserver-module.svg?branch=vegadare-fix-size-1)](https://travis-ci.org/dina-web-nrm/mediaserver-module)
 
 # mediaserver-module
 
