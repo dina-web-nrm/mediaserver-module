@@ -24,7 +24,7 @@ import org.codehaus.jettison.json.JSONObject;
  *
  * @author ingimar
  */
-public class ClientEncoded {
+public class ClientPostEncoded {
 
     public static void main(String[] args) {
         String URL = Util.getProdURL();
@@ -58,9 +58,9 @@ public class ClientEncoded {
             System.out.println("UUID is " + uuid);
 
         } catch (UnsupportedEncodingException ex) {
-            Logger.getLogger(ClientEncoded.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ClientPostEncoded.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException | JSONException ex) {
-            Logger.getLogger(ClientEncoded.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ClientPostEncoded.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }
