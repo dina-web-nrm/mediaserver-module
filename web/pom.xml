@@ -82,6 +82,7 @@
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-multipart-provider</artifactId>
+            <!--<version>4.0.0.Final</version>-->
             <version>3.0.8.Final</version>
             <!--<type>jar</type>-->
             <scope>provided</scope>
@@ -99,6 +100,7 @@
             <groupId>org.apache.tika</groupId>
             <artifactId>tika-core</artifactId>
             <version>1.6</version>
+            <!--<version>[1.19.1,)</version>-->
         </dependency>
         
         <dependency>

@@ -16,25 +16,21 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 /**
- * Posting a minimal base64 encoding-file to the mediaserver.
- * - here an image of 'Bob Marley'
- *  String URL = "http://127.0.0.1:8080/MediaServerResteasy/media";
- *  String URL = "https://api.nrm.se/MediaServerResteasy/media";
- * 
- * usage:
- * -> java -jar target/mediaClient.jar http://127.0.0.1:8080  
+ * Posting a minimal base64 encoding-file to the mediaserver. - here an image of
+ * 'Bob Marley' String URL = "http://127.0.0.1:8080/MediaServerResteasy/media";
+ * String URL = "https://api.nrm.se/MediaServerResteasy/media";
+ *
+ * usage: -> java -jar target/mediaClient.jar http://127.0.0.1:8080
  *
  * @author ingimar
  */
 public class ClientEncoded {
 
     public static void main(String[] args) {
-        String prefix = "https://api.nrm.se";
-        String suffix = "/MediaServerResteasy/media";
-        String URL = prefix.concat(suffix);
-        
+        String URL = Util.getProdURL();
+
         if (args != null && args.length > 0) {
-            URL = args[0].concat(suffix);
+            URL = args[0].concat(Util.suffix);
             System.out.println("Server endpoint: " + URL);
         }
 
