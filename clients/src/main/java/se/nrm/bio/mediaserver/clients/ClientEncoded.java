@@ -18,18 +18,27 @@ import org.codehaus.jettison.json.JSONObject;
 /**
  * Posting a minimal base64 encoding-file to the mediaserver.
  * - here an image of 'Bob Marley'
+ *  String URL = "http://127.0.0.1:8080/MediaServerResteasy/media";
+ *  String URL = "https://api.nrm.se/MediaServerResteasy/media";
+ * 
+ * usage:
+ * -> java -jar target/mediaClient.jar http://127.0.0.1:8080  
  *
  * @author ingimar
  */
 public class ClientEncoded {
 
     public static void main(String[] args) {
+        String prefix = "https://api.nrm.se";
+        String suffix = "/MediaServerResteasy/media";
+        String URL = prefix.concat(suffix);
+        
         if (args != null && args.length > 0) {
-            System.out.println("args " + args[0] + "  -  " + args[1]);
+            URL = args[0].concat(suffix);
+            System.out.println("Server endpoint: " + URL);
         }
-        String URL = "http://127.0.0.1:8080/MediaServerResteasy/media";
-        // String URL = "https://api.nrm.se/MediaServerResteasy/media";
-        System.out.println("Post to the Mediaserver : ".concat(URL));
+
+        System.out.println("Post to the Mediaserver : ".concat(URL).concat("\n"));
 
         HttpClient client = HttpClientBuilder.create().build();
         HttpResponse response = null;
@@ -46,7 +55,7 @@ public class ClientEncoded {
             HttpEntity responseEntity = response.getEntity();
 
             String responseFromMediaserver = EntityUtils.toString(responseEntity, "UTF-8");
-            System.out.println("Respone from the mediaserver is : " + responseFromMediaserver);
+            System.out.println("Response from the mediaserver is : " + responseFromMediaserver);
 
             JSONObject json = new JSONObject(responseFromMediaserver);
             String uuid = json.getString("uuid");
