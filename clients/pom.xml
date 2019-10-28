@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>se.nrm.bio.mediaserver</groupId>
         <artifactId>nrm-mediaserver</artifactId>
         <version>9.0.0-SNAPSHOT</version>
     </parent>
+    <!-- https://www.mkyong.com/maven/how-to-create-a-jar-file-with-maven/ --> 
+    <!--https://www.mkyong.com/maven/maven-create-a-fat-jar-file-one-jar-example/-->
+    <!-- Output to jar format -->
     <artifactId>clients</artifactId>
     <packaging>jar</packaging>
     
@@ -13,6 +18,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        
+        <jdk.version>1.8</jdk.version>
     </properties>
     
     <dependencies>
@@ -62,6 +69,74 @@
             <artifactId>jettison</artifactId>
             <version>1.3.7</version>
         </dependency>
-
     </dependencies>
+    
+    <build>
+        <finalName>mediaClient</finalName>
+        <plugins>     
+            <!-- download source code in Eclipse, best practice -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-eclipse-plugin</artifactId>
+                <version>2.9</version>
+                <configuration>
+                    <downloadSources>true</downloadSources>
+                    <downloadJavadocs>false</downloadJavadocs>
+                </configuration>
+            </plugin>
+        
+            <!-- Set a JDK compiler level -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <source>${jdk.version}</source>
+                    <target>${jdk.version}</target>
+                </configuration>
+            </plugin>
+
+            
+            <!-- Make this jar executable -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <!-- DO NOT include log4j.properties file in your Jar -->
+                    <excludes>
+                        <exclude>**/log4j.properties</exclude>
+                    </excludes>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <!-- Jar file entry point -->
+                            <mainClass>se.nrm.bio.mediaserver.clients.ClientEncoded</mainClass>
+                            <classpathPrefix>dependency-jars/</classpathPrefix>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            
+            <!-- Copy project dependency -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.5.1</version>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <!-- exclude junit, we need runtime dependency only -->
+                            <includeScope>runtime</includeScope>
+                            <outputDirectory>${project.build.directory}/dependency-jars/</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>
