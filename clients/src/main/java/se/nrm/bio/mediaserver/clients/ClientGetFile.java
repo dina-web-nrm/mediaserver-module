@@ -18,7 +18,7 @@ import org.apache.http.util.EntityUtils;
  *
  * @author ingimar
  */
-public class ClientGetEncoded {
+public class ClientGetFile {
 
     public static void main(String[] args) throws IOException {
         String VERSION = "/v2/";
