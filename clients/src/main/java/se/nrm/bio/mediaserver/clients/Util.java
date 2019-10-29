@@ -6,7 +6,7 @@
 package se.nrm.bio.mediaserver.clients;
 
 /**
- *
+ * GET = http://127.0.0.1:8080/MediaServerResteasy/media/v2/ef1311b1-9bd3-40ea-a794-b124d796024a?format=image/jpeg
  * @author ingimar
  */
 public class Util {
