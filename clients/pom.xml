@@ -25,6 +25,13 @@
     </properties>
     
     <dependencies>
+<!--         <dependency>
+            <groupId>org.zeroturnaround</groupId>
+            <artifactId>zt-zip</artifactId>
+            <version>1.13</version>
+            <type>jar</type>
+        </dependency>-->
+       
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpcore</artifactId>
@@ -119,7 +126,8 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <!-- Jar file entry point -->
-                            <mainClass>se.nrm.bio.mediaserver.clients.ClientEncoded</mainClass>
+                            <!--<mainClass>se.nrm.bio.mediaserver.clients.ClientEncoded</mainClass>-->
+                            <mainClass>se.nrm.bio.mediaserver.clients.ClientPostEncodedHardcodedString</mainClass>
                             <classpathPrefix>dependency-jars/</classpathPrefix>
                         </manifest>
                     </archive>
