@@ -22,17 +22,16 @@ import org.apache.http.util.EntityUtils;
 public class ClientGetFile {
 
     public static void main(String[] args) throws IOException {
+        final String UUID = "ef1311b1-9bd3-40ea-a794-b124d796024a";
         ClientGetFile client = new ClientGetFile();
-        CloseableHttpResponse response = client.getFileFromMediaServer("ef1311b1-9bd3-40ea-a794-b124d796024a");
-        int statusCode = response.getStatusLine().getStatusCode();
+        CloseableHttpResponse response = client.getFileFromMediaServer(UUID);
 
         System.out.println(response.getProtocolVersion());              // HTTP/1.1
         System.out.println(response.getStatusLine().getStatusCode());   // 200
         System.out.println(response.getStatusLine().getReasonPhrase()); // OK
         System.out.println(response.getStatusLine().toString());        // HTTP/1.1 200 OK
-
     }
-
+   
     /**
      * using version 2 of the API
      * <p>
@@ -60,7 +59,5 @@ public class ClientGetFile {
                 return response;
             }
         }
-
     }
-
 }
