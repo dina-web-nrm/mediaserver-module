@@ -24,7 +24,7 @@ import org.codehaus.jettison.json.JSONObject;
  *
  * @author ingimar
  */
-public class ClientPostEncodedHardcodedString {
+public class ClientPostEncodedString {
 
     public static void main(String[] args) {
          System.out.println("Starting ".concat("ClientPostEncodedHardcodedString"));
@@ -59,9 +59,9 @@ public class ClientPostEncodedHardcodedString {
             System.out.println("UUID is " + uuid);
 
         } catch (UnsupportedEncodingException ex) {
-            Logger.getLogger(ClientPostEncodedHardcodedString.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ClientPostEncodedString.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException | JSONException ex) {
-            Logger.getLogger(ClientPostEncodedHardcodedString.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ClientPostEncodedString.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }
