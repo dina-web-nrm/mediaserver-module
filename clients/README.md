@@ -17,4 +17,16 @@ running db in docker (same version and same version of jdbc)  and a local wildfl
 8.2 http://127.0.0.1:8080/MediaServerResteasy/media/v2/<UUID>?format=image/jpeg 
 8.3 http://127.0.0.1:8080/MediaServerResteasy/media/v2/2b041f01-250c-4a3a-b264-76c67dac2ffc?format=image/jpeg 
 
-5. java -jar target/mediaClient.jar http://127.0.0.1:8080 
+the runnable jar-file:see pom.xml ->  Main-file =  ClientPostEncodedHardcodedString
+1. java -jar target/mediaClient.jar http://127.0.0.1:8080 
+
+Testing ClientPostEncodedFiles, hardcoded file right now.:
+touch /media/real-vegadare/vegadare-share/zipfiles/Testing.zip
+eller -> cp ~/Pictures/TESTBILD-1-988x556.jpg Testing.zip 
+
+
+# linux, base64 encode and base64 encode
+> base64 --decode image.b64 > image.jpg  
+
+## linux, create large files for testing
+fallocate -l 1GB 1gb.zip
