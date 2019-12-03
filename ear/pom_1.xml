@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <artifactId>nrm-mediaserver</artifactId>
+        <groupId>se.nrm.bio.mediaserver</groupId>
+        <version>9.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>mediaserver-ear</artifactId>
+    <name>Mediaserver-EAR</name>
+    <packaging>ear</packaging>
+
+   
+
+    <dependencies>
+        <!-- Dependencies on the ejb and web modules so that they can be found by the ear plugin -->
+        <dependency>
+            <groupId>se.nrm.bio.mediaserver</groupId>
+            <artifactId>mediaserver-web</artifactId>
+            <type>war</type>
+        </dependency>
+        <dependency>
+            <groupId>se.nrm.bio.mediaserver</groupId>
+            <artifactId>mediaserver-ejb</artifactId>
+            <type>ejb</type>
+        </dependency>
+    </dependencies>
+
+    <build>
+      <finalName>${project.artifactId}</finalName>
+        <plugins>
+            <!-- Ear plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-ear-plugin</artifactId>
+                <version>${version.ear.plugin}</version>
+                <!-- configuring the ear plugin -->
+                <configuration>
+                    <version>6</version>
+                  
+                    <defaultLibBundleDir>lib</defaultLibBundleDir>
+                    <modules>
+                        <webModule>
+                            <groupId>se.nrm.bio.mediaserver</groupId>
+                            <artifactId>mediaserver-web</artifactId>
+                            <contextRoot>/MediaServerResteasy</contextRoot>
+                        </webModule>
+                    </modules>
+                    <fileNameMapping>no-version</fileNameMapping>
+                </configuration>
+            </plugin>
+            
+            <!-- WildFly plugin to deploy ear -->
+            <plugin>
+                <groupId>org.wildfly.plugins</groupId>
+                <artifactId>wildfly-maven-plugin</artifactId>
+                <version>${version.wildfly.maven.plugin}</version>
+                <configuration>
+                    <filename>${project.artifactId}.ear</filename>
+                    <skip>false</skip>
+                </configuration>
+            </plugin>
+            
+        </plugins>
+    </build>
+</project>
