@@ -5,6 +5,12 @@
 2. jboss-cli.sh -> max-post-size.
 
 Lokalt.
-1. för att kunna köra POST med klienten, ändring i proxy (tar bort /certs)
-- nu blir det ingen re-direct
-2. Hur fungerar detta då på seqdb-as maskinen ?
+1. för att kunna köra POST med klienten, och posta till 'http'  
+- "http://media.nrm.se/mserver/rest/file/vega"
+- ingen  re-direct , response till klienten är 301
+- ändrar :  i proxy (tar bort /certs)
+- fungerar
+
+2. testa att post till 'https'
+- "https://media.nrm.se/mserver/rest/file/vega"
+3. Hur fungerar detta då på seqdb-as maskinen ?
