@@ -10,11 +10,13 @@
     <version>9.0.0-SNAPSHOT</version>
 
     <modules>
-        <module>ejb</module>
-        <module>web</module>
+         <module>ejb</module>
         <module>ear</module>
+        <module>new-vega</module>
+        <!--<module>vega</module>-->
+        <!--<module>web</module>-->
         <!--<module>db</module>-->
-        <module>clients</module>
+        <!--<module>clients</module>-->
     </modules>
 
     <properties>
