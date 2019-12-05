@@ -18,12 +18,12 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.mkyong.common</groupId>
             <!--<groupId>se.nrm.bio.mediaserver</groupId>-->
             <!--<artifactId>mediaserver-web</artifactId>-->
             <!--<artifactId>vega</artifactId>-->
              <!--<version>9.0.0-SNAPSHOT</version>-->
-            <artifactId>RESTfulExample</artifactId>
+            <groupId>se.nrm.mserver</groupId>
+            <artifactId>VegaFront</artifactId>
             <version>1.0-SNAPSHOT</version>
             <type>war</type>
         </dependency>
@@ -49,16 +49,18 @@
                   
                     <defaultLibBundleDir>lib</defaultLibBundleDir>
                     <modules>
-<!--                        <webModule>
+                        <!--                       
+                        <webModule>
                             <groupId>se.nrm.bio.mediaserver</groupId>
                             <artifactId>vega</artifactId>
                             <contextRoot>/MediaServerResteasy</contextRoot>
-                        </webModule>-->
+                        </webModule>
+                        -->
                         <webModule>
-                            <groupId>com.mkyong.common</groupId>
                             <!--<artifactId>mediaserver-web</artifactId>-->
-                            <artifactId>RESTfulExample</artifactId>
                             <!--<contextRoot>/MediaServerResteasy</contextRoot>-->
+                            <groupId>se.nrm.mserver</groupId>
+                            <artifactId>VegaFront</artifactId>
                             <contextRoot>/mserver</contextRoot>
                         </webModule>
                     </modules>
