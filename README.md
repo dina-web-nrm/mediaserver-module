@@ -124,6 +124,8 @@ The log from the wildfly-server : class se.nrm.bio.mediaserver.rs.MediaResourceF
 'turn-key' docker-project at [dw-media](https://github.com/Inkimar/dw-media) <br>
 'turn-key' docker-project at [media-docker](https://github.com/dina-web-nrm/media-docker) <br>
 
+## change the context-root
+ the context-root is changes in the mediaserver-ear pom.xml-file
 
 ### Basic steps are as follows:
 
@@ -186,7 +188,7 @@ For instance the below ( key/value ) is set in the database.
 
 ![alt Admin-table](docs/admin-table.png)
 
-## Wildfly and large files
+## Wildfly & Undertow (configuration for large files)
 
 example to increase the possibility to post 4.2GB
 
@@ -196,5 +198,4 @@ example to increase the possibility to post 4.2GB
 4. [standalone@localhost:9990 /] :reload 
 5. verify 
 6. [standalone@localhost:9990 /] /subsystem=undertow/server=default-server/http-listener=default/:read-attribute(name=max-post-size)
-
 
