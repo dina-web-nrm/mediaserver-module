@@ -1,14 +1,12 @@
 language: java
 jdk:
-  - openjdk8
+- openjdk8
 script: mvn clean install
-
 deploy:
   provider: releases
   skip_cleanup: true
   api_key:
-    secure: $HEMLIGT
-  #github-token: $GITHUB_TOKEN
+    secure: "$HEMLIGT"
   file_glob: true
   file: ear/target/mediaserver-ear.ear
   overwrite: true
@@ -16,6 +14,5 @@ deploy:
     repo: dina-web-nrm/mediaserver-module
     all_branches: true
     tags: true
-    
-    
-# https://docs.travis-ci.com/user/deployment/releases/
+  password:
+    secure: gWuP10cVPgrfofgCiesXnZ2Mw9gsnloxxDOgMI/OjEv2eNttmeOwjd4BpHqUMyaTV5mPMpKbEXoSMsRRFS7lBWbQNe6iD14fS+4yxGPmyXhiPlC7d3/7zL8DCnuDrmFOeovzqZKWOs7FRP13z7wKf8CNO8BKue+VrNkBzmemTDGmaFmUh+ReLPPtor/pW4tf/SZ0IzafuRBUYpUVtyuSQK6v8YfIOYLAzL5js64e7M7qJdlOvJ9DP3sJ9V8NAz+KAuVc6JyvL7V1GSELz2IDioFuQUsTL2iz/wNg+eSfXx9mT7bW2Y+xsE+FHVq+rUi9L0LwHQQ1mY0cDilVxvwGCb/RvQSbYvXFwez5kM2Jdf/TyK40ig8rgAb5lTI6vkHStx71Id3gCeU+5+K7POWChN3tTzJPRIdlsjhGXQ0V4ogBeKSKAkg1nJp58ofV1IwvWM219NFISvxwQA8ZSIFMP2GWSU3eXR4P9ILb6aeHnewVT1a0A3HGjUj73AdcVSF4fSQWXeX6ADGeNdvAB2DBxGhnqW2NXWBxoIv4LbeQdZY6bw38mJA7F0q7qljln4rdUA3254fxOGiY5xImk0hv1Tit2Xz2txCbtgDGo3/z7p+CnbWchReB7Kg9KQ0o08GNBore2GknjLKgL5hNPlTNLIEcPA/cfoR8gWI0GrPbcRQ=
