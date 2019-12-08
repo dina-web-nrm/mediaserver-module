@@ -6,7 +6,9 @@ script: mvn clean install
 deploy:
   provider: releases
   skip_cleanup: true
-  github-token: $GITHUB_TOKEN
+  api_key:
+    secure: $HEMLIGT
+  #github-token: $GITHUB_TOKEN
   file_glob: true
   file: ear/target/mediaserver-ear.ear
   overwrite: true
@@ -14,3 +16,6 @@ deploy:
     repo: dina-web-nrm/mediaserver-module
     all_branches: true
     tags: true
+    
+    
+# https://docs.travis-ci.com/user/deployment/releases/
