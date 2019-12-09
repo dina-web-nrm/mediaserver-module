@@ -17,7 +17,7 @@ public class FileSystemWriter implements Writeable {
 
     @Override
     public void writeStreamToFS(InputStream uploadedInputStream, String location) {
-        logger.debug("file location " + location);
+        logger.debug("file location (inputStream) " + location);
         byte[] bytes = null;
         try {
             bytes = IOUtils.toByteArray(uploadedInputStream);
@@ -29,7 +29,7 @@ public class FileSystemWriter implements Writeable {
 
     @Override
     public void writeBytesTo(byte[] data, String location) {
-        logger.debug("file location " + location);
+        logger.debug("file location (bytes) " + location);
         try {
             File file = new File(location);
 
