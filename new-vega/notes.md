@@ -22,3 +22,7 @@ OBS->
 4.1 implementera klienten på vegadare-sidan
 4.2 kika på Java_HEAP i standalone.conf på vegadare-wilfly servern ...
 4.3 pusha ny vegadare-image till docker-hub ...
+
+2019-12-09
+Se ny endpoint i ResteasyClient .
+POST -> "http://localhost:8080/mserver/media"; 
