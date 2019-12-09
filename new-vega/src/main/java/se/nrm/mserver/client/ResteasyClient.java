@@ -10,6 +10,7 @@ import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
 
 /**
  * For testing purposes, hardcoded file in the /tmp-directory. 2019-12-05:
@@ -46,11 +47,15 @@ public class ResteasyClient {
 
         post.setEntity(entity);
         HttpResponse response = instance.execute(post);
+        HttpEntity responseeEntity = response.getEntity();
+        
+        // https://stackoverflow.com/questions/5769717/how-can-i-get-an-http-response-body-as-a-string-in-java
+        String responseString = EntityUtils.toString(responseeEntity, "UTF-8");
 
         int statusCode = response.getStatusLine().getStatusCode();
 
         System.out.println("\n response ".concat(Integer.toString(statusCode)));
-        System.out.println("response ");
+        System.out.println("response "+responseString);
 
         instance.close(); // Httpclient fundamentals
     }

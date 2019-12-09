@@ -6,12 +6,15 @@ import se.nrm.mserver.util.PathHelper;
 import se.nrm.mserver.util.Writeable;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+
+import javax.ejb.EJB;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.core.Response;
-import javax.ejb.EJB;
 import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
 import org.apache.tika.Tika;
@@ -27,7 +30,6 @@ import se.nrm.bio.mediaserver.domain.Media;
  *
  * @author ingimar
  */
-//@Path("/file")
 @Path("")
 public class UploadFileService {
 
@@ -58,8 +60,8 @@ public class UploadFileService {
     }
 
     @POST
-//    @Path("/vega")
-    @Consumes("multipart/form-data")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response uploadFile(@MultipartForm FileUploadForm form) {
         String owner = form.getOwner();
         String filename = form.getFilename();
@@ -79,9 +81,9 @@ public class UploadFileService {
         
         writeToFS(data, uuid);
         writeToDB(media);
-
-        return Response.status(200)
-                .entity("uploadFile is called, Uploaded file : ").build();
+        
+        Response response = Response.status(Response.Status.CREATED).entity(media).build();
+        return response;
     }
 
     private <T> void writeToDB(T media) {
