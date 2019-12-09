@@ -13,9 +13,10 @@
         <param-value>true</param-value>
     </context-param>
 
+    <!--<param-value>/rest</param-value>-->
     <context-param>
         <param-name>resteasy.servlet.mapping.prefix</param-name>
-        <param-value>/rest</param-value>
+        <param-value>/media</param-value>
     </context-param>
 
     <listener>
@@ -30,8 +31,9 @@
             org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher</servlet-class>
     </servlet>
 
+    <!--<url-pattern>/rest/*</url-pattern>-->
     <servlet-mapping>
         <servlet-name>resteasy-servlet</servlet-name>
-        <url-pattern>/rest/*</url-pattern>
+        <url-pattern>/media/*</url-pattern>
     </servlet-mapping>
 </web-app>

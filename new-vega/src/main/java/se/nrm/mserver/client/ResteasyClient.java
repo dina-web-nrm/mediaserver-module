@@ -26,11 +26,10 @@ public class ResteasyClient {
         String fileName = "testbild-svt-666.png";
         String filePath = "/tmp/".concat(fileName);
 
-//        CloseableHttpClient instance = HttpClientBuilder.create().setRedirectStrategy(new LaxRedirectStrategy()).build();
         CloseableHttpClient instance = HttpClientBuilder.create().build();
 
-//        final String url = "http://localhost:8080/MediaServerResteasy/rest/file/vega";
-        final String url = "http://media.nrm.se/mserver/rest/file/vega";
+//        final String url = "http://media.nrm.se/mserver/media";
+        final String url = "http://localhost:8080/mserver/media";
         HttpPost post = new HttpPost(url);
         MultipartEntityBuilder builder = MultipartEntityBuilder.create();
         builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);

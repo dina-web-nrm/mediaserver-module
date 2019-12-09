@@ -27,7 +27,8 @@ import se.nrm.bio.mediaserver.domain.Media;
  *
  * @author ingimar
  */
-@Path("/file")
+//@Path("/file")
+@Path("")
 public class UploadFileService {
 
     private final static Logger logger = Logger.getLogger(UploadFileService.class);
@@ -57,7 +58,7 @@ public class UploadFileService {
     }
 
     @POST
-    @Path("/vega")
+//    @Path("/vega")
     @Consumes("multipart/form-data")
     public Response uploadFile(@MultipartForm FileUploadForm form) {
         String owner = form.getOwner();
