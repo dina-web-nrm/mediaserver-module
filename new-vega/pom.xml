@@ -93,6 +93,12 @@
             <version>1.22</version>
             <type>jar</type>
         </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20180130</version>
+            <type>jar</type>
+        </dependency>
     </dependencies>
 
     <build>
