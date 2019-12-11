@@ -1,0 +1,47 @@
+version: '3.3'
+
+services:   
+  
+  app:
+    #image: inkimar/vega-server:v2.2
+    image: inkimar/vega-server:v3.1
+    container_name: mediaserver
+    ports:
+     - "18080:8080"
+     - "19990:9990"
+    links:
+    - db.media:dbmedia
+    environment:
+     #- "JAVA_OPTS= -Xms1024M -Xmx4096M -XX:MaxHeapSize=4096M -Djava.net.preferIPv4Stack=true"
+     #- VIRTUAL_HOST=api.nrm.se
+     - VIRTUAL_HOST=media.nrm.se
+     - VIRTUAL_PORT=8080
+    volumes: 
+     - ./srv/log:/opt/jboss/wildfly/standalone/log
+     - ./srv/media:/opt/data/media
+     #- ./srv/releases:/opt/jboss/wildfly/releases
+     #- ./srv/deployments:/opt/jboss/wildfly/standalone/deployments   
+
+  db.media:
+    image: mysql:5.5
+    container_name: dbmediaserver
+    ports:
+     - "3306:3306" #for development
+    environment:
+     - TZ=Europe/Stockholm
+     - MYSQL_ROOT_PASSWORD=supersecret
+     - MYSQL_DATABASE=media
+     - MYSQL_USER=mediaserver
+     - MYSQL_PASSWORD=mediaserver
+    volumes:
+     - ./db/mysql_media-datadir:/var/lib/mysql:z
+     - ./db/mysql_media-shr:/shr:z
+     - ./db/mysql_media-autoload:/docker-entrypoint-initdb.d:ro
+     - ./db/mysql_media-conf.d:/etc/mysql/conf.d:z
+     
+
+# running with external proxy
+networks:
+  default:
+    external:
+      name:  proxy-docker_default

@@ -1,0 +1,23 @@
+batch
+/subsystem=undertow/server=default-server/http-listener=default/:write-attribute(name=max-post-size,value=4200000000)
+
+deploy customization/mysql-connector-java-5.1.38-bin.jar
+
+data-source add --name=MediaDS \
+	--jndi-name=java:/MediaDS \
+	--driver-name=mysql-connector-java-5.1.38-bin.jar_com.mysql.jdbc.Driver_5_1 \
+	--connection-url=jdbc:mysql://dbmedia:3306/media?useUnicode=true&amp;characterEncoding=UTF-8 \
+    --user-name=mediaserver \ 
+	--password=mediaserver \
+	--check-valid-connection-sql="SELECT 1" \
+	--background-validation=true \
+	--background-validation-millis=60000 \
+	--flush-strategy=IdleConnections \
+	--min-pool-size=10 \
+	--max-pool-size=50 \
+	--pool-prefill=false \
+	--use-ccm=true \
+	--blocking-timeout-wait-millis=5000 \
+	--enabled=true
+
+run-batch
